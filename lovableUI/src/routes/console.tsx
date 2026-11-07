@@ -101,7 +101,11 @@ function Console() {
       }
       case "result":
         setResult(ev);
-        canvasRef.current?.teleportCamera(ev.target_point, ev.source_point);
+        canvasRef.current?.teleportCamera(ev.target_point, ev.source_point, {
+          targetTitle: ev.match.title,
+          domain: ev.match.domain,
+          score: ev.match.score,
+        });
         push({
           stage: "MATCH",
           text: `${ev.match.title} · ${ev.match.domain} · sim ${ev.match.score.toFixed(2)}`,
@@ -208,6 +212,7 @@ function Console() {
               targetLabel={
                 result ? `${result.match.domain} · ${result.match.title}` : "Target domain"
               }
+              result={result}
             />
           </div>
         </div>
