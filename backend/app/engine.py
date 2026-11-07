@@ -32,8 +32,8 @@ SOURCE_DOMAIN_ANCHORS: Dict[str, str] = {
         "execution slippage, order flow toxicity, and flash crash volatility cascades."
     ),
     "network_security": (
-        "Information cascade propagation, viral misinformation fanout, DDoS botnet traffic, "
-        "rumor spreading in social and communication graphs, and fault isolation."
+        "High-fanout broadcast amplification, gossip protocol flooding, unverified packet "
+        "relaying across scale-free communication graphs, and blast-radius fault isolation."
     ),
 }
 
@@ -49,9 +49,9 @@ TARGET_DOMAIN_ANCHORS: Dict[str, str] = {
         "coupled oscillator synchronization, and Landauer information thermodynamics."
     ),
     "social": (
-        "Social systems and epidemiology: SIR ring inoculation, scale-free acquaintance "
-        "immunization, Granovetter complex contagion thresholds, Schelling spatial homophily, "
-        "and Vickrey-Clarke-Groves congestion externality pricing."
+        "Social systems and epidemiology: SIR ring inoculation, misinformation and viral "
+        "contagion containment, scale-free acquaintance immunization, Granovetter complex "
+        "contagion thresholds, Schelling spatial homophily, and congestion externality pricing."
     ),
     "math": (
         "Pure and applied mathematics: Ollivier-Ricci discrete graph curvature surgery, "
@@ -197,18 +197,18 @@ class LatentTeleportationEngine:
     def _project_3d(self, vec: np.ndarray, manifold: str) -> List[float]:
         """
         Projects a 384-d vector onto the top 3 principal components and anchors:
-          - source manifold in cyan cluster (-X: [-7.5, -2.5])
-          - target manifold in gold cluster (+X: [+2.5, +7.5])
-        so 3D coordinates are bounded in [-9, 9] for both GalaxyCanvas and SVG fallback.
+          - source manifold in cyan galaxy disc (SOURCE = [-5, 0, 0], radius <= 2.8, y in [-0.25, +0.25])
+          - target manifold in gold galaxy disc (TARGET = [+5, 0, 0], radius <= 2.8, y in [-0.25, +0.25])
+        so the glowing Bezier bridge terminates directly inside the 3D particle discs in GalaxyCanvas.jsx.
         """
         centered = (vec.reshape(1, -1) - self.pca_mean) @ self.pca_components.T
         raw_x, raw_y, raw_z = [float(v) for v in centered[0]]
         if manifold == "source":
-            x = -5.5 + float(np.tanh(raw_x * 2.2)) * 2.2
+            x = -5.0 + float(np.tanh(raw_x * 2.2)) * 1.8
         else:
-            x = 5.5 + float(np.tanh(raw_x * 2.2)) * 2.2
-        y = float(np.tanh(raw_y * 2.5)) * 4.2
-        z = float(np.tanh(raw_z * 2.5)) * 4.2
+            x = 5.0 + float(np.tanh(raw_x * 2.2)) * 1.8
+        y = float(np.tanh(raw_y * 2.0)) * 0.24
+        z = float(np.tanh(raw_z * 2.2)) * 1.8
         return [round(x, 3), round(y, 3), round(z, 3)]
 
     def _format_match(self, doc: Dict[str, Any], score: float) -> Dict[str, Any]:
@@ -260,7 +260,9 @@ class LatentTeleportationEngine:
                 candidate_v = _l2_normalize(v_prob - 0.35 * v_source_domain + 0.55 * dom_centroid)
                 dom_idxs = [i for i, d in enumerate(self.corpus) if d.get("domain") == dom_key]
                 if dom_idxs:
-                    sims = self.corpus_embeddings[dom_idxs] @ candidate_v
+                    sims = 0.45 * (self.corpus_embeddings[dom_idxs] @ candidate_v) + 0.55 * (
+                        self.corpus_embeddings[dom_idxs] @ v_prob
+                    )
                     max_sim = float(np.max(sims))
                     if max_sim > best_resonance:
                         best_resonance = max_sim
@@ -284,7 +286,7 @@ class LatentTeleportationEngine:
             if idx < 0:
                 continue
             doc = self.corpus[int(idx)]
-            if normalized_domain != "universal" and doc.get("domain") != normalized_domain:
+            if doc.get("domain") != chosen_target_domain:
                 continue
             # Rescale inner product on unit sphere into calibrated similarity [0.65, 0.96]
             calibrated_score = float(np.clip(0.55 + 0.42 * float(sim_score), 0.52, 0.97))

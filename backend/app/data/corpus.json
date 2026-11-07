@@ -201,11 +201,11 @@
   },
   {
     "id": "soc-sir-ring-inoculation",
-    "title": "Epidemiological SIR Ring Inoculation & Percolation Threshold Containment",
+    "title": "Epidemiological SIR Ring Inoculation (Viral & Misinformation Bottleneck Containment)",
     "domain": "social",
     "domain_label": "Social Systems & Epidemiology",
-    "summary": "Instead of uniform mass quarantine, ring vaccination traces and immunizes two-hop topological neighbors around detected outbreaks, collapsing the effective reproduction number R_eff below 1.",
-    "abstract": "Misinformation propagation, viral cascade containment, faulty config blast-radius isolation, and DDoS botnet mitigation in scale-free networks via SIR/SEIR ring inoculation and acquaintance immunization. Because scale-free graphs have vanishing epidemic threshold tau_c -> 0, random throttling fails; immunizing random neighbors of infected nodes selectively targets high-degree super-spreaders.",
+    "summary": "Resolves misinformation bottlenecks, viral cascade outbreaks, and rumor propagation by tracing and immunizing two-hop topological neighbors around infected super-spreaders, collapsing R_eff below 1.",
+    "abstract": "Misinformation bottleneck, fake news cascade containment, rumor propagation, viral cascade containment, faulty config blast-radius isolation, and DDoS botnet mitigation in scale-free networks via SIR/SEIR ring inoculation and acquaintance immunization. Because scale-free graphs have vanishing epidemic threshold tau_c -> 0, random throttling fails; immunizing random neighbors of infected nodes selectively targets high-degree misinformation super-spreaders.",
     "mechanism": "Two-hop contact-traced ring immunization and acquaintance targeting on scale-free graphs",
     "adaptation": [
       "When a poisoned message, faulty payload, or misinformation cascade is detected at node u, immediately apply verification gates to u's 1-hop and 2-hop outbound subscribers",
