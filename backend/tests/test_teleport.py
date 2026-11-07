@@ -9,7 +9,7 @@ import numpy as np
 from starlette.datastructures import Headers, UploadFile
 from starlette.requests import Request
 
-from app.engine import SIMILARITY_THRESHOLD, compute_unit_offset_vector, get_engine
+from app.engine import CANDIDATE_MIN_COSINE, SIMILARITY_THRESHOLD, compute_unit_offset_vector, get_engine
 from app.ingest import ingest_file_bytes
 from app.main import health, list_corpus, teleport_endpoint
 
@@ -45,7 +45,7 @@ def test_engine_presets_and_threshold_filtering() -> None:
     )
     assert eng.dimension == 384
     assert eng.faiss_index.ntotal >= 20
-    assert eng.similarity_threshold == SIMILARITY_THRESHOLD == 0.65
+    assert eng.similarity_threshold == SIMILARITY_THRESHOLD == 0.40
 
     queries = [
         ("Traffic bottleneck — find analogue in Ants", "natural", "bio-ant-pheromone"),
@@ -72,19 +72,21 @@ def test_engine_presets_and_threshold_filtering() -> None:
         assert res.passes_source_cosine_gate == (res.source_cosine >= SIMILARITY_THRESHOLD)
         assert res.below_threshold == (res.source_cosine < SIMILARITY_THRESHOLD)
         assert "point" in res.match and len(res.match["point"]) == 3
-        assert all(c["source_cosine"] >= SIMILARITY_THRESHOLD for c in res.candidates)
+        assert all(c["source_cosine"] >= CANDIDATE_MIN_COSINE for c in res.candidates)
         assert all("point" in c and len(c["point"]) == 3 for c in res.candidates)
         assert -7.5 <= res.source_point[0] <= -2.5
         assert 2.5 <= res.target_point[0] <= 7.5
         assert abs(res.source_point[1]) <= 0.275
         assert abs(res.target_point[1]) <= 0.275
 
-    # Preset 2 honest gate check: raw source_cosine is 0.5982 (< 0.65), so below_threshold is True
+    # Preset 2: raw source_cosine 0.5982 passes the 0.40 relevance gate (it failed the old 0.65 gate)
     preset2 = eng.teleport("Order Book bottleneck — find analogue in Fluid Dynamics", "physics")
     assert preset2.match["id"] == "phys-navier-stokes-orderbook"
     assert abs(preset2.source_cosine - 0.5982) < 1e-3
-    assert preset2.passes_source_cosine_gate is False
-    assert preset2.below_threshold is True
+    assert preset2.passes_source_cosine_gate is True
+    assert preset2.below_threshold is False
+    assert len(preset2.candidates) >= 1
+    assert "find analogue" not in preset2.match["situation_description"]
 
     # High-overlap query (> 0.65 actual source_cosine) must pass the 0.65 gate with below_threshold=False
     high_cos = eng.teleport(

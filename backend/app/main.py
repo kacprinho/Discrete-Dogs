@@ -83,6 +83,14 @@ async def list_corpus(domain: Optional[str] = Query(default=None)) -> Dict[str, 
     }
 
 
+def _strength(cos: float, threshold: float) -> str:
+    if cos >= threshold + 0.15:
+        return "strong"
+    if cos >= threshold:
+        return "moderate"
+    return "weak (searching live papers)"
+
+
 @app.post("/api/teleport")
 async def teleport_endpoint(
     request: Request,
@@ -256,7 +264,7 @@ async def teleport_endpoint(
                 f"FAISS k-NN Search — manifold={computation.target_domain_label} · "
                 f"source_cos={local_raw_similarity:.4f} · offset_cos={local_teleported_similarity:.4f} · "
                 f"relevance={computation.relevance_score:.4f} · "
-                f"gate_0.65={'PASS' if computation.passes_source_cosine_gate else 'FAIL (<0.65)'}"
+                f"match strength: {_strength(local_raw_similarity, computation.similarity_threshold)}"
             ),
         }
     )

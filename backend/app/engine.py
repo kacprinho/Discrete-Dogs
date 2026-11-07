@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import os
 import logging
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,9 +20,13 @@ CORPUS_PATH = Path(__file__).parent / "data" / "corpus.json"
 EMBEDDING_DIM = 384
 MODEL_NAME = "all-MiniLM-L6-v2"
 
-# Strict semantic similarity cutoff threshold & source-bottleneck cosine gate
-SIMILARITY_THRESHOLD: float = 0.65
-SOURCE_COSINE_THRESHOLD: float = 0.65
+# Relevance gate on RAW cosine(v_prob, doc). all-MiniLM-L6-v2 cross-discipline cosines sit in
+# ~0.4-0.65 for genuine analogies and ~0.05-0.2 for unrelated text, so 0.40 separates them.
+# 0.65 rejected every curated preset (Preset 2 = 0.598). Override with SIMILARITY_THRESHOLD env.
+SIMILARITY_THRESHOLD: float = float(os.environ.get("SIMILARITY_THRESHOLD", "0.40"))
+SOURCE_COSINE_THRESHOLD: float = SIMILARITY_THRESHOLD
+# Secondary candidates only need to be loosely related to be shown as "also consider".
+CANDIDATE_MIN_COSINE: float = float(os.environ.get("CANDIDATE_MIN_COSINE", "0.20"))
 RAW_SOURCE_COSINE_FLOOR: float = 0.25
 
 SOURCE_DOMAIN_ANCHORS: Dict[str, str] = {
@@ -354,12 +360,12 @@ class LatentTeleportationEngine:
         explicitly linking the user's input bottleneck to the retrieved scientific mechanism.
         """
         clean_prob = " ".join((problem_text or "").strip().split())
+        clean_prob = re.sub(r"\s*[—–-]+\s*find (an )?analog(ue)? in .*$", "", clean_prob, flags=re.I)
         snippet = clean_prob[:110] + ("…" if len(clean_prob) > 110 else "")
-        src_label = source_domain_key.replace("_", " ")
         sig_phrase = (
             ", ".join(signals[:2])
             if signals
-            else "coupled flow saturation and feedback amplification"
+            else "a recurring structural bottleneck"
         )
         mech = match.get("mechanism") or "decentralized feedback regulation"
         first_step = (
@@ -368,13 +374,13 @@ class LatentTeleportationEngine:
             else match.get("summary", "")
         )
         situation_desc = (
-            f"In your {src_label} scenario (\"{snippet}\"), the bottleneck arises from {sig_phrase}. "
+            f"Your problem — {snippet} — is a case of {sig_phrase}. "
             f"{match['title']} ({match.get('domain', 'Target Domain')}) resolves the same structural "
             f"topology via {mech.lower()} — {first_step[0].lower() + first_step[1:] if first_step else ''}"
         ).strip()
         if not situation_desc.endswith("."):
             situation_desc += "."
-        why_it_maps = f"{src_label.title()} ({sig_phrase}) ↔ {match['title']} ({mech})"
+        why_it_maps = f"{snippet} ({sig_phrase}) ↔ {match['title']} ({mech})"
         return situation_desc, why_it_maps
 
     def teleport(
@@ -474,7 +480,9 @@ class LatentTeleportationEngine:
             target_cluster_vecs.append(self.corpus_embeddings[top_idx])
 
         # Enforce strict 0.65 cosine gate directly on actual source_cosine (not transformed relevance_score)
-        passing_matches = [m for m in all_domain_matches if m["source_cosine"] >= cutoff]
+        passing_matches = [
+            m for m in all_domain_matches if m["source_cosine"] >= min(cutoff, CANDIDATE_MIN_COSINE)
+        ]
         filtered_out_count = len(all_domain_matches) - len(passing_matches)
 
         primary_match = all_domain_matches[0]

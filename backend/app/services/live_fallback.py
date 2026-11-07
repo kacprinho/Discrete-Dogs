@@ -22,7 +22,7 @@ from .arxiv_client import ArxivClient, ArxivPaper, build_queries
 
 logger = logging.getLogger("teleport.fallback")
 
-MIN_RAW_COS = float(os.environ.get("FALLBACK_MIN_RAW_COS", "0.30"))
+MIN_RAW_COS = float(os.environ.get("FALLBACK_MIN_RAW_COS", "0.40"))
 FALLBACK_TIMEOUT = float(os.environ.get("FALLBACK_TIMEOUT_S", "15"))
 FETCH_PDF = os.environ.get("FALLBACK_FETCH_PDF", "1") == "1"
 ENABLED = os.environ.get("FALLBACK_ENABLED", "1") == "1"
