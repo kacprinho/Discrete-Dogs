@@ -362,6 +362,7 @@ class LatentTeleportationEngine:
         """
         clean_prob = " ".join((problem_text or "").strip().split())
         clean_prob = re.sub(r"\s*[—–-]+\s*find (an )?analog(ue)? in .*$", "", clean_prob, flags=re.I)
+        clean_prob = re.sub(r"\s*look for an analog(ue)? in .*$", "", clean_prob, flags=re.I).rstrip(" .")
         snippet = clean_prob[:110] + ("…" if len(clean_prob) > 110 else "")
         sig_phrase = (
             ", ".join(signals[:2])

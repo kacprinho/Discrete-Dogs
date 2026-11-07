@@ -41,6 +41,14 @@ export type Match = {
   passes_offset_cosine_gate?: boolean;
   below_threshold?: boolean;
   situation_description?: string;
+  /** Optional plain-English explanation from the LLM layer (absent if no key / failure). */
+  explanation?: {
+    headline: string;
+    connection: string;
+    steps: string[];
+    caveats: string;
+    model?: string;
+  };
   why_it_maps?: string;
 };
 

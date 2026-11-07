@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from .engine import DOMAIN_LABELS, get_engine
 from .ingest import extract_structural_signals, ingest_file_bytes
+from .services import explainer
 from .services.live_fallback import run_fallback, should_fallback
 
 
@@ -203,6 +204,21 @@ async def teleport_endpoint(
     if computation.target_point:
         computation.match.setdefault("point", computation.target_point)
         computation.match.setdefault("coords", computation.target_point)
+
+    # Plain-English explanation (optional LLM layer; falls back silently to corpus text)
+    if explainer.enabled():
+        explanation = await explainer.explain(fallback_query or effective_context, computation.match)
+        if explanation:
+            computation.match["explanation"] = explanation
+            fallback_logs.append(
+                {"type": "log", "stage": "EXPLAIN", "agent": "explainer",
+                 "text": f"Plain-English explanation generated ({explanation['model']})"}
+            )
+        else:
+            fallback_logs.append(
+                {"type": "log", "stage": "EXPLAIN", "agent": "explainer",
+                 "text": "Explanation unavailable — showing curated corpus text"}
+            )
 
     # Build structured agent reasoning events
     events: List[Dict[str, Any]] = []

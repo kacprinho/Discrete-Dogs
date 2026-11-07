@@ -25,12 +25,42 @@ export const Route = createFileRoute("/console")({
   component: Console,
 });
 
-const PRESETS: { label: string; domain: string }[] = [
-  { label: "Traffic -> Ants", domain: "natural" },
-  { label: "Order Book -> Fluid Dynamics", domain: "physics" },
-  { label: "Database Lock -> Enzymes", domain: "natural" },
-  { label: "Misinformation -> Virus", domain: "social" },
+// Each preset is a realistic problem statement plus the field the user wants to borrow from.
+const PRESETS: { label: string; domain: string; problem: string; target: string }[] = [
+  {
+    label: "Traffic -> Ants",
+    domain: "natural",
+    problem:
+      "Network traffic congestion: requests pile onto the same few routes at peak load while alternative paths stay idle.",
+    target: "ant colonies",
+  },
+  {
+    label: "Order Book -> Fluid Dynamics",
+    domain: "physics",
+    problem:
+      "Order book liquidity crunch: large orders cause price slippage and volatility cascades when the book is thin.",
+    target: "fluid dynamics",
+  },
+  {
+    label: "Database Lock -> Enzymes",
+    domain: "natural",
+    problem:
+      "Database lock contention: transactions block each other waiting on the same mutex and throughput collapses.",
+    target: "enzymes",
+  },
+  {
+    label: "Misinformation -> Virus",
+    domain: "social",
+    problem:
+      "Misinformation spreads virally through our social network faster than moderators can contain it.",
+    target: "virus epidemiology",
+  },
 ];
+
+const stripHint = (t: string) =>
+  t
+    .replace(/\s*look for an analog(ue)? in .*$/i, "")
+    .replace(/\s*[—–-]+\s*find (an )?analog(ue)? in .*$/i, "");
 
 const DOMAINS = [
   { id: "natural", label: "🌿 Natural & Biological Systems (e.g., Ant Pheromones, Mycelium)" },
@@ -65,6 +95,7 @@ function Console() {
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<TeleportResult | null>(null);
+  const [lastProblem, setLastProblem] = useState("");
   const canvasRef = useRef<GalaxyCanvasHandle>(null);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -122,6 +153,7 @@ function Console() {
     const domainLabel = DOMAINS.find((d) => d.id === domainId)?.label ?? domainId;
     setBusy(true);
     setResult(null);
+    setLastProblem(stripHint(desc.trim()) || (file ? file.name : ""));
     canvasRef.current?.reset();
     push({
       stage: "INPUT",
@@ -183,9 +215,9 @@ function Console() {
               onClick={() => {
                 setActive(p.label);
                 setDomain(p.domain);
-                const [src = p.label, tgt = ""] = p.label.split("->");
+                setDescription(p.problem);
                 teleport({
-                  description: `${src.trim()} bottleneck — find analogue in ${tgt.trim()}`,
+                  description: `${p.problem} Look for an analogue in ${p.target}.`,
                   domain: p.domain,
                 });
               }}
@@ -232,7 +264,7 @@ function Console() {
           {busy && <div className="caret text-primary">▋</div>}
         </div>
 
-        {result && <MatchCard result={result} />}
+        {result && <MatchCard result={result} problem={lastProblem} />}
 
         <form
           onSubmit={(e) => {
@@ -354,58 +386,90 @@ function Status({
   );
 }
 
-function MatchCard({ result }: { result: TeleportResult }) {
-  const m = result.match;
+function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="max-h-56 space-y-1 overflow-y-auto border-t border-border bg-card/60 p-3 text-xs">
-      <div className="flex items-baseline justify-between gap-2">
-        <span className="font-bold text-primary">
-          {m.url ? (
-            <a href={m.url} target="_blank" rel="noreferrer" className="underline">
-              {m.title}
-            </a>
-          ) : (
-            m.title
-          )}
-        </span>
-        <span className="flex shrink-0 items-center gap-2">
+    <div className="space-y-0.5">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+      <div className="text-foreground/90">{children}</div>
+    </div>
+  );
+}
+
+function MatchCard({ result, problem }: { result: TeleportResult; problem: string }) {
+  const m = result.match;
+  const ex = m.explanation;
+  const steps = ex?.steps?.length ? ex.steps : (m.adaptation ?? []);
+  const strength = m.score >= 0.55 ? "strong" : m.score >= 0.4 ? "moderate" : "weak";
+  return (
+    <div className="max-h-[22rem] space-y-2.5 overflow-y-auto border-t border-border bg-card/60 p-3 text-xs leading-relaxed">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-sm font-bold text-primary">{ex?.headline ?? m.title}</p>
+        <span className="flex shrink-0 items-center gap-1.5">
           {m.source === "arxiv-live" && (
             <span className="rounded border border-accent px-1 text-[10px] uppercase tracking-wider text-accent">
               live · arXiv
             </span>
           )}
-          <span className="text-accent">sim {m.score.toFixed(2)}</span>
+          <span
+            className="rounded border border-border px-1 text-[10px] uppercase tracking-wider text-accent"
+            title={`cosine similarity ${m.score.toFixed(2)}`}
+          >
+            {strength} match · {m.score.toFixed(2)}
+          </span>
         </span>
       </div>
-      <p className="text-muted-foreground">
-        {m.domain}
-        {m.mechanism ? ` · mechanism: ${m.mechanism}` : ""}
-      </p>
-      {m.paper_ref && <p className="text-muted-foreground/80 italic">{m.paper_ref}</p>}
-      {m.situation_description && (
-        <p className="rounded border border-primary/30 bg-primary/5 px-2 py-1 text-foreground">
-          {m.situation_description}
-        </p>
+
+      {problem && (
+        <Section label="Your problem">
+          <p>{problem}</p>
+        </Section>
       )}
-      <p className="text-foreground/80">{m.summary}</p>
-      {m.adaptation?.length ? (
-        <ul className="list-inside list-disc text-foreground/80">
-          {m.adaptation.map((a, i) => (
-            <li key={i}>{a}</li>
-          ))}
-        </ul>
-      ) : null}
-      {m.limitations?.length ? (
-        <p className="text-destructive/80">limits: {m.limitations.join("; ")}</p>
-      ) : null}
+
+      <Section label={`Borrowed from · ${m.domain}`}>
+        {ex && <p className="font-semibold">{m.title}</p>}
+        <p>{ex?.connection || m.summary}</p>
+      </Section>
+
+      {steps.length > 0 && (
+        <Section label="Try this">
+          <ol className="list-inside list-decimal space-y-0.5">
+            {steps.slice(0, 3).map((a, i) => (
+              <li key={i}>{a}</li>
+            ))}
+          </ol>
+        </Section>
+      )}
+
+      {(ex?.caveats || m.limitations?.length) && (
+        <Section label="Watch out for">
+          <p className="text-foreground/75">{ex?.caveats || m.limitations!.join(" ")}</p>
+        </Section>
+      )}
+
+      <Section label="Source">
+        {m.url ? (
+          <a href={m.url} target="_blank" rel="noreferrer" className="text-primary underline">
+            {m.paper_ref || m.title}
+          </a>
+        ) : (
+          <p>{m.paper_ref || m.title}</p>
+        )}
+        {ex && (
+          <p className="text-[10px] text-muted-foreground">
+            Explanation written by {ex.model ?? "an LLM"} from this source only.
+          </p>
+        )}
+      </Section>
+
       {result.candidates?.length ? (
-        <p className="text-muted-foreground">
-          also:{" "}
-          {result.candidates
-            .slice(0, 3)
-            .map((c) => c.title)
-            .join(" · ")}
-        </p>
+        <Section label="Other analogies">
+          <p className="text-muted-foreground">
+            {result.candidates
+              .slice(0, 3)
+              .map((c) => `${c.title} (${c.domain})`)
+              .join(" · ")}
+          </p>
+        </Section>
       ) : null}
     </div>
   );
