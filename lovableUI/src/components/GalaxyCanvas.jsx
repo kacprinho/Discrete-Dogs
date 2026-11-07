@@ -54,7 +54,17 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
   const engine = useRef(null);
   const [error, setError] = useState('');
   const [matched, setMatched] = useState(false);
-  const [tooltip, setTooltip] = useState(null);
+
+  // Direct DOM references for 60fps hardware-accelerated badge & tooltip positioning without React re-render stutter
+  const tooltipRef = useRef(null);
+  const tooltipTitleRef = useRef(null);
+  const tooltipDomainRef = useRef(null);
+  const tooltipScoreRef = useRef(null);
+  const tooltipCoordsRef = useRef(null);
+
+  const heroBadgeRef = useRef(null);
+  const heroTitleRef = useRef(null);
+  const heroMetaRef = useRef(null);
 
   useImperativeHandle(
     ref,
@@ -68,11 +78,26 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       reset() {
         engine.current?.reset();
         setMatched(false);
-        setTooltip(null);
       },
     }),
     []
   );
+
+  // Sync when result prop updates
+  useEffect(() => {
+    if (!result || !engine.current) return;
+    const targetPoint = result.target_point || result.target_coords;
+    const sourcePoint = result.source_point || result.source_coords || SOURCE_ORIGIN;
+    if (validCoords(targetPoint)) {
+      engine.current.teleport(targetPoint, sourcePoint, {
+        targetTitle: result.match?.title,
+        domain: result.match?.domain,
+        score: result.match?.score,
+        candidates: result.candidates,
+      });
+      setMatched(true);
+    }
+  }, [result]);
 
   useEffect(() => {
     const container = host.current;
@@ -139,8 +164,8 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
             tint = color;
             vSize = aSize;
             vec4 p = modelViewMatrix * vec4(position, 1.0);
-            // Dynamic scale: 155.0 base scaling clamped between 2.5px and 22.0px for vibrant visibility
-            gl_PointSize = clamp((aSize * 155.0) / -p.z, 2.5, 22.0);
+            // Sizing specification: scaled point size clamped between 3.0px and 28.0px for vivid visibility
+            gl_PointSize = clamp((aSize * 220.0) / -p.z, 3.0, 28.0);
             gl_Position = projectionMatrix * p;
           }
         `,
@@ -151,12 +176,12 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
             vec2 coord = gl_PointCoord - vec2(0.5);
             float dist = length(coord) * 2.0;
             if (dist > 1.0) discard;
-            // Soft luminous gaussian-like falloff with white-hot core
-            float core = clamp(1.0 - dist * 2.2, 0.0, 1.0);
-            float halo = pow(1.0 - dist, 1.8);
-            float alpha = clamp(core * 0.85 + halo * 0.55, 0.0, 1.0);
-            vec3 rgb = mix(tint, vec3(1.0), core * 0.55);
-            gl_FragColor = vec4(rgb, alpha * 0.9);
+            // Multi-tier luminous gaussian-like falloff with white-hot core
+            float core = clamp(1.0 - dist * 2.0, 0.0, 1.0);
+            float halo = pow(1.0 - dist, 1.6);
+            float alpha = clamp(core * 0.9 + halo * 0.6, 0.0, 1.0);
+            vec3 rgb = mix(tint, vec3(1.0), core * 0.65);
+            gl_FragColor = vec4(rgb, alpha * 0.95);
           }
         `,
       })
@@ -199,16 +224,21 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     const nodesGroup = new THREE.Group();
     scene.add(nodesGroup);
 
-    // Shared reusable geometries
-    const baseSphereGeo = track(new THREE.SphereGeometry(0.24, 24, 24));
-    const baseHaloGeo = track(new THREE.SphereGeometry(0.40, 16, 16));
-    const baseRingGeo = track(new THREE.RingGeometry(0.35, 0.48, 24));
+    // Substantial node geometry scale matching sizing specifications
+    const baseSphereGeo = track(new THREE.SphereGeometry(0.38, 24, 24));
+    const baseHaloGeo = track(new THREE.SphereGeometry(0.65, 18, 18));
+    const baseRingGeo = track(new THREE.RingGeometry(0.52, 0.78, 28));
 
-    const heroSphereGeo = track(new THREE.SphereGeometry(0.42, 32, 32));
-    const heroHaloGeo = track(new THREE.SphereGeometry(0.68, 20, 20));
-    const heroRingGeo = track(new THREE.RingGeometry(0.55, 0.78, 32));
+    const heroSphereGeo = track(new THREE.SphereGeometry(0.60, 32, 32));
+    const heroHaloGeo = track(new THREE.SphereGeometry(1.05, 22, 22));
+    const heroRingGeo = track(new THREE.RingGeometry(0.85, 1.25, 36));
+
+    // Generous hit geometries for effortless raycast hover detection
+    const baseHitGeo = track(new THREE.SphereGeometry(0.80, 8, 8));
+    const heroHitGeo = track(new THREE.SphereGeometry(1.25, 8, 8));
 
     const interactiveNodes = [];
+    const dynamicCandidateNodes = [];
 
     function createNode(meta, isHero = false, customColor = null) {
       const group = new THREE.Group();
@@ -234,7 +264,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
           color: color,
           wireframe: true,
           transparent: true,
-          opacity: isHero ? 0.6 : 0.38,
+          opacity: isHero ? 0.65 : 0.40,
           blending: THREE.AdditiveBlending,
         })
       );
@@ -247,7 +277,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         new THREE.MeshBasicMaterial({
           color: color,
           transparent: true,
-          opacity: isHero ? 0.5 : 0.28,
+          opacity: isHero ? 0.55 : 0.30,
           side: THREE.DoubleSide,
           blending: THREE.AdditiveBlending,
         })
@@ -255,6 +285,14 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       const ringMesh = new THREE.Mesh(rGeo, ringMat);
       ringMesh.rotation.x = Math.PI / 2;
       group.add(ringMesh);
+
+      // Invisible hit sphere for generous hover raycasting
+      const hitGeo = isHero ? heroHitGeo : baseHitGeo;
+      const hitMesh = new THREE.Mesh(
+        hitGeo,
+        track(new THREE.MeshBasicMaterial({ visible: false, wireframe: false }))
+      );
+      group.add(hitMesh);
 
       nodesGroup.add(group);
 
@@ -264,6 +302,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         coreMesh,
         haloMesh,
         ringMesh,
+        hitMesh,
         haloMat,
         ringMat,
         colorHex,
@@ -272,7 +311,8 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         targetScale: 1.0,
       };
 
-      // Add to raycast targets
+      // Set user data for raycaster
+      hitMesh.userData = { nodeObj };
       coreMesh.userData = { nodeObj };
       haloMesh.userData = { nodeObj };
       interactiveNodes.push(nodeObj);
@@ -320,7 +360,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     );
 
     // Traveling Energy Pulse Mesh along bridge
-    const pulseGeo = track(new THREE.SphereGeometry(0.26, 16, 16));
+    const pulseGeo = track(new THREE.SphereGeometry(0.32, 16, 16));
     const pulseMat = track(
       new THREE.MeshBasicMaterial({
         color: 0xffffff,
@@ -374,6 +414,48 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         };
         activeMatchNode = activeTargetNode;
 
+        // Clear previous dynamic candidate nodes if any
+        dynamicCandidateNodes.forEach((node) => {
+          nodesGroup.remove(node.group);
+          const idx = interactiveNodes.indexOf(node);
+          if (idx !== -1) interactiveNodes.splice(idx, 1);
+        });
+        dynamicCandidateNodes.length = 0;
+
+        // If meta provides candidates, instantiate them dynamically in 3D space
+        if (Array.isArray(meta?.candidates)) {
+          meta.candidates.forEach((cand) => {
+            const pt = cand.point || cand.coords;
+            if (validCoords(pt)) {
+              // Skip if coords match active target exactly
+              const d = Math.hypot(pt[0] - target[0], pt[1] - target[1], pt[2] - target[2]);
+              if (d > 0.05) {
+                const candNode = createNode(
+                  {
+                    id: cand.id || cand.title,
+                    title: cand.title,
+                    domain: cand.domain,
+                    score: cand.score,
+                    coords: pt,
+                  },
+                  false
+                );
+                dynamicCandidateNodes.push(candNode);
+              }
+            }
+          });
+        }
+
+        // Update hero badge texts
+        if (heroTitleRef.current) {
+          heroTitleRef.current.textContent = activeTargetNode.meta.title;
+        }
+        if (heroMetaRef.current) {
+          const domainStr = (meta?.domain || '').toUpperCase();
+          const scoreStr = meta?.score !== undefined ? ` · SIM ${(meta.score * 100).toFixed(1)}%` : '';
+          heroMetaRef.current.textContent = `${domainStr || 'ANALOGUE'}${scoreStr}`;
+        }
+
         // Build elegant 3-layer Bezier Bridge
         const arc = Math.max(2.4, start.distanceTo(end) * 0.32);
         activeCurve = new THREE.CubicBezierCurve3(
@@ -383,7 +465,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
           end
         );
 
-        [0.16, 0.075, 0.022].forEach((radius, i) => {
+        [0.18, 0.085, 0.024].forEach((radius, i) => {
           bridgeGeometry = new THREE.TubeGeometry(activeCurve, 84, radius, 8, false);
           bridge.add(new THREE.Mesh(bridgeGeometry, bridgeMaterials[i]));
         });
@@ -392,13 +474,29 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
 
         // Butter-smooth camera framing transition
         desiredLook.copy(end);
-        desiredCamera.set(end.x * 0.55, Math.max(3.8, end.y + 4.2), Math.max(10.5, end.distanceTo(start) * 0.72));
+        const dist = start.distanceTo(end);
+        desiredCamera.set(
+          end.x * 0.45 + (start.x + end.x) * 0.1,
+          Math.max(4.2, end.y + 4.5),
+          Math.max(11.0, dist * 0.72)
+        );
       },
       reset() {
         clearBridge();
         activeSourceNode.group.visible = false;
         activeTargetNode.group.visible = false;
         activeMatchNode = null;
+
+        dynamicCandidateNodes.forEach((node) => {
+          nodesGroup.remove(node.group);
+          const idx = interactiveNodes.indexOf(node);
+          if (idx !== -1) interactiveNodes.splice(idx, 1);
+        });
+        dynamicCandidateNodes.length = 0;
+
+        if (heroBadgeRef.current) heroBadgeRef.current.style.display = 'none';
+        if (tooltipRef.current) tooltipRef.current.style.display = 'none';
+
         desiredLook.set(0, 0, 0);
         desiredCamera.copy(baseCameraPos);
       },
@@ -453,7 +551,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       pointer.x = -999;
       pointer.y = -999;
       hoveredNode = null;
-      setTooltip(null);
+      if (tooltipRef.current) tooltipRef.current.style.display = 'none';
       renderer.domElement.style.cursor = 'default';
     };
 
@@ -503,8 +601,8 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       orbitDelta.x = THREE.MathUtils.lerp(orbitDelta.x, targetOrbit.x, 0.1);
       orbitDelta.y = THREE.MathUtils.lerp(orbitDelta.y, targetOrbit.y, 0.1);
 
-      // Butter-Smooth Camera Position & LookAt Lerp
-      const alpha = motion.matches ? 1 : 1 - Math.exp(-3.5 * dt);
+      // Butter-Smooth Camera Position & LookAt Lerp (framerate-independent exponential smoothing)
+      const alpha = motion.matches ? 1 : 1 - Math.exp(-3.8 * dt);
       const effectiveDesiredCam = desiredCamera.clone();
       // Apply gentle interactive orbit tilt
       effectiveDesiredCam.x += orbitDelta.x * 6.0;
@@ -514,40 +612,77 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       look.lerp(desiredLook, alpha);
       camera.lookAt(look);
 
-      // Raycasting for interactive hover
+      // Raycasting for interactive hover across all hit meshes
       raycaster.setFromCamera(pointer, camera);
-      const hitCandidates = interactiveNodes.map((n) => n.coreMesh);
+      const hitCandidates = interactiveNodes.map((n) => n.hitMesh || n.coreMesh);
       const hits = raycaster.intersectObjects(hitCandidates, false);
 
       if (hits.length > 0) {
         const hitNode = hits[0].object.userData?.nodeObj;
-        if (hitNode && hitNode !== hoveredNode) {
-          hoveredNode = hitNode;
-          domEl.style.cursor = 'pointer';
+        if (hitNode) {
+          if (hitNode !== hoveredNode) {
+            hoveredNode = hitNode;
+            domEl.style.cursor = 'pointer';
 
-          // Project node coords into screen space for padded tooltip badge
-          const wp = hitNode.group.position.clone();
-          wp.project(camera);
+            // Populate tooltip text
+            if (tooltipTitleRef.current) {
+              tooltipTitleRef.current.textContent = hitNode.meta.title;
+            }
+            if (tooltipDomainRef.current) {
+              tooltipDomainRef.current.textContent = hitNode.meta.domain || 'CONCEPT';
+              tooltipDomainRef.current.style.color = `#${hitNode.colorHex.toString(16).padStart(6, '0')}`;
+            }
+            if (tooltipScoreRef.current) {
+              if (hitNode.meta.score !== undefined) {
+                tooltipScoreRef.current.textContent = `SIM ${(hitNode.meta.score * 100).toFixed(1)}%`;
+                tooltipScoreRef.current.style.display = 'inline-block';
+              } else {
+                tooltipScoreRef.current.style.display = 'none';
+              }
+            }
+            if (tooltipCoordsRef.current && hitNode.meta.coords) {
+              tooltipCoordsRef.current.textContent = `[${hitNode.meta.coords.map((n) => n.toFixed(2)).join(', ')}]`;
+            }
+          }
+        }
+      } else if (hoveredNode) {
+        hoveredNode = null;
+        domEl.style.cursor = 'default';
+        if (tooltipRef.current) tooltipRef.current.style.display = 'none';
+      }
+
+      // Project hovered tooltip position smoothly every frame (follows camera lerp & orbit!)
+      if (hoveredNode && tooltipRef.current) {
+        const wp = hoveredNode.group.position.clone();
+        wp.project(camera);
+        if (wp.z < 1) {
           const hw = container.clientWidth / 2;
           const hh = container.clientHeight / 2;
           const screenX = wp.x * hw + hw;
           const screenY = -wp.y * hh + hh;
-
-          setTooltip({
-            title: hitNode.meta.title,
-            domain: hitNode.meta.domain,
-            score: hitNode.meta.score,
-            coords: hitNode.meta.coords,
-            x: Math.round(screenX),
-            y: Math.round(screenY),
-            color: `#${hitNode.colorHex.toString(16).padStart(6, '0')}`,
-            glow: `rgba(${hitNode.colorHex >> 16}, ${(hitNode.colorHex >> 8) & 255}, ${hitNode.colorHex & 255}, 0.4)`,
-          });
+          tooltipRef.current.style.display = 'block';
+          tooltipRef.current.style.transform = `translate3d(${screenX}px, ${screenY}px, 0) translate(-50%, -130%)`;
+        } else {
+          tooltipRef.current.style.display = 'none';
         }
-      } else if (hoveredNode) {
-        hoveredNode = null;
-        setTooltip(null);
-        domEl.style.cursor = 'default';
+      }
+
+      // Project active target hero badge in 3D screen space
+      if (activeTargetNode.group.visible && heroBadgeRef.current) {
+        const wp = activeTargetNode.group.position.clone();
+        wp.project(camera);
+        if (wp.z < 1) {
+          const hw = container.clientWidth / 2;
+          const hh = container.clientHeight / 2;
+          const screenX = wp.x * hw + hw;
+          const screenY = -wp.y * hh + hh;
+          heroBadgeRef.current.style.display = 'block';
+          heroBadgeRef.current.style.transform = `translate3d(${screenX}px, ${screenY}px, 0) translate(-50%, -145%)`;
+        } else {
+          heroBadgeRef.current.style.display = 'none';
+        }
+      } else if (heroBadgeRef.current) {
+        heroBadgeRef.current.style.display = 'none';
       }
 
       // ==========================================
@@ -559,15 +694,15 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       interactiveNodes.forEach((node) => {
         // Distance scaling factor keeps nodes legible and visually striking at all camera distances
         const distToCam = camPos.distanceTo(node.group.position);
-        const zoomFactor = THREE.MathUtils.clamp(distToCam / 14.0, 0.85, 1.55);
+        const zoomFactor = THREE.MathUtils.clamp(distToCam / 11.5, 0.85, 1.85);
 
-        // Hover scale boost
+        // Hover scale boost: 1.6x on hover, 1.35x for active teleport match
         const isHovered = node === hoveredNode;
-        const isHeroTarget = node === activeMatchNode;
-        const hoverMultiplier = isHovered ? 1.55 : isHeroTarget ? 1.25 : 1.0;
+        const isHeroTarget = node === activeMatchNode || node === activeTargetNode || node === activeSourceNode;
+        const hoverMultiplier = isHovered ? 1.6 : isHeroTarget ? 1.35 : 1.0;
 
         node.targetScale = hoverMultiplier * zoomFactor;
-        node.currentScale = THREE.MathUtils.lerp(node.currentScale, node.targetScale, 0.14);
+        node.currentScale = THREE.MathUtils.lerp(node.currentScale, node.targetScale, 0.16);
         node.group.scale.setScalar(node.currentScale);
 
         // Subtle slow orbital rotation of wireframe halo and ring
@@ -577,7 +712,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
 
         // Pulsing halo for heroes or hovered nodes
         if (node.isHero || isHovered) {
-          const pulse = 0.45 + 0.3 * Math.sin(time * 3.5);
+          const pulse = 0.45 + 0.35 * Math.sin(time * 3.5);
           node.haloMat.opacity = pulse;
         }
       });
@@ -658,12 +793,12 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
             display: 'inline-flex',
             alignItems: 'center',
             gap: 10,
-            padding: '8px 18px',
-            background: 'rgba(6, 18, 36, 0.88)',
-            border: '1px solid rgba(34, 211, 238, 0.45)',
+            padding: '8px 20px',
+            background: 'rgba(6, 18, 36, 0.90)',
+            border: '1px solid rgba(34, 211, 238, 0.5)',
             borderRadius: '9999px',
-            boxShadow: '0 0 20px rgba(34, 211, 238, 0.2), inset 0 0 10px rgba(34, 211, 238, 0.08)',
-            backdropFilter: 'blur(10px)',
+            boxShadow: '0 0 20px rgba(34, 211, 238, 0.22), inset 0 0 12px rgba(34, 211, 238, 0.1)',
+            backdropFilter: 'blur(12px)',
             color: '#22d3ee',
             letterSpacing: '0.08em',
             fontWeight: 600,
@@ -680,7 +815,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
               boxShadow: '0 0 8px #22d3ee',
             }}
           />
-          <span style={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ maxWidth: 240, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {sourceLabel}
           </span>
         </div>
@@ -691,12 +826,12 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
             display: 'inline-flex',
             alignItems: 'center',
             gap: 10,
-            padding: '8px 18px',
-            background: 'rgba(36, 24, 6, 0.88)',
-            border: '1px solid rgba(251, 191, 36, 0.45)',
+            padding: '8px 20px',
+            background: 'rgba(36, 24, 6, 0.90)',
+            border: '1px solid rgba(251, 191, 36, 0.5)',
             borderRadius: '9999px',
-            boxShadow: '0 0 20px rgba(251, 191, 36, 0.2), inset 0 0 10px rgba(251, 191, 36, 0.08)',
-            backdropFilter: 'blur(10px)',
+            boxShadow: '0 0 20px rgba(251, 191, 36, 0.22), inset 0 0 12px rgba(251, 191, 36, 0.1)',
+            backdropFilter: 'blur(12px)',
             color: '#fbbf24',
             letterSpacing: '0.08em',
             fontWeight: 600,
@@ -713,76 +848,158 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
               boxShadow: '0 0 8px #fbbf24',
             }}
           />
-          <span style={{ maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {targetLabel}
           </span>
         </div>
       </div>
 
-      {/* DYNAMIC FLOATING NODE TOOLTIP ANCHORED IN 3D SPACE */}
-      {tooltip && (
+      {/* 3D-ANCHORED HERO TARGET BADGE WITH GENEROUS PADDING */}
+      <div
+        ref={heroBadgeRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          pointerEvents: 'none',
+          zIndex: 25,
+          padding: '10px 18px',
+          background: 'rgba(8, 14, 30, 0.94)',
+          border: '1px solid rgba(251, 191, 36, 0.7)',
+          borderRadius: '12px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.85), 0 0 24px rgba(251, 191, 36, 0.35)',
+          backdropFilter: 'blur(14px)',
+          minWidth: 200,
+          maxWidth: 320,
+          textAlign: 'center',
+          willChange: 'transform',
+        }}
+      >
         <div
           style={{
-            position: 'absolute',
-            left: `${tooltip.x}px`,
-            top: `${tooltip.y}px`,
-            transform: 'translate(-50%, -125%)',
-            pointerEvents: 'none',
-            zIndex: 30,
-            padding: '10px 16px',
-            background: 'rgba(6, 10, 24, 0.94)',
-            border: `1px solid ${tooltip.color || 'rgba(34, 211, 238, 0.6)'}`,
-            borderRadius: '10px',
-            boxShadow: `0 8px 24px rgba(0,0,0,0.85), 0 0 18px ${tooltip.glow || 'rgba(34, 211, 238, 0.35)'}`,
-            backdropFilter: 'blur(12px)',
-            minWidth: 180,
-            maxWidth: 290,
-            transition: 'transform 0.06s ease-out',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: '#fbbf24',
+            marginBottom: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#f8fafc', marginBottom: 4, lineHeight: 1.3 }}>
-            {tooltip.title}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            {tooltip.domain && (
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  color: tooltip.color || '#38bdf8',
-                }}
-              >
-                {tooltip.domain}
-              </span>
-            )}
-            {tooltip.score !== undefined && (
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  background: 'rgba(52, 211, 153, 0.15)',
-                  color: '#34d399',
-                  border: '1px solid rgba(52, 211, 153, 0.3)',
-                }}
-              >
-                SIM {(tooltip.score * 100).toFixed(1)}%
-              </span>
-            )}
-          </div>
-          {tooltip.coords && (
-            <div style={{ fontSize: 9, color: '#64748b', marginTop: 4, fontFamily: 'monospace' }}>
-              [{tooltip.coords.map((n) => n.toFixed(2)).join(', ')}]
-            </div>
-          )}
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#fbbf24',
+              boxShadow: '0 0 8px #fbbf24',
+            }}
+          />
+          Target Analogue
         </div>
-      )}
+        <div
+          ref={heroTitleRef}
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#f8fafc',
+            lineHeight: 1.3,
+            marginBottom: 6,
+          }}
+        >
+          {targetLabel}
+        </div>
+        <div
+          ref={heroMetaRef}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            fontSize: 10,
+            fontWeight: 600,
+            padding: '3px 10px',
+            borderRadius: '6px',
+            background: 'rgba(251, 191, 36, 0.15)',
+            border: '1px solid rgba(251, 191, 36, 0.35)',
+            color: '#fbbf24',
+          }}
+        >
+          ACTIVE TELEPORT MATCH
+        </div>
+      </div>
+
+      {/* 3D-ANCHORED HOVER TOOLTIP WITH GENEROUS PADDING */}
+      <div
+        ref={tooltipRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          pointerEvents: 'none',
+          zIndex: 30,
+          padding: '12px 18px',
+          background: 'rgba(6, 12, 26, 0.95)',
+          border: '1px solid rgba(34, 211, 238, 0.65)',
+          borderRadius: '12px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.88), 0 0 20px rgba(34, 211, 238, 0.35)',
+          backdropFilter: 'blur(14px)',
+          minWidth: 200,
+          maxWidth: 320,
+          willChange: 'transform',
+        }}
+      >
+        <div
+          ref={tooltipTitleRef}
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#f8fafc',
+            marginBottom: 6,
+            lineHeight: 1.35,
+          }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <span
+            ref={tooltipDomainRef}
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              padding: '3px 10px',
+              borderRadius: '5px',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#38bdf8',
+            }}
+          />
+          <span
+            ref={tooltipScoreRef}
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              padding: '3px 10px',
+              borderRadius: '5px',
+              background: 'rgba(52, 211, 153, 0.15)',
+              color: '#34d399',
+              border: '1px solid rgba(52, 211, 153, 0.3)',
+            }}
+          />
+        </div>
+        <div
+          ref={tooltipCoordsRef}
+          style={{
+            fontSize: 9,
+            color: '#64748b',
+            marginTop: 6,
+            fontFamily: 'monospace',
+          }}
+        />
+      </div>
 
       {/* BOTTOM STATUS BAR WITH PADDED PILL BADGES */}
       <div
@@ -803,22 +1020,22 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
             display: 'inline-flex',
             alignItems: 'center',
             gap: 8,
-            padding: '6px 14px',
-            background: 'rgba(5, 8, 20, 0.85)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            padding: '7px 18px',
+            background: 'rgba(5, 8, 20, 0.88)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '9999px',
-            backdropFilter: 'blur(8px)',
+            backdropFilter: 'blur(10px)',
             color: '#94a3b8',
             fontSize: 11,
           }}
         >
           <span
             style={{
-              width: 6,
-              height: 6,
+              width: 7,
+              height: 7,
               borderRadius: '50%',
               background: matched ? '#34d399' : '#38bdf8',
-              boxShadow: matched ? '0 0 6px #34d399' : '0 0 6px #38bdf8',
+              boxShadow: matched ? '0 0 8px #34d399' : '0 0 8px #38bdf8',
             }}
           />
           <span>
@@ -830,13 +1047,13 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         </div>
         <div
           style={{
-            padding: '4px 10px',
-            background: 'rgba(5, 8, 20, 0.65)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '5px 12px',
+            background: 'rgba(5, 8, 20, 0.72)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '6px',
             color: '#64748b',
             fontSize: 10,
-            letterSpacing: '0.05em',
+            letterSpacing: '0.06em',
           }}
         >
           DRAG TO ORBIT · HOVER TO INSPECT

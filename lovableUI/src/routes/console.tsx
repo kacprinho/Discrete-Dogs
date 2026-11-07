@@ -105,6 +105,7 @@ function Console() {
           targetTitle: ev.match.title,
           domain: ev.match.domain,
           score: ev.match.score,
+          candidates: ev.candidates,
         });
         push({
           stage: "MATCH",
