@@ -169,6 +169,7 @@ class TeleportComputation:
     below_threshold: bool = False
     similarity_threshold: float = SIMILARITY_THRESHOLD
     filtered_out_count: int = 0
+    embedded_segments: int = 1
 
 
 class LatentTeleportationEngine:
@@ -383,12 +384,56 @@ class LatentTeleportationEngine:
         why_it_maps = f"{snippet} ({sig_phrase}) ↔ {match['title']} ({mech})"
         return situation_desc, why_it_maps
 
+    def encode_ingested_problem(
+        self,
+        problem_text: str,
+        ingested: Optional[Any] = None,
+    ) -> Tuple[np.ndarray, int]:
+        """
+        Converts text and/or an IngestedDocument into a unit-normalized 384-d problem vector.
+        When an IngestedDocument is provided, each chunk (up to 16 chunks) plus its extracted
+        structural semantic_summary is embedded separately within MiniLM's token window and
+        pooled on the unit hypersphere so multi-page files never suffer 256-token truncation.
+        """
+        desc = (problem_text or "").strip()
+        if ingested is None:
+            vec = self.encode([desc or "bottleneck"])[0]
+            return vec, 1
+
+        raw_chunks = [c.strip() for c in getattr(ingested, "chunks", []) if c and c.strip()][:16]
+        sem_summary = (getattr(ingested, "semantic_summary", "") or "").strip()
+        segments: List[str] = []
+        if sem_summary:
+            segments.append(sem_summary)
+        segments.extend(raw_chunks)
+        if not segments:
+            fallback_txt = (getattr(ingested, "extracted_text", "") or desc or "bottleneck").strip()
+            segments = [fallback_txt[:1000]]
+
+        seg_vecs = self.encode(segments)
+        if seg_vecs.shape[0] == 1:
+            v_file = seg_vecs[0]
+        else:
+            # Weight semantic summary (index 0) and mean of chunk embeddings on unit sphere
+            weights = np.ones((seg_vecs.shape[0], 1), dtype=np.float32)
+            if sem_summary and seg_vecs.shape[0] > 1:
+                weights[0, 0] = 1.6
+            v_file = _l2_normalize(np.sum(seg_vecs * weights, axis=0))
+
+        total_segments = len(raw_chunks) or 1
+        if desc and desc not in getattr(ingested, "extracted_text", ""):
+            v_desc = self.encode([desc])[0]
+            v_prob = _l2_normalize(0.55 * v_desc + 0.45 * v_file)
+            return v_prob, total_segments + 1
+        return v_file, total_segments
+
     def teleport(
         self,
         problem_text: str,
         target_domain: str = "universal",
         top_k: int = 5,
         similarity_threshold: Optional[float] = None,
+        ingested: Optional[Any] = None,
     ) -> TeleportComputation:
         cutoff = self.similarity_threshold if similarity_threshold is None else float(similarity_threshold)
         normalized_domain = (target_domain or "universal").strip().lower()
@@ -400,7 +445,7 @@ class LatentTeleportationEngine:
             else:
                 normalized_domain = "universal"
 
-        v_prob = self.encode([problem_text])[0]
+        v_prob, embedded_segments = self.encode_ingested_problem(problem_text, ingested=ingested)
         source_domain_key, v_source_domain = self._infer_source_domain(v_prob)
 
         # Determine target domain centroid for unit-norm vector offset arithmetic
@@ -496,8 +541,14 @@ class LatentTeleportationEngine:
         passes_off_gate = bool(offset_cos >= cutoff)
         below_threshold = bool(not passes_src_gate)
         primary_match["below_threshold"] = below_threshold
+        ingested_signals = getattr(ingested, "structural_signals", None) if ingested is not None else None
+        effective_label = (
+            problem_text.strip()
+            if (problem_text and problem_text.strip())
+            else (getattr(ingested, "filename", "") or "uploaded file")
+        )
         sit_desc, why_maps = self.build_situation_description(
-            problem_text, source_domain_key, primary_match
+            effective_label, source_domain_key, primary_match, signals=ingested_signals
         )
         primary_match["situation_description"] = sit_desc
         primary_match["why_it_maps"] = why_maps
@@ -542,6 +593,7 @@ class LatentTeleportationEngine:
             below_threshold=below_threshold,
             similarity_threshold=cutoff,
             filtered_out_count=filtered_out_count,
+            embedded_segments=embedded_segments,
         )
 
 

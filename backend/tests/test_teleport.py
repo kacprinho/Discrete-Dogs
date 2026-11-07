@@ -174,6 +174,49 @@ async def handle_order_flow(order):
         assert result_ev["match"].get("situation_description")
         assert result_ev["match"].get("why_it_maps")
         assert result_ev["match"].get("coords") == result_ev["match"].get("point")
+        assert result_ev.get("ingestion") is not None
+        assert result_ev["ingestion"]["filename"] == "router.py"
+        assert result_ev.get("embedded_segments", 0) >= 2
+
+        # File-only upload (.js) with no description + multi-chunk .txt + .pdf fallback
+        sample_js = (
+            ("const padding = 'header_comment ';\n" * 60)
+            + """
+async function matchOrderBook(bidQueue, askQueue) {
+  while (bidQueue.length > 0 && askQueue.length > 0) {
+    await flushOrderBookLiquidity(bidQueue, askQueue);
+  }
+}
+"""
+        ).encode("utf-8")
+        js_ingested = ingest_file_bytes("orderbook_matcher.js", sample_js)
+        assert js_ingested.extension == ".js"
+        assert len(js_ingested.chunks) >= 2
+        assert any("order-book" in s or "functions:" in s for s in js_ingested.structural_signals)
+
+        js_upload = UploadFile(
+            file=io.BytesIO(sample_js),
+            filename="orderbook_matcher.js",
+            headers=Headers({"content-type": "application/javascript"}),
+        )
+        js_resp = await teleport_endpoint(
+            request=make_request(),
+            file=js_upload,
+            description="",
+            domain="physics",
+            domain_label="Applied Physics & Fluid Dynamics",
+            format="json",
+        )
+        js_payload = json.loads(js_resp.body.decode("utf-8"))
+        assert js_payload["ingestion"]["filename"] == "orderbook_matcher.js"
+        assert js_payload["ingestion"]["chunk_count"] >= 2
+        assert js_payload["embedded_segments"] >= 2
+        assert "source_cosine" in js_payload and "offset_cosine" in js_payload and "relevance_score" in js_payload
+
+        # Malformed/synthetic PDF bytes must not crash ingestion
+        pdf_ingested = ingest_file_bytes("paper.pdf", b"%PDF-1.4\nLock contention and mutex deadlock in database shards")
+        assert pdf_ingested.extension == ".pdf"
+        assert pdf_ingested.semantic_summary
 
     asyncio.run(_run())
 

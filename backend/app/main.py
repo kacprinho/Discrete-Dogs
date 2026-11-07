@@ -141,17 +141,18 @@ async def teleport_endpoint(
     engine = get_engine()
     ingested = ingest_file_bytes(filename, raw_bytes) if (filename and raw_bytes is not None) else None
 
-    combined_problem_parts: List[str] = []
+    fallback_query_parts: List[str] = []
     if desc_text:
-        combined_problem_parts.append(desc_text)
-    if ingested and ingested.extracted_text:
-        combined_problem_parts.append(ingested.extracted_text[:4000])
-    combined_problem = "\n\n".join(combined_problem_parts).strip()
+        fallback_query_parts.append(desc_text)
+    if ingested:
+        fallback_query_parts.append(ingested.semantic_summary or ingested.extracted_text[:1500])
+    fallback_query = " ".join(fallback_query_parts).strip()
 
     computation = engine.teleport(
-        problem_text=combined_problem,
+        problem_text=desc_text,
         target_domain=target_domain,
         top_k=5,
+        ingested=ingested,
     )
 
     # Live research fallback: low raw cosine against the local corpus -> query arXiv,
@@ -165,7 +166,7 @@ async def teleport_endpoint(
     if should_fallback(computation.raw_similarity, force=force_live):
         fb = await run_fallback(
             engine,
-            combined_problem,
+            fallback_query,
             computation.target_domain,
             computation.target_domain_label,
             computation.raw_similarity,
@@ -186,9 +187,13 @@ async def teleport_endpoint(
             computation.passes_offset_cosine_gate = bool(computation.offset_cosine >= computation.similarity_threshold)
             computation.below_threshold = bool(not computation.passes_source_cosine_gate)
 
-    signals = extract_structural_signals(combined_problem)
+    signals = list(ingested.structural_signals) if ingested else []
+    for s in extract_structural_signals(desc_text):
+        if s not in signals:
+            signals.append(s)
+    effective_context = desc_text or (ingested.filename if ingested else "uploaded problem")
     sit_desc, why_maps = engine.build_situation_description(
-        combined_problem,
+        effective_context,
         computation.inferred_source_domain,
         computation.match,
         signals=signals,
@@ -307,6 +312,8 @@ async def teleport_endpoint(
         "below_threshold": computation.below_threshold,
         "similarity_threshold": computation.similarity_threshold,
         "filtered_out_count": computation.filtered_out_count,
+        "embedded_segments": computation.embedded_segments,
+        "ingestion": ingested.to_metadata() if ingested is not None else None,
         "corpus_size": int(engine.faiss_index.ntotal),
         "situation_description": computation.match.get("situation_description"),
         "why_it_maps": computation.match.get("why_it_maps"),
