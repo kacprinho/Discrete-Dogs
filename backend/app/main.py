@@ -277,13 +277,13 @@ async def teleport_endpoint(
 
     result_event: Dict[str, Any] = {
         "type": "result",
-        # @claude PR #1 schema fields:
+        # Primary schema fields (see lovableUI/src/lib/teleport-api.ts):
         "source_point": computation.source_point,
         "target_point": computation.target_point,
         "offset_norm": computation.offset_norm,
         "match": computation.match,
         "candidates": computation.candidates,
-        # @antigravity schema aliases for full cross-agent compatibility:
+        # Field aliases kept for backward compatibility:
         "source_coords": computation.source_point,
         "target_coords": computation.target_point,
         "source_cluster_preview": computation.source_cluster_preview,

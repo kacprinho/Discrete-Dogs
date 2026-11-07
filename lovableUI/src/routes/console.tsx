@@ -217,7 +217,7 @@ function Console() {
       <section className="flex min-h-[50vh] flex-col lg:w-2/5">
         <header className="flex flex-wrap gap-4 border-b border-border px-4 py-3 text-xs">
           <Status label="FAISS Vector Index" value="Online" />
-          <Status label="Models" value="Dual Gemini / Claude / Codex" tone="accent" />
+          <Status label="Embedding Model" value="all-MiniLM-L6-v2" tone="accent" />
         </header>
         <div
           ref={scrollRef}
