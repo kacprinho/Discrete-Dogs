@@ -30,6 +30,8 @@ export type Match = {
   mechanism?: string; // shared structural mechanism, e.g. "positive-feedback reinforcement"
   adaptation?: string[]; // concrete steps to apply it to the source problem
   limitations?: string[];
+  paper_ref?: string; // citation, e.g. "Smith et al., arXiv:1502.05855 (2015)"
+  source?: "arxiv-live" | string; // set when the match came from the live arXiv fallback
 };
 
 export type TeleportResult = {
