@@ -1,0 +1,1682 @@
+{
+ "bio-ant-pheromone": {
+  "insight": "Your network traffic will balance itself automatically if successful paths get stronger marks that slowly fade over time.",
+  "steps": [
+   {
+    "title": "Update path scores",
+    "detail": "Replace fixed routing weights with credits that update every time a request finishes."
+   },
+   {
+    "title": "Punish slow queues",
+    "detail": "Speed up the fading of path marks when wait times cross your latency limit."
+   },
+   {
+    "title": "Test new routes",
+    "detail": "Send a small amount of traffic down unproven paths to find hidden capacity."
+   }
+  ],
+  "how_it_works": "Just like ants finding the shortest path to food by leaving chemical trails that evaporate, your system can route traffic by rewarding fast paths and letting slow ones fade.",
+  "caveat": "This approach needs a steady stream of traffic to work well and can wobble briefly when network layouts change suddenly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-allosteric-enzymes": {
+  "insight": "Your database can stop locking up by letting the system's own traffic pressure automatically slow down incoming requests.",
+  "steps": [
+   {
+    "title": "Shift lock strategy",
+    "detail": "Replace heavy database locks with flexible shards gated by your current queue pressure."
+   },
+   {
+    "title": "Adjust write affinity",
+    "detail": "Dynamically change write batch sizes when your commit log starts to get crowded."
+   },
+   {
+    "title": "Decouple control signals",
+    "detail": "Separate your control signals from the main execution path to remove traffic jams."
+   }
+  ],
+  "how_it_works": "Just like biological enzymes regulate busy pathways without hard stops, downstream product levels automatically signal upstream parts to slow down.",
+  "caveat": "This approach introduces a slight delay in consistency while the system shifts between states.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-physarum-slime-mold": {
+  "insight": "Your network can heal itself and cut costs by strengthening busy connections and closing idle ones.",
+  "steps": [
+   {
+    "title": "Boost busy connections",
+    "detail": "Increase capacity on your most active microservice pathways automatically based on traffic flow."
+   },
+   {
+    "title": "Keep emergency backups",
+    "detail": "Maintain warm standby paths around critical bottlenecks to ensure automatic failover during spikes."
+   },
+   {
+    "title": "Prune idle channels",
+    "detail": "Shut down worker connections that fall below the minimum usage threshold to save resources."
+   }
+  ],
+  "how_it_works": "Slime mold builds efficient transport networks by growing tubes that carry heavy fluid flow and shrinking tubes that stay empty.",
+  "caveat": "Keeping backup paths alive during low-traffic periods creates extra overhead, and networks can sometimes get stuck in suboptimal layouts.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-mycelial-nutrient-trading": {
+  "insight": "Route cached data and memory away from overloaded servers toward underused ones using dynamic pricing based on local scarcity.",
+  "steps": [
+   {
+    "title": "Price compute and memory",
+    "detail": "Dynamically adjust resource costs based on local scarcity across your cluster nodes."
+   },
+   {
+    "title": "Stream cold cache segments",
+    "detail": "Move data away from memory-pressured nodes toward underutilized storage sinks."
+   },
+   {
+    "title": "Enforce fairness quotas",
+    "detail": "Require heavy tenants to replenish shared buffer capacity to prevent free-riding."
+   }
+  ],
+  "how_it_works": "Fungal networks shift scarce nutrients across nodes by using local pressure differences and biological market pricing.",
+  "caveat": "This approach suffers from high transport delays across distant nodes under uniform pressure.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-immune-clonal-selection": {
+  "insight": "Train attack detectors by screening out normal traffic, then rapidly mutate rules that hit new threats to block evolving attacks.",
+  "steps": [
+   {
+    "title": "Filter benign traffic baseline",
+    "detail": "Train incoming detector rules against normal baseline traffic during staging windows to eliminate false alarms."
+   },
+   {
+    "title": "Mutate rules on initial spikes",
+    "detail": "Automatically generate real-time variations of rate-limit rules around high-scoring threat patterns."
+   },
+   {
+    "title": "Promote proven threat blocks",
+    "detail": "Cache successful rate-limiting rules into long-term memory while discarding rules that no longer trigger."
+   }
+  ],
+  "how_it_works": "Immune cells filter out self-cells, then rapidly multiply and mutate when reacting to novel pathogens to lock onto changing threats.",
+  "caveat": "Sudden legitimate traffic spikes may trigger false positives or high compute costs during initial rule mutation.",
+  "model": "gemini-3.6-flash"
+ },
+ "phys-navier-stokes-orderbook": {
+  "insight": "Treat your order book like flowing water to spot traffic jams before liquidity crashes happen.",
+  "steps": [
+   {
+    "title": "Measure order flow turbulence",
+    "detail": "Calculate the local chaos level in your order queue before routing any large trade."
+   },
+   {
+    "title": "Add artificial delays",
+    "detail": "Introduce micro-batching pauses when the system approaches a turbulent flash-crash regime."
+   },
+   {
+    "title": "Split large trade payloads",
+    "detail": "Break apart massive orders into smaller streams to avoid triggering sudden liquidity shock waves."
+   }
+  ],
+  "how_it_works": "Just like fluid dynamics uses viscosity to calm turbulent liquid flow, introducing deliberate friction dampens market chaos.",
+  "caveat": "This fluid approach breaks down when order depth drops to near zero and discrete gaps appear.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-kolmogorov-turbulence": {
+  "insight": "Break massive traffic spikes into smaller cascading waves and absorb them smoothly before they crash your servers.",
+  "steps": [
+   {
+    "title": "Split large batch jobs",
+    "detail": "Decompose massive batches into power-law-sized micro-tasks across hierarchical worker queues."
+   },
+   {
+    "title": "Apply local damping",
+    "detail": "Apply Smagorinsky eddy damping proportional to local velocity gradients to suppress retry amplification."
+   },
+   {
+    "title": "Size leaf-node buffers",
+    "detail": "Configure leaf-node ring buffers to match the dissipation scale where service rate exceeds arrival variance."
+   }
+  ],
+  "how_it_works": "Turbulent energy cascades from macro-scale injections down to micro-scales, where viscosity dissipates bursty vortices into thermal equilibrium.",
+  "caveat": "This approach adds bounded micro-buffering latency at intermediate cascade tiers and assumes isotropic load distribution across worker shards.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-spin-glass-annealing": {
+  "insight": "Run multiple scheduling attempts at different energy levels to stop your system from getting permanently stuck.",
+  "steps": [
+   {
+    "title": "Build parallel queues",
+    "detail": "Set up multiple independent solver runs operating at different exploration levels from cold to hot."
+   },
+   {
+    "title": "Swap schedule states",
+    "detail": "Periodically allow neighboring runs to trade their current schedules based on their performance scores."
+   },
+   {
+    "title": "Extract final routes",
+    "detail": "Take your final routing decisions from the coldest run while the hotter runs clear the roadblocks."
+   }
+  ],
+  "how_it_works": "Magnets trapped in messy patterns escape stubborn stuck spots by running parallel versions at different temperatures and swapping them.",
+  "caveat": "This approach requires significantly more memory to run multiple copies at the exact same time.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-kuramoto-synchronization": {
+  "insight": "Prevent server overloads by deliberately spacing out your client heartbeats instead of letting them sync up.",
+  "steps": [
+   {
+    "title": "Set negative coupling",
+    "detail": "Configure your client instances to push away from each other's schedules."
+   },
+   {
+    "title": "Exchange small phase angles",
+    "detail": "Share lightweight timing data between nodes to coordinate checkpoints without a leader."
+   },
+   {
+    "title": "Monitor traffic synchronization",
+    "detail": "Track real-time metrics to spot and prevent dangerous traffic spikes before they hit."
+   }
+  ],
+  "how_it_works": "Just like independent metronomes or fireflies adjust their timing based on their neighbors, adjusting the connection strength between your servers stops them from all acting at the exact same moment.",
+  "caveat": "This approach requires knowing how much natural variation exists in your client schedules.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-maxwell-demon-thermodynamics": {
+  "insight": "Treat deleting metadata as physical work to reduce storage wear and speed up data flow.",
+  "steps": [
+   {
+    "title": "Filter data early",
+    "detail": "Gate data moving between storage tiers using a lightweight filter before full processing."
+   },
+   {
+    "title": "Batch your deletions",
+    "detail": "Group state deletions into bulk drops to lower the cost of rewriting storage."
+   },
+   {
+    "title": "Evict chaotic pages",
+    "detail": "Prioritize removing uncompressible, low-reuse pages over structured templates."
+   }
+  ],
+  "how_it_works": "Just like physics uses minimal energy to sort particles by tracking information, your system can minimize storage waste by intelligently gating and grouping data.",
+  "caveat": "This approach offers diminishing returns if your data access patterns are completely random and uniform.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-sir-ring-inoculation": {
+  "insight": "Target the contacts of your network's most connected nodes to instantly stop viral misinformation or faulty configurations from multiplying.",
+  "steps": [
+   {
+    "title": "Set up safety checks",
+    "detail": "Apply immediate automatic safety checks to the direct and secondary contacts of any flagged node."
+   },
+   {
+    "title": "Target high-impact hubs",
+    "detail": "Inspect upstream peers of random nodes to place automatic safety checks on biggest spreaders without global scans."
+   },
+   {
+    "title": "Throttle fast forwarding",
+    "detail": "Automatically slow down message velocity along edges where the spread rate exceeds safe limits."
+   }
+  ],
+  "how_it_works": "Just like tracing a physical disease outbreak by immunizing the friends of infected people, this approach targets the most connected peers in a network to halt the cascade.",
+  "caveat": "This method relies on fast message history tracking and may fail if the rumor spreads faster than your system can trace it.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-granovetter-threshold": {
+  "insight": "Require multiple independent confirmations from different paths before trusting any state change to block false alarms.",
+  "steps": [
+   {
+    "title": "Group your replica cohorts",
+    "detail": "Maintain tight local clusters so valid updates spread quickly inside each group."
+   },
+   {
+    "title": "Require multi-path proof",
+    "detail": "Treat single-source updates as unverified and demand confirmations from several independent paths."
+   },
+   {
+    "title": "Gate single-source spikes",
+    "detail": "Slow down updates arriving through isolated bridges when a single cluster raises an unverified alarm."
+   }
+  ],
+  "how_it_works": "Social networks stop false rumors from spreading by requiring people to hear a message from multiple independent friends before believing it.",
+  "caveat": "This approach increases delay because you must wait for multiple confirmations to arrive.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-schelling-segregation": {
+  "insight": "Let your data shards independently relocate boundary records when cross-partition communication exceeds tolerance, naturally forming efficient clusters.",
+  "steps": [
+   {
+    "title": "Track local join affinity",
+    "detail": "Trigger background migration when a data record's local versus cross-node join ratio drops below zero point six."
+   },
+   {
+    "title": "Reserve vacant buffer slots",
+    "detail": "Keep ten to fifteen percent capacity open per shard so records can relocate without deadlocks."
+   },
+   {
+    "title": "Dampen migration frequency",
+    "detail": "Apply exponential backoff to shard swaps once cluster boundaries stabilize to prevent churn."
+   }
+  ],
+  "how_it_works": "Just like people naturally group into neighborhoods based on mild personal preferences, independent data shards migrate when local similarity drops, self-organizing into clean clusters.",
+  "caveat": "Setting the tolerance threshold above zero point seven five will cause endless data movement without ever settling down.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-vickrey-congestion-pricing": {
+  "insight": "Stop queue abuse by charging workloads the exact delay cost they impose on others.",
+  "steps": [
+   {
+    "title": "Measure delay impacts",
+    "detail": "Calculate how much wait time each job adds to concurrent tasks."
+   },
+   {
+    "title": "Deduct delay costs",
+    "detail": "Subtract credits from services based on the exact queue delays they cause."
+   },
+   {
+    "title": "Reward off-peak jobs",
+    "detail": "Let batch tasks earn back credits by running during quiet traffic troughs."
+   }
+  ],
+  "how_it_works": "Just like taxing polluters for the exact damage they cause, this charges users for the delays they create, making honesty the cheapest option.",
+  "caveat": "This approach fails if teams pool their budgets together to game the system.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-ricci-flow-surgery": {
+  "insight": "Find pinched communication links in your service network and add shortcuts to stop information queues.",
+  "steps": [
+   {
+    "title": "Map your service links",
+    "detail": "Calculate traffic flow strength and congestion levels across all microservice connection paths."
+   },
+   {
+    "title": "Fix congested bridge edges",
+    "detail": "Target highly bottlenecked links by adding parallel shortcut routes or read-replicas."
+   },
+   {
+    "title": "Merge redundant units",
+    "detail": "Combine tightly clustered services that share heavy overlapping traffic into single deployment groups."
+   }
+  ],
+  "how_it_works": "Just like smoothing pinched pathways in geometry to let fluid flow freely, math models find where network traffic jams and open up parallel routes.",
+  "caveat": "This fix requires heavy computation and must be recalculated whenever traffic patterns shift significantly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-spectral-cheeger-expander": {
+  "insight": "You can eliminate network bottlenecks and speed up data sharing by linking your servers in a strict geometric pattern.",
+  "steps": [
+   {
+    "title": "Trim server connections",
+    "detail": "Limit each server to a fixed small number of direct links instead of talking to everyone."
+   },
+   {
+    "title": "Rewire your network",
+    "detail": "Continuously adjust links to maximize the gap between your network's average speed and its worst bottleneck."
+   },
+   {
+    "title": "Split uneven servers",
+    "detail": "Divide heavy-duty physical hosts into virtual nodes so every server handles the exact same connection load."
+   }
+  ],
+  "how_it_works": "Just like a tightly woven rope that cannot be easily torn, special mathematical graphs maximize internal pathways so information flows instantly without clumping.",
+  "caveat": "This setup ignores physical distance between servers, so it may cause high latency if servers are spread across the globe.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-sinkhorn-optimal-transport": {
+  "insight": "You can balance uneven incoming tasks across limited workers smoothly by using rapid, alternating mathematical adjustments.",
+  "steps": [
+   {
+    "title": "Build the cost table",
+    "detail": "List all incoming tasks and available workers with their current wait times."
+   },
+   {
+    "title": "Run quick balancing passes",
+    "detail": "Perform a few rapid row and column adjustments to find the best task distribution."
+   },
+   {
+    "title": "Tune the spread control",
+    "detail": "Adjust the penalty setting to switch between fast routing and smooth load sharing."
+   }
+  ],
+  "how_it_works": "Mathematics uses fast alternating adjustments to match supplies and demands simultaneously without getting stuck.",
+  "caveat": "Setting the smoothness control too low can cause math errors unless you use log-domain calculations.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-persistent-homology": {
+  "insight": "Map your system data as shapes to instantly spot hidden blind spots and stuck loops without manual guessing.",
+  "steps": [
+   {
+    "title": "Build the shape map",
+    "detail": "Connect your failure and latency data points into a network graph across multiple distance scales."
+   },
+   {
+    "title": "Target the empty voids",
+    "detail": "Deploy tests or cache updates directly into the centers of the longest-lasting coverage holes."
+   },
+   {
+    "title": "Automate grouping limits",
+    "detail": "Use natural data drop-off points to set your clustering radii automatically instead of guessing numbers."
+   }
+  ],
+  "how_it_works": "Mathematics tracks connected pieces and circular loops across changing scales to find structural gaps without relying on fixed coordinates.",
+  "caveat": "This approach slows down heavily in very high dimensions unless you filter out extreme outliers first.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-synaptic-homeostatic-pruning": {
+  "insight": "Your agent system will stop bloating and leaking memory if you regularly scale down unused connections and delete dead links.",
+  "steps": [
+   {
+    "title": "Scale down connection weights",
+    "detail": "Multiply routing weights by a global balance factor per cycle to prevent hub overload."
+   },
+   {
+    "title": "Delete inactive pathways",
+    "detail": "Tag and remove agent links with low contribution variance during low-traffic maintenance windows."
+   },
+   {
+    "title": "Compress frequent traces",
+    "detail": "Turn high-frequency transient memory traces into stable structural rules to save space."
+   }
+  ],
+  "how_it_works": "Brain cells prevent overload by globally scaling down firing rates and clearing out weak, unused connections.",
+  "caveat": "Aggressive pruning without backup data can cause your system to forget rare edge cases.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-predictive-coding-friston": {
+  "insight": "Cut your network traffic by sending only unexpected changes instead of constant status updates.",
+  "steps": [
+   {
+    "title": "Build local predictors",
+    "detail": "Put matching prediction models on both sending and receiving nodes to guess peer states."
+   },
+   {
+    "title": "Filter noisy updates",
+    "detail": "Automatically ignore minor fluctuations by weighting errors based on how reliable the data is."
+   },
+   {
+    "title": "Send only surprises",
+    "detail": "Transmit network packets only when the actual state deviates significantly from the predicted state."
+   }
+  ],
+  "how_it_works": "The brain saves energy by predicting what it will see and communicating only the unexpected surprises upward.",
+  "caveat": "Severe packet loss can cause nodes to drift out of sync, requiring occasional full state resets.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-thalamic-reticular-gating": {
+  "insight": "Block routine agent logs and noise by using a dynamic filter that only passes high-priority data to working memory.",
+  "steps": [
+   {
+    "title": "Filter incoming agent streams",
+    "detail": "Score all incoming tool outputs and messages by urgency before they reach your main memory."
+   },
+   {
+    "title": "Suppress background noise",
+    "detail": "Let top-priority alerts automatically block out verbose, low-priority background logs."
+   },
+   {
+    "title": "Trigger instant interrupts",
+    "detail": "Force blocked channels to break through immediately if they experience a sudden spike in urgency."
+   }
+  ],
+  "how_it_works": "The brain uses an inhibitory shell around its processing center to block distracting sensory signals and highlight important information.",
+  "caveat": "Heavy suppression might temporarily hide secondary system issues while you focus on the primary high-priority alert.",
+  "model": "gemini-3.6-flash"
+ },
+ "cog-hippocampal-replay": {
+  "insight": "Your system can replay past traffic slowdowns at high speed during quiet periods to prevent future delays.",
+  "steps": [
+   {
+    "title": "Record failure traces",
+    "detail": "Save compact signatures of traffic slowdowns and near-misses into a temporary storage ring."
+   },
+   {
+    "title": "Replay during quiet times",
+    "detail": "Run compressed failure traces at high speed against backup systems to pre-optimize your index weights."
+   },
+   {
+    "title": "Prioritize big surprises",
+    "detail": "Focus your replay schedule on the moments where actual delays worst exceeded your predictions."
+   }
+  ],
+  "how_it_works": "The brain replays important past events at high speed during rest periods to update and improve its decision rules.",
+  "caveat": "This requires strict separation between your test environment and live traffic to avoid breaking production.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-honeybee-waggle-dance": {
+  "insight": "Your cluster can reach consensus faster by letting nodes actively silence competing votes until a critical support level is reached.",
+  "steps": [
+   {
+    "title": "Add competing vote suppression",
+    "detail": "Implement mutual backpressure between competing candidates to stop split-vote churn."
+   },
+   {
+    "title": "Set dynamic quorum thresholds",
+    "detail": "Replace strict majority voting with local quorum thresholds calibrated to your network size."
+   },
+   {
+    "title": "Deploy stop-signal packets",
+    "detail": "Use damping messages to rapidly de-escalate stale leader elections during network splits."
+   }
+  ],
+  "how_it_works": "Honeybee swarms evaluate competing nest sites without a leader by cross-inhibiting alternative dances until a population quorum triggers a final decision.",
+  "caveat": "This approach requires enough baseline agent density and can be slow when competing options have near-identical quality.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-bacterial-quorum-sensing": {
+  "insight": "Your microservices can coordinate bulk actions without a central controller by counting lightweight local signals until a shared threshold triggers them.",
+  "steps": [
+   {
+    "title": "Monitor local queue saturation",
+    "detail": "Have each microservice emit lightweight heartbeats proportional to its current local queue load."
+   },
+   {
+    "title": "Track aggregate signal concentration",
+    "detail": "Measure the combined autoinducer concentration across the entire cluster in real time."
+   },
+   {
+    "title": "Trigger synchronized batch mode",
+    "detail": "Switch all nodes into high-throughput batching simultaneously once the critical activation threshold is crossed."
+   }
+  ],
+  "how_it_works": "Bacteria regulate collective group behavior by releasing chemical signaling molecules that accumulate until reaching a threshold, which triggers synchronized gene expression across the entire population.",
+  "caveat": "This approach may fail if network delays prevent signal accumulation from accurately reflecting instantaneous load or if the network topology is highly asymmetric.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-plant-xylem-cavitation": {
+  "insight": "Seal off failed connection pools instantly to stop cascading system failures while keeping healthy connections running.",
+  "steps": [
+   {
+    "title": "Partition connection pools",
+    "detail": "Divide your database connection pool into isolated conduits with automatic automatic safety checks."
+   },
+   {
+    "title": "Implement backpressure gates",
+    "detail": "Automatically sever poisoned communication channels without disturbing sibling socket threads."
+   },
+   {
+    "title": "Maintain redundant sub-channels",
+    "detail": "Keep parallel pathways with independent failure probabilities to guarantee baseline traffic flow."
+   }
+  ],
+  "how_it_works": "Trees transport water under high pressure by isolating air bubbles inside micro-valved membranes, preventing systemic hydraulic collapse.",
+  "caveat": "Severe cluster-wide traffic overloads can overwhelm compartmentalization if every single barrier closes at once.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-locust-swarm-phase-transition": {
+  "insight": "Shift your system from independent workers to synchronized batch pipelines the moment request traffic crosses your critical crowding threshold.",
+  "steps": [
+   {
+    "title": "Monitor request density",
+    "detail": "Track incoming request arrival rates to detect when your traffic exceeds the normal operating threshold."
+   },
+   {
+    "title": "Switch to batching",
+    "detail": "Trigger an automatic shift from individual thread execution to synchronized batch processing when traffic surges."
+   },
+   {
+    "title": "Add transition delay",
+    "detail": "Implement a dampening buffer to prevent your system from rapidly flipping back and forth between modes."
+   }
+  ],
+  "how_it_works": "Locusts shift from solitary insects to coordinated swarms when physical crowding triggers a sudden chemical release in their bodies.",
+  "caveat": "Your system may lag when trying to switch back to solitary mode and will experience memory spikes during sudden surges.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-cephalopod-chromatophore": {
+  "insight": "Skip central screen updates and let every interface piece react locally to its own triggers.",
+  "steps": [
+   {
+    "title": "Split the dashboard",
+    "detail": "Break your heavy interface into independent, self-updating edge components."
+   },
+   {
+    "title": "Move rendering tasks",
+    "detail": "Distribute display calculations across separate background workers to compute opacity locally."
+   },
+   {
+    "title": "Update on events",
+    "detail": "Replace central refresh loops with event-driven changes only on active viewports."
+   }
+  ],
+  "how_it_works": "Octopuses create instant camouflage by using millions of independent skin cells that react to local changes without waiting for a central brain command.",
+  "caveat": "This approach uses more processor power across distributed workers than a single graphics chip.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-bird-flock-boids-reynolds": {
+  "insight": "Track a fixed count of your closest peers instead of physical distance to keep your network instantly responsive as it grows.",
+  "steps": [
+   {
+    "title": "Limit peer connections",
+    "detail": "Set every node to communicate with exactly six or seven closest peers regardless of physical distance."
+   },
+   {
+    "title": "Update routing tables",
+    "detail": "Continuously refresh neighbor rankings in the background to keep connection lists accurate."
+   },
+   {
+    "title": "Align update signals",
+    "detail": "Pass routing updates strictly through these fixed neighbor circles to prevent scattered data."
+   }
+  ],
+  "how_it_works": "Thousands of starlings evade predators instantly by reacting to their exact six or seven closest neighbors rather than the physical distance between birds.",
+  "caveat": "Nodes positioned at the outer edges of the network may experience unstable alignment signals.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-termite-mound-thermoregulation": {
+  "insight": "Use natural air currents and smart workload scheduling to cool your edge servers without using any fan power.",
+  "steps": [
+   {
+    "title": "Redesign server enclosures",
+    "detail": "Build porous surface channels into your hardware housings to allow natural air movement."
+   },
+   {
+    "title": "Schedule heavy workloads",
+    "detail": "Run compute-heavy batch jobs when natural environmental cooling curves are most favorable."
+   },
+   {
+    "title": "Throttle container pods",
+    "detail": "Dynamically adjust CPU activity based on the current strength of ambient thermodynamic air currents."
+   }
+  ],
+  "how_it_works": "Termite mounds use porous surface channels and central chimneys driven by natural air currents to keep internal temperatures steady without spending energy.",
+  "caveat": "This approach fails during prolonged dead air periods when external wind and thermal currents stall completely.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-atp-synthase-rotary-motor": {
+  "insight": "Power your data pipeline using incoming pressure to drive a three-stage rotating cycle without traffic-stopping locks.",
+  "steps": [
+   {
+    "title": "Build a three-phase cycle",
+    "detail": "Organize your processing engine into open, loose, and tight states like a rotating camshaft."
+   },
+   {
+    "title": "Use stream pressure as torque",
+    "detail": "Let incoming data volume push the processing steps forward instead of forcing them with heavy locks."
+   },
+   {
+    "title": "Remove shared pipeline locks",
+    "detail": "Keep processing friction low by ensuring stages operate independently without waiting on each other."
+   }
+  ],
+  "how_it_works": "Biological cells use a tiny rotating motor driven by chemical flow to efficiently build energy through a continuous three-step cycle.",
+  "caveat": "This approach stumbles if incoming data flow drops, which can cause the pipeline to stall or run backward.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-superconducting-josephson-junction": {
+  "insight": "Your system can use quantum barrier physics to lock clocks and control data bursts without losing packets.",
+  "steps": [
+   {
+    "title": "Build discrete token limiters",
+    "detail": "Release burst data using precise quantum-inspired pulses to eliminate jitter."
+   },
+   {
+    "title": "Lock peer clocks together",
+    "detail": "Maintain exact distributed time synchronization across all cluster nodes."
+   },
+   {
+    "title": "Handle buffer overflows safely",
+    "detail": "Shed excess data packets in clean, discrete steps without corrupting system state."
+   }
+  ],
+  "how_it_works": "Superconducting particles tunnel through a barrier with zero resistance until a critical threshold forces a clean, quantized pulse.",
+  "caveat": "This approach is very sensitive to heat fluctuations near the critical transition limit.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-granular-jamming-transition": {
+  "insight": "Your network queues suddenly freeze because traffic packs together like jammed sand grains, blocking all data flow instantly.",
+  "steps": [
+   {
+    "title": "Watch queue packing density",
+    "detail": "Track packet arrival volume closely to spot danger before traffic locks up completely."
+   },
+   {
+    "title": "Add random traffic jitter",
+    "detail": "Inject small delays to break up rigid traffic lines and keep packets moving smoothly."
+   },
+   {
+    "title": "Enforce strict buffer limits",
+    "detail": "Cap your input buffers well below the critical congestion threshold to prevent total freezes."
+   }
+  ],
+  "how_it_works": "Physics shows that disordered particles suddenly freeze solid when packed past a critical density, forming rigid chains that halt all movement.",
+  "caveat": "Unfreezing a jammed system requires dropping traffic density much lower than the level that caused the jam.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-marangoni-surface-tension": {
+  "insight": "Route your pending customer requests toward underutilized servers by creating an artificial pull based on available capacity.",
+  "steps": [
+   {
+    "title": "Measure server capacity",
+    "detail": "Calculate an idle power score for each server pool using current CPU and bandwidth."
+   },
+   {
+    "title": "Route incoming requests",
+    "detail": "Send incoming traffic along the capacity gradient directly toward your emptiest nodes."
+   },
+   {
+    "title": "Dampen traffic swings",
+    "detail": "Add a resistance filter to prevent your traffic from bouncing wildly between servers."
+   }
+  ],
+  "how_it_works": "Fluids naturally flow away from areas of low surface tension toward areas of high surface tension.",
+  "caveat": "This approach can cause chaotic traffic loops if your load metrics change too fast.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-peristaltic-non-newtonian": {
+  "insight": "Use moving waves of contraction to push sticky batches through your queues without breaking them.",
+  "steps": [
+   {
+    "title": "Group incoming requests",
+    "detail": "Structure your stream consumer ingestion as synchronized waves that push batch boluses."
+   },
+   {
+    "title": "Isolate payload packets",
+    "detail": "Isolate variable-sized request payloads into discrete packets to eliminate blocking."
+   },
+   {
+    "title": "Adjust to backpressure",
+    "detail": "Adjust wave speed and contraction amplitude dynamically in response to downstream bottlenecks."
+   }
+  ],
+  "how_it_works": "Physics uses progressive waves of tube wall contraction to pump thick fluids against heavy pressure without using impellers.",
+  "caveat": "If the wave size drops too low, fluid trapping and reflux will occur.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-optical-soliton-persistence": {
+  "insight": "Your network packets will stop spreading out over long distances if you balance their size with their travel speed.",
+  "steps": [
+   {
+    "title": "Adjust header compression",
+    "detail": "Dynamically change packet headers to cancel out network jitter and prevent dispersion."
+   },
+   {
+    "title": "Lock packet shapes",
+    "detail": "Maintain the exact temporal shape of your streaming packets across noisy network paths."
+   },
+   {
+    "title": "Fix transmission errors",
+    "detail": "Use built-in perturbation rules to correct network anomalies instantly without retransmitting."
+   }
+  ],
+  "how_it_works": "Light pulses travel thousands of miles without blurring by balancing natural spreading forces against internal self-correction pressures.",
+  "caveat": "This approach fails if your correction settings do not precisely match the specific noise levels of your network links.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-casimir-vacuum-fluctuation": {
+  "insight": "Limit your worker pool sizes tightly to block chaotic thread switching and force steady execution.",
+  "steps": [
+   {
+    "title": "Set strict concurrency limits",
+    "detail": "Impose hard upper and lower bounds on your worker pools to block turbulent thread allocations."
+   },
+   {
+    "title": "Enforce geometric boundaries",
+    "detail": "Use rigid resource walls to completely eliminate memory thrashing in your multi-tenant runtimes."
+   },
+   {
+    "title": "Align thread execution gaps",
+    "detail": "Match your thread execution gaps directly to hardware cache line boundaries to stabilize CPU cache residency."
+   }
+  ],
+  "how_it_works": "Just as placing two plates very close together blocks certain energy waves and creates pressure, adding strict physical boundaries to your system blocks wasteful background activity.",
+  "caveat": "Making your boundaries too rigid can permanently freeze your system and stop all dynamic thread scaling.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-renormalization-group-flow": {
+  "insight": "Filter out noisy microservice traffic spikes to reveal large-scale system health.",
+  "steps": [
+   {
+    "title": "Group raw telemetry data",
+    "detail": "Combine high-frequency service calls into larger operational chunks to remove background noise."
+   },
+   {
+    "title": "Track major fault trends",
+    "detail": "Watch for system-wide performance shifts that indicate a looming failure."
+   },
+   {
+    "title": "Compress execution traces",
+    "detail": "Keep only the critical scaling data across your architecture to save storage."
+   }
+  ],
+  "how_it_works": "Physics uses repeated filtering to strip away microscopic atomic jitter, leaving behind only the universal forces that dictate macro behavior.",
+  "caveat": "This approach might accidentally filter out rare, tiny triggers that lead to major black-swan crashes.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-chladni-acoustic-levitation": {
+  "insight": "Your database shards will naturally organize without moving if you match data traffic to stable network wave patterns.",
+  "steps": [
+   {
+    "title": "Align shard keys",
+    "detail": "Match your database keys with network wave paths to stop cross-switch traffic."
+   },
+   {
+    "title": "Trap cache entries",
+    "detail": "Hold volatile cache items in stable latency zones to reduce replication churn."
+   },
+   {
+    "title": "Adjust query frequencies",
+    "detail": "Shift query arrival rates to reorganize shard boundaries when workloads change."
+   }
+  ],
+  "how_it_works": "Vibrating plates cause scattered particles to naturally migrate toward stable zero-displacement lines, forming clean geometric patterns.",
+  "caveat": "This approach fails and causes massive data shuffling if your network layout is not perfectly symmetric.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-scale-free-acquaintance-immunization": {
+  "insight": "Protect your system by securing random peers of your connected users, which naturally catches your most dangerous bottlenecks.",
+  "steps": [
+   {
+    "title": "Sample random connected clients",
+    "detail": "Pick random downstream API callers to find high-traffic targets."
+   },
+   {
+    "title": "Limit heavy callers",
+    "detail": "Place rate limiters on discovered high-degree callers to stop floods."
+   },
+   {
+    "title": "Skip global maps",
+    "detail": "Eliminate single points of failure without running expensive dependency graph analyses."
+   }
+  ],
+  "how_it_works": "Just like picking random people reveals those with the most friends, checking random connections exposes critical system hubs without needing a complete map.",
+  "caveat": "This approach fails if your system lacks distinct hubs and all components have similar connection counts.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-dunbars-number-sharding": {
+  "insight": "Limit each network cluster to 150 peers to stop excessive message traffic and maintain smooth operations without extra management layers.",
+  "steps": [
+   {
+    "title": "Cap cluster sizes",
+    "detail": "Restrict every network group to a maximum of 128 to 150 members."
+   },
+   {
+    "title": "Use bridge delegates",
+    "detail": "Connect separate clusters using designated bridge nodes instead of linking every peer."
+   },
+   {
+    "title": "Manage traffic flow",
+    "detail": "Monitor cross-group messages to prevent delays during heavy traffic spikes."
+   }
+  ],
+  "how_it_works": "Just as the human brain naturally limits stable social groups to around 150 people to avoid communication breakdown, networks can cap peer groups to eliminate chatter.",
+  "caveat": "Communicating between separate clusters adds a slight delay and rigid limits can trap resources during sudden traffic spikes.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-axelrod-iterative-cooperation": {
+  "insight": "Reward well-behaved API users with extra capacity, instantly slow down heavy spikers, and forgive them immediately when they calm down.",
+  "steps": [
+   {
+    "title": "Grant burst capacity credits",
+    "detail": "Reward well-behaved API tenants with extra capacity during normal operation."
+   },
+   {
+    "title": "Throttle defecting spikes",
+    "detail": "Instantly throttle tenants who exceed their agreed request limits."
+   },
+   {
+    "title": "Restore rates immediately",
+    "detail": "Remove restrictions the moment a tenant brings their request arrival rates back down."
+   }
+  ],
+  "how_it_works": "Simple reciprocal strategies outperform complex rules by starting cooperative, copying the opponent's last move, and forgiving instantly.",
+  "caveat": "Network glitches can sometimes trigger endless punishment loops between systems.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-bikhchandani-informational-cascade": {
+  "insight": "Your servers blindly copy early voting peers and ignore their own warning signals during deployment health checks.",
+  "steps": [
+   {
+    "title": "Hide peer consensus status",
+    "detail": "Force health checkers to evaluate private telemetry before showing them peer votes."
+   },
+   {
+    "title": "Inject contrarian canary probes",
+    "detail": "Deploy workers that intentionally stress candidate builds under adverse conditions to test stability."
+   },
+   {
+    "title": "Add stochastic jitter",
+    "detail": "Add random noise to load balancer health scores to prevent dangerous failover herd behavior."
+   }
+  ],
+  "how_it_works": "People ignore their own better judgment and copy the crowd once early choices pile up. Injecting unexpected dissenting signals breaks this blind following.",
+  "caveat": "Adding contrarian noise increases the time required to reach a legitimate emergency consensus.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-ostrom-polycentric-governance": {
+  "insight": "Let tenant teams manage their own database and compute limits locally to avoid central bottlenecks and resource crashes.",
+  "steps": [
+   {
+    "title": "Set clear boundaries",
+    "detail": "Define exact resource rights and monitoring pools for each tenant namespace."
+   },
+   {
+    "title": "Apply graduated penalties",
+    "detail": "Throttle performance step-by-step from warnings to termination before cutting access."
+   },
+   {
+    "title": "Resolve conflicts locally",
+    "detail": "Use localized arbitration services to settle disk speed contention without cluster-wide lockups."
+   }
+  ],
+  "how_it_works": "Communities prevent shared resource collapse by using nested local rules, clear boundaries, and gradual punishments for breaking agreements.",
+  "caveat": "This approach creates higher administrative metadata overhead than simple hard quota cutoffs.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-braess-paradox-routing": {
+  "insight": "Adding high-speed network shortcuts between your microservices can actually overload your downstream systems and slow down all traffic.",
+  "steps": [
+   {
+    "title": "Turn off fast shortcuts",
+    "detail": "Temporarily disable direct network links during peak load to force traffic onto distributed paths."
+   },
+   {
+    "title": "Add congestion penalties",
+    "detail": "Enforce limits on high-throughput microservice shortcuts to prevent overall routing collapse."
+   },
+   {
+    "title": "Simulate network pruning",
+    "detail": "Continuously test removing network edges to detect and eliminate harmful shortcut paths."
+   }
+  ],
+  "how_it_works": "In road networks, adding a new shortcut can paradoxically increase travel time for everyone because individual drivers choose routes that harm the collective flow.",
+  "caveat": "This approach is counter-intuitive to teams who expect adding network links to always improve throughput.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-minority-game-challet": {
+  "insight": "Your routers stampede to the fastest database copy and crash it, but they can self-organize by choosing less crowded options.",
+  "steps": [
+   {
+    "title": "Ditch lagging latency metrics",
+    "detail": "Stop routing traffic based on past speed tests that trigger simultaneous stampedes."
+   },
+   {
+    "title": "Reward picking idle replicas",
+    "detail": "Give your edge routers competing internal rules that score points only when they successfully land on quiet database copies."
+   },
+   {
+    "title": "Force diverse routing choices",
+    "detail": "Keep router decision rules mixed so they never synchronize on the exact same database copy at the same time."
+   }
+  ],
+  "how_it_works": "Autonomous agents repeatedly choose between limited resources where only those picking the minority option win, naturally dispersing the crowd into efficient self-organized coordination.",
+  "caveat": "This approach can cause sudden traffic spikes if your routers lose their diversity and start making the exact same predictions.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-granovetter-strength-weak-ties": {
+  "insight": "Use sparse long-distance connections between regional groups to spread updates cheaply while keeping local traffic fast.",
+  "steps": [
+   {
+    "title": "Keep local zones dense",
+    "detail": "Maintain frequent, high-speed heartbeats within each local availability zone."
+   },
+   {
+    "title": "Build sparse cross-region bridges",
+    "detail": "Route cache invalidation digests primarily across a few low-frequency cross-region links to cut bandwidth costs."
+   },
+   {
+    "title": "Reinforce bridging nodes",
+    "detail": "Add redundancy to the specific servers handling cross-region traffic so they do not become single points of failure."
+   }
+  ],
+  "how_it_works": "Just like infrequent social ties spread news between tightly knit friendship groups, sparse digital bridges share critical updates across regions without wasting bandwidth.",
+  "caveat": "Messages will take slightly longer to cross between regions using these sparse links.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-johnson-lindenstrauss-lemma": {
+  "insight": "Shrink massive telemetry data footprints by projecting high-dimensional embeddings into a smaller space while keeping distances accurate.",
+  "steps": [
+   {
+    "title": "Compress trace embeddings",
+    "detail": "Multiply high-dimensional trace vectors by a random projection matrix before storing them."
+   },
+   {
+    "title": "Pre-filter searches",
+    "detail": "Speed up similarity searches by running coarse filters in the compressed space first."
+   },
+   {
+    "title": "Reduce edge bandwidth",
+    "detail": "Project high-dimensional metrics at the edge before sending them across the network."
+   }
+  ],
+  "how_it_works": "Mathematics shows that points in a giant space can be squashed into a much smaller subspace while keeping the distances between them nearly identical.",
+  "caveat": "This approach introduces a small distortion factor in distance calculations and requires re-projecting if your total data volume grows significantly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-perron-frobenius-spectral": {
+  "insight": "Rank your microservices by steady-state request traffic to instantly find your system's single point of failure.",
+  "steps": [
+   {
+    "title": "Map your live call graphs",
+    "detail": "Compute real-time centrality of your microservices to see which ones handle the most traffic."
+   },
+   {
+    "title": "Prioritize your incident alerts",
+    "detail": "Weight your service alerts proportionally to their centrality scores to fix critical bottlenecks first."
+   },
+   {
+    "title": "Target your failure tests",
+    "detail": "Direct your chaos engineering fault injections at the nodes with maximal eigenvector components."
+   }
+  ],
+  "how_it_works": "Just like tracking steady-state movement in a Markov chain, math identifies the single dominant path where everything converges.",
+  "caveat": "If your service graph has totally disconnected parts, this math requires damping factors to work properly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-banach-fixed-point-contraction": {
+  "insight": "Limit each system update so that every step brings your controllers closer to the target without overshooting.",
+  "steps": [
+   {
+    "title": "Measure the distance",
+    "detail": "Define a clear way to measure the gap between your desired state and actual state."
+   },
+   {
+    "title": "Shrink the changes",
+    "detail": "Cap the size of every controller adjustment so each step covers only a fraction of the remaining gap."
+   },
+   {
+    "title": "Stop the flapping",
+    "detail": "Verify that your scaling steps steadily shrink toward zero to guarantee the system settles."
+   }
+  ],
+  "how_it_works": "Just like a shrinking rubber band naturally pulls itself to a single resting point, repeatedly applying a restricted change forces a system to settle on one stable state.",
+  "caveat": "This approach slows down considerably when your adjustment limits get too close to one.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-voronoi-delaunay-tessellation": {
+  "insight": "Map your edge nodes like a puzzle grid to route mobile devices instantly without losing connection.",
+  "steps": [
+   {
+    "title": "Partition edge workloads",
+    "detail": "Divide your computing areas into dynamic zones around each cellular base station."
+   },
+   {
+    "title": "Route mobile requests",
+    "detail": "Send user requests to the closest edge data center using proximity graphs for minimal delay."
+   },
+   {
+    "title": "Rebalance database shards",
+    "detail": "Shift your zone boundaries based on how many queries come from each area."
+   }
+  ],
+  "how_it_works": "Mathematics divides space into exclusive zones around specific points, ensuring every location connects directly to its closest neighbor.",
+  "caveat": "Moving boundary points too fast creates high calculation overhead, and the method struggles in overly complex spaces.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-haar-wavelet-multiresolution": {
+  "insight": "Separate streaming data into smooth baseline trends and sharp temporary bursts to achieve massive storage savings and fast alert detection.",
+  "steps": [
+   {
+    "title": "Filter incoming raw telemetry",
+    "detail": "Pass real-time server metrics through paired filters to instantly split trend data from quick noise."
+   },
+   {
+    "title": "Isolate high-frequency latency spikes",
+    "detail": "Monitor the detailed burst signals to detect microsecond network spikes without checking full logs."
+   },
+   {
+    "title": "Store compressed trend approximations",
+    "detail": "Save low-frequency baseline summaries for long-term capacity planning while discarding non-essential detailed data."
+   }
+  ],
+  "how_it_works": "Mathematicians split complex signals into distinct layers of coarse background trends and fine details. This isolates sudden short-term spikes while keeping overall patterns easy to store.",
+  "caveat": "Sudden structural shifts in your data or edges at window boundaries can create artificial metric fluctuations.",
+  "model": "gemini-3.6-flash"
+ },
+ "math-erdos-renyi-percolation": {
+  "insight": "Keep service connections below a critical density to stop malware from spreading across your entire cluster.",
+  "steps": [
+   {
+    "title": "Audit inter-service links",
+    "detail": "Count all communication paths between your microservices to measure current network density."
+   },
+   {
+    "title": "Prune non-essential permissions",
+    "detail": "Cut unnecessary firewall rules and service pathways to push network density safely below the critical limit."
+   },
+   {
+    "title": "Block cascading failures",
+    "detail": "Dynamically sever vulnerable dependencies during an incident to isolate compromised areas instantly."
+   }
+  ],
+  "how_it_works": "Just like liquid suddenly flows through a porous rock once a tipping point of connected holes is reached, random networks suddenly connect everything when links cross a critical threshold.",
+  "caveat": "This math assumes random connections, but real service networks often feature heavily connected hub services where this tipping point is harder to predict.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-hodge-helmholtz-decomposition": {
+  "insight": "Split your cloud traffic into straight-line productive paths and wasteful circular loops to instantly cut network costs.",
+  "steps": [
+   {
+    "title": "Map your traffic flows",
+    "detail": "Trace your service requests to separate direct work from endless retry loops."
+   },
+   {
+    "title": "Kill circular dependencies",
+    "detail": "Shut down the wasteful retry paths that trap your network traffic in circles."
+   },
+   {
+    "title": "Route down straight paths",
+    "detail": "Align your cloud packet routing only along direct, value-producing directions."
+   }
+  ],
+  "how_it_works": "Just like splitting any complex flow into a straight forward current and a trapped spinning whirlpool, math separates useful progress from wasted motion.",
+  "caveat": "This approach fails if your network has strange boundary setups or complex looping layouts that prevent clean separation.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-radon-transform-tomography": {
+  "insight": "Reconstruct hidden service delays by measuring external entry and exit times, exactly like a medical CT scan creates 3D images from 1D X-ray angles.",
+  "steps": [
+   {
+    "title": "Capture boundary packet times",
+    "detail": "Deploy passive network monitors at your system boundaries to record exact entry and exit timestamps."
+   },
+   {
+    "title": "Calculate path integrals",
+    "detail": "Compute the total transit times across different service paths without touching your application code."
+   },
+   {
+    "title": "Reconstruct internal bottlenecks",
+    "detail": "Run inversion math on the boundary data to map out internal service delays and resource jams."
+   }
+  ],
+  "how_it_works": "Medical CT scanners combine multiple 1D X-ray projections from different angles to reconstruct internal body slices without cutting the patient.",
+  "caveat": "This approach may produce blurry results if you do not collect enough traffic angles across your services.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-dopaminergic-reward-prediction-error": {
+  "insight": "Tune your database and scaling using surprise signals between expected and actual speeds, exactly like brain reward prediction.",
+  "steps": [
+   {
+    "title": "Track actual runtimes",
+    "detail": "Measure the real execution time of your database queries continuously."
+   },
+   {
+    "title": "Compute prediction error",
+    "detail": "Compare expected query costs against actual runtimes to find the gap."
+   },
+   {
+    "title": "Update resource scaling",
+    "detail": "Adjust your server capacity based on this surprise gap instead of static rules."
+   }
+  ],
+  "how_it_works": "Brain cells signal the difference between expected and received rewards to constantly update behavior and learning.",
+  "caveat": "This approach can become unstable if your system predictions fluctuate too wildly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-sparse-distributed-representations": {
+  "insight": "Turn your crowded logs into sparse bit patterns to stop data collisions and speed up searches instantly.",
+  "steps": [
+   {
+    "title": "Convert log stack traces",
+    "detail": "Transform your incoming log streams into wide binary vectors with very few active bits."
+   },
+   {
+    "title": "Compare bitwise overlaps",
+    "detail": "Detect unknown system failures by checking bit matches against known healthy baselines."
+   },
+   {
+    "title": "Store in compact memory",
+    "detail": "Keep millions of operational states in memory using minimal RAM for fast queries."
+   }
+  ],
+  "how_it_works": "The brain encodes complex concepts using tiny fractions of active neurons, allowing massive overlap without mixing up signals.",
+  "caveat": "You will lose exact scalar precision for numbers in exchange for faster semantic grouping.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-global-workspace-broadcast": {
+  "insight": "Filter your chaotic outage alerts through a single competitive channel so only the most critical root cause gets broadcast.",
+  "steps": [
+   {
+    "title": "Set up a central bus",
+    "detail": "Create a main workspace bus to catch all incoming microservice alert storms and filter out the noise."
+   },
+   {
+    "title": "Rank the alerts",
+    "detail": "Let your detection tools compete for attention by scoring their anomaly signals based on entropy."
+   },
+   {
+    "title": "Broadcast only the winner",
+    "detail": "Send just the single winning root-cause hypothesis to your response team to eliminate alert fatigue."
+   }
+  ],
+  "how_it_works": "In the brain, subconscious processors constantly compete for attention, and only the most urgent winning signal gets broadcasted widely to mobilize action.",
+  "caveat": "This central bottleneck limits how many alerts can be broadcast at once, and poor scoring could let loud minor issues steal attention.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-stdp-spike-timing-plasticity": {
+  "insight": "Adjust your system timeouts dynamically based on response speed to automatically reward fast services and isolate slow ones.",
+  "steps": [
+   {
+    "title": "Measure response timing",
+    "detail": "Track the exact time difference between launching a request and receiving the reply."
+   },
+   {
+    "title": "Adjust connection weights",
+    "detail": "Strengthen weights for fast microservices and weaken them when replies lag behind deadlines."
+   },
+   {
+    "title": "Isolate slow dependencies",
+    "detail": "Automatically cut off degrading third-party APIs before they starve your thread pool."
+   }
+  ],
+  "how_it_works": "Brain cells strengthen their connections when signals arrive in the correct order and weaken them when timing lags, creating a self-tuning network.",
+  "caveat": "This approach is sensitive to network clock skew and might prematurely depress connections during temporary network blips.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-lateral-inhibition-retinal": {
+  "insight": "Suppress secondary alerts around a database failure by letting the main alert silence nearby background noise.",
+  "steps": [
+   {
+    "title": "Link dependent services",
+    "detail": "Connect microservice alert channels so upstream failures can silence downstream noise."
+   },
+   {
+    "title": "Dampen repetitive logs",
+    "detail": "Mute normal status logs surrounding error spikes to increase contrast."
+   },
+   {
+    "title": "Highlight fault boundaries",
+    "detail": "Update your dashboard to clearly show the true architectural fault line."
+   }
+  ],
+  "how_it_works": "In the eye, active sensory cells quiet their neighbors to sharpen edges and block out uniform background noise.",
+  "caveat": "This approach may accidentally hide real, separate failures happening at the exact same time.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-free-energy-active-inference": {
+  "insight": "Your cloud system can stay healthy by constantly updating its expectations or fixing problems, just like living creatures do.",
+  "steps": [
+   {
+    "title": "Build system baseline",
+    "detail": "Create an internal model of expected normal traffic and server metrics for your cloud infrastructure."
+   },
+   {
+    "title": "Split handling paths",
+    "detail": "Update your internal traffic rules for expected surges, but trigger corrective actions for actual failures."
+   },
+   {
+    "title": "Automate pod scaling",
+    "detail": "Let your controllers automatically provision new nodes and scale pods to reduce operational surprises."
+   }
+  ],
+  "how_it_works": "Living brains keep their internal state stable by either changing what they expect or taking physical action to change their environment.",
+  "caveat": "If your system's baseline model is wrong, automated corrections can cause harmful actions.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-place-cell-grid-cell-navigation": {
+  "insight": "Mapping your database keys in a hexagonal pattern eliminates hot spots and balances load across servers.",
+  "steps": [
+   {
+    "title": "Map keys to a grid",
+    "detail": "Assign your database keys onto periodic hexagonal coordinates instead of a straight line."
+   },
+   {
+    "title": "Route queries locally",
+    "detail": "Use the grid layout to direct complex range queries across your cluster without central indexes."
+   },
+   {
+    "title": "Calibrate grid scale",
+    "detail": "Adjust your grid spacing to prevent data overlap and match your server capacity."
+   }
+  ],
+  "how_it_works": "Brain cells fire in repeating hexagonal grids to create a built-in map that helps animals navigate space without getting lost.",
+  "caveat": "Calculating hexagonal distances requires more computing power than simple number hashing.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-synaptic-tagging-cross-capture": {
+  "insight": "Speed up database transactions by marking them in memory first and saving them permanently in batches later.",
+  "steps": [
+   {
+    "title": "Mark pending transactions",
+    "detail": "Attach lightweight memory tags to incoming database writes to track them instantly."
+   },
+   {
+    "title": "Schedule regular saves",
+    "detail": "Consolidate tagged database writes permanently only during periodic background pulses."
+   },
+   {
+    "title": "Protect against crashes",
+    "detail": "Set tag expiration limits to match your save intervals and prevent data loss."
+   }
+  ],
+  "how_it_works": "Brain cells use temporary local markers to flag important events, then permanently store them later when stronger signals arrive.",
+  "caveat": "Tagged transactions that miss the scheduled save window must be aborted.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-camel-renal-countercurrent": {
+  "insight": "Build high concentrations of hot attention keys in fast SRAM by swapping small incremental blocks across adjacent cache rings.",
+  "steps": [
+   {
+    "title": "Pair eviction and prefetch",
+    "detail": "Run cold demotion streams alongside hot promotion streams across your adjacent GPU memory tiers."
+   },
+   {
+    "title": "Swap small blocks",
+    "detail": "Transfer small key-value blocks across adjacent ring stages instead of issuing full-tensor bulk memory copies."
+   },
+   {
+    "title": "Concentrate hot tokens",
+    "detail": "Keep your highest-attention tokens in fast SRAM proportional to their access frequency gradients."
+   }
+  ],
+  "how_it_works": "Mammalian kidneys concentrate fluids with minimal energy by running parallel fluid streams in opposite directions to build a strong concentration gradient.",
+  "caveat": "This approach fails and flattens out if your workload relies on uniform random scans instead of steady bidirectional streams.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-firefly-pulse-coupled-sync": {
+  "insight": "Your servers can sync their clocks without a master controller by pulsing each other when they finish tasks.",
+  "steps": [
+   {
+    "title": "Broadcast local pulses",
+    "detail": "Replace central clock managers with quick network broadcasts at your system boundaries."
+   },
+   {
+    "title": "Adopt concave tracking",
+    "detail": "Make lagging servers speed up much faster when they hear a peer pulse."
+   },
+   {
+    "title": "Add quiet windows",
+    "detail": "Insert a brief pause right after firing to stop echo loops on high-latency links."
+   }
+  ],
+  "how_it_works": "Thousands of fireflies flash in unison without a leader by instantly adjusting their internal rhythms whenever they see a neighbor glow.",
+  "caveat": "This approach struggles if your network drops too many packets or lacks strong connection density.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-bacteriophage-crispr-spacer": {
+  "insight": "Block crashing requests instantly by saving their error signatures and filtering them at the edge before processing.",
+  "steps": [
+   {
+    "title": "Extract fault fingerprints",
+    "detail": "Capture minimal unique signatures from requests that cause worker crashes or timeouts."
+   },
+   {
+    "title": "Update the edge filter",
+    "detail": "Store these fingerprints in a shared chronological list at your edge proxies."
+   },
+   {
+    "title": "Block matching traffic",
+    "detail": "Check incoming requests against the filter to drop known bad payloads immediately."
+   }
+  ],
+  "how_it_works": "Bacteria store tiny snippets of invading virus DNA in a chronological list to instantly recognize and cut up the same virus if it attacks again.",
+  "caveat": "Attackers can bypass these filters by slightly mutating non-essential parts of their payloads.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "bio-electric-fish-jamming-avoidance": {
+  "insight": "Your servers can automatically dodge each other's traffic spikes by listening to the shared load rhythm and shifting their schedules apart.",
+  "steps": [
+   {
+    "title": "Measure load beat envelopes",
+    "detail": "Track your queue latency patterns to spot when peer workers clash at matching frequencies."
+   },
+   {
+    "title": "Shift local job cadence",
+    "detail": "Nudge your polling frequency up or down based on the timing of the overlap, without sharing messages."
+   },
+   {
+    "title": "Bound frequency excursions",
+    "detail": "Keep your timing adjustments locked safely inside an elastic performance window around the target interval."
+   }
+  ],
+  "how_it_works": "Electric fish prevent interference by sensing overlapping signals from neighbors and reflexively shifting their own frequencies away without central coordination.",
+  "caveat": "This approach works best for continuous scheduled tasks and struggles in extremely dense clusters with many overlapping harmonics.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-rayleigh-benard-convection": {
+  "insight": "Your database can stop freezing by automatically cycling hot writes upward and cold reads downward like boiling liquid.",
+  "steps": [
+   {
+    "title": "Calculate write heat",
+    "detail": "Measure your database write pressure and queue depth against background compaction limits."
+   },
+   {
+    "title": "Trigger automatic rotation",
+    "detail": "Force hot data pages to rise and cold read segments to sink when pressure crosses the critical limit."
+   },
+   {
+    "title": "Partition into hex cells",
+    "detail": "Organize your storage nodes so every hot ascending shard directly borders a cool descending shard."
+   }
+  ],
+  "how_it_works": "Just like a heated fluid naturally forms circulating convection loops to release trapped heat, your system can organize data flows into counter-rotating loops to eliminate bottlenecks.",
+  "caveat": "This approach fails if write pressure becomes too chaotic or if continuous traffic monitoring stops working.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-mossbauer-recoil-free-resonance": {
+  "insight": "Lock your message buffers into a rigid shared memory grid so the whole system absorbs transfer momentum without slowing down.",
+  "steps": [
+   {
+    "title": "Pin the shared memory",
+    "detail": "Lock producer and consumer ring buffers into a hugepage memory lattice before starting bursts."
+   },
+   {
+    "title": "Align your message fields",
+    "detail": "Match struct offsets to cache lines so zero-copy descriptors transfer without allocation recoil."
+   },
+   {
+    "title": "Track successful transfers",
+    "detail": "Monitor the ratio of recoil-free zero-copy transfers against page-fault allocations."
+   }
+  ],
+  "how_it_works": "Just like atomic nuclei locked in a solid crystal lattice share momentum to emit energy without recoil, binding your buffers into a rigid grid absorbs dispatch shocks collectively.",
+  "caveat": "Rigid lattice pre-allocation trades memory elasticity for speed, and schema changes will break the setup immediately.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-anderson-localization-disorder": {
+  "insight": "Adding random delays to your system stops runaway error waves from crashing your entire network.",
+  "steps": [
+   {
+    "title": "Inject random delays",
+    "detail": "Add randomized retry wait times across your uniform service connections."
+   },
+   {
+    "title": "Tune the disorder",
+    "detail": "Adjust the variation level until error loops die out quickly."
+   },
+   {
+    "title": "Keep health checks fast",
+    "detail": "Ensure routine system checks still pass through normally without extra lag."
+   }
+  ],
+  "how_it_works": "In physics, adding random impurities to a material creates destructive interference that traps moving waves and stops them from spreading.",
+  "caveat": "Adding random delays may slightly increase your normal baseline wait times.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "phys-kosterlitz-thouless-vortex": {
+  "insight": "Pair every accidental inventory over-allocation immediately with an equal opposite compensating reservation to cancel out errors.",
+  "steps": [
+   {
+    "title": "Emit matching inverse tokens",
+    "detail": "Issue an immediate compensating reservation token next to any optimistic inventory over-allocation."
+   },
+   {
+    "title": "Increase reconciliation priority",
+    "detail": "Raise the correction urgency as the temporal distance between paired shards grows."
+   },
+   {
+    "title": "Cap operational load",
+    "detail": "Keep system traffic below the critical threshold where unbound errors proliferate across the cluster."
+   }
+  ],
+  "how_it_works": "Physics uses attractive forces to bind disruptive defects into neutral pairs, maintaining stability below a critical temperature.",
+  "caveat": "If traffic exceeds the critical threshold, unbound errors will cause a sudden exponential drop in global state coherence.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-vickrey-clarke-groves-auction": {
+  "insight": "Force teams to pay for the delays they cause others, stopping them from gaming priority queues.",
+  "steps": [
+   {
+    "title": "Track delay costs",
+    "detail": "Measure the exact latency delay each team's jobs inflict on displaced peers."
+   },
+   {
+    "title": "Charge congestion fees",
+    "detail": "Deduct token budgets from tenants who hoard idle graphics memory during peak times."
+   },
+   {
+    "title": "Reward flexible jobs",
+    "detail": "Recycle collected congestion credits back to batch tasks that voluntarily yield resources."
+   }
+  ],
+  "how_it_works": "Social mechanisms eliminate hoarding by charging each participant the exact cost their resource grab imposes on everyone else.",
+  "caveat": "This approach fails if teams team up to game the system using fake secondary identities.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-schelling-segregation-tipping": {
+  "insight": "By moving services whenever local communication drops too low, your network automatically organizes into efficient clusters with minimal cross-rack chatter.",
+  "steps": [
+   {
+    "title": "Track local communication",
+    "detail": "Measure each container's share of internal versus cross-rack traffic over a rolling window."
+   },
+   {
+    "title": "Trigger live migration",
+    "detail": "Relocate a container to a peer-dense host the moment its local connection ratio drops below forty percent."
+   },
+   {
+    "title": "Reserve empty slots",
+    "detail": "Keep ten percent vacant capacity in each rack so incoming containers settle without causing deadlocks."
+   }
+  ],
+  "how_it_works": "Just like people naturally group into neighborhoods based on mild personal preferences, independent services naturally self-sort into tightly connected clusters when they relocate based on local communication comfort.",
+  "caveat": "This approach can dangerously cram all correlated services onto a single failure point if you do not enforce strict anti-affinity limits.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-kyle-lambda-adverse-selection": {
+  "insight": "Protect your trading gateway from toxic arbitrage by raising costs when sudden order imbalances signal informed predators.",
+  "steps": [
+   {
+    "title": "Batch incoming requests",
+    "detail": "Group your incoming API traffic into short time windows to mix noise with sniper requests."
+   },
+   {
+    "title": "Measure flow toxicity",
+    "detail": "Calculate real-time flow imbalance to detect when aggressive informed traders are sweeping your system."
+   },
+   {
+    "title": "Throttle or widen spread",
+    "detail": "Automatically slow down execution or increase admission spreads proportional to the detected toxicity."
+   }
+  ],
+  "how_it_works": "Market makers protect their inventory from informed traders by scaling price impact based on the ratio of net order flow imbalance.",
+  "caveat": "This approach may incorrectly penalize normal, organic surges in demand if baseline noise variance shifts.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-condorcet-jury-epistemic": {
+  "insight": "Build a more reliable system by mixing different types of models rather than using many copies of the best one.",
+  "steps": [
+   {
+    "title": "Check failure overlap",
+    "detail": "Test how often your different models make the exact same mistakes together."
+   },
+   {
+    "title": "Weight unique thinkers",
+    "detail": "Give more voting power to models that think differently from the rest of the group."
+   },
+   {
+    "title": "Grow the group",
+    "detail": "Add more independent validators when accuracy drops close to a coin toss."
+   }
+  ],
+  "how_it_works": "Just like a jury makes better decisions when jurors come from varied backgrounds rather than sharing the exact same biases, an ensemble thrives on independent viewpoints.",
+  "caveat": "This approach fails if all your models rely on the exact same flawed source data.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "soc-diamond-dybvig-bank-run": {
+  "insight": "Serving cached stale snapshots to impatient clients stops mass panic-retries from crashing your slow backend systems.",
+  "steps": [
+   {
+    "title": "Detect retry runs",
+    "detail": "Spot when client timeouts happen faster than your backend servers can finish computing."
+   },
+   {
+    "title": "Activate stale snapshots",
+    "detail": "Immediately return the last known good data to waiting callers while you recompute in the background."
+   },
+   {
+    "title": "Issue queue leases",
+    "detail": "Give waiting clients guaranteed slots so they stop spamming your system with fresh requests."
+   }
+  ],
+  "how_it_works": "Banks stop self-fulfilling customer runs by temporarily pausing cash withdrawals and offering credible liquidity guarantees until assets mature.",
+  "caveat": "This approach fails if your backend is permanently dead rather than just temporarily overloaded.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-ricci-curvature-ollivier": {
+  "insight": "Traffic jams happen where distinct groups connect, but adding parallel bypass lanes across these specific pinch points will clear the flow.",
+  "steps": [
+   {
+    "title": "Find the pinch points",
+    "detail": "Locate network links connecting different clusters where traffic constantly collides."
+   },
+   {
+    "title": "Flag dangerous links",
+    "detail": "Identify the worst overloaded bridges before they crash your gateway."
+   },
+   {
+    "title": "Add bypass routes",
+    "detail": "Provision dedicated parallel channels directly across those severely overloaded bridges."
+   }
+  ],
+  "how_it_works": "Just like heavy traffic funneled onto a narrow bridge between two towns causes gridlock, network data colliding between tight communities creates severe bottlenecks. By measuring how far apart neighborhoods are compared to the bridge length, we can spot and fix these failures instantly.",
+  "caveat": "Calculating distances on massive hubs requires extra computing power, and static maps must be updated with real-time traffic volume.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-candès-tao-compressed-sensing": {
+  "insight": "You can slash your telemetry bandwidth by streaming small randomized summaries instead of every single microservice log.",
+  "steps": [
+   {
+    "title": "Compress your telemetry data",
+    "detail": "Multiply your microservice latency counters into a small randomized summary vector on each node."
+   },
+   {
+    "title": "Transmit only small summaries",
+    "detail": "Send just these lightweight compressed vectors across your network at regular fixed intervals."
+   },
+   {
+    "title": "Pinpoint spikes centrally",
+    "detail": "Run a sparse recovery calculation at your central collector to decode the exact troubled services."
+   }
+  ],
+  "how_it_works": "Just like taking a few blurry snapshots from random angles can reconstruct a sharp 3D image, math lets you rebuild exact system faults from a handful of random measurements.",
+  "caveat": "This approach fails if more than thirty percent of your microservices go down in flames at the exact same time.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-coupon-collector-coding": {
+  "insight": "Stop waiting for slow servers by blending your data into interchangeable pieces so any group of them finishes the job.",
+  "steps": [
+   {
+    "title": "Mix your data shards",
+    "detail": "Combine your database shards using lightweight math blocks so they become completely interchangeable."
+   },
+   {
+    "title": "Send out extra requests",
+    "detail": "Broadcast your queries to more workers than normally needed and accept the fastest responses."
+   },
+   {
+    "title": "Cancel the slow workers",
+    "detail": "Stop all remaining in-flight requests the moment you have enough pieces to rebuild the data."
+   }
+  ],
+  "how_it_works": "Just like a water fountain that sprays endless overlapping drops where catching any random bucket fulfills the total volume, math codes create endless mixed packets so you never wait for a specific missing piece.",
+  "caveat": "This approach requires a small extra storage boost and works best when your data does not change constantly.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-littles-law-kingman-bound": {
+  "insight": "High task time swings cause massive queue delays even before your system runs full.",
+  "steps": [
+   {
+    "title": "Measure task time swings",
+    "detail": "Track how wildly your request sizes and arrival times fluctuate alongside your current server busyness."
+   },
+   {
+    "title": "Separate heavy jobs",
+    "detail": "Move large payloads and garbage-collection-heavy requests into a completely separate lane to clear your fast path."
+   },
+   {
+    "title": "Pace incoming batches",
+    "detail": "Use a token bucket to smooth out sudden traffic floods before your server busyness passes seventy-five percent."
+   }
+  ],
+  "how_it_works": "Queue delays grow exponentially when tasks vary widely in duration, but splitting unpredictable tasks into isolated lanes eliminates that variance.",
+  "caveat": "This math assumes your servers are running extremely busy and may slightly overstate delays when traffic is very low.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "math-braid-group-knot-deadlock": {
+  "insight": "Map your robot paths as flat map grids so they never get trapped in circular traffic jams.",
+  "steps": [
+   {
+    "title": "Build the map",
+    "detail": "Model all independent resource paths as flat grid squares in your system."
+   },
+   {
+    "title": "Remove sharp corners",
+    "detail": "Eliminate conflicting three-way loops where robots can block each other permanently."
+   },
+   {
+    "title": "Route along straight lines",
+    "detail": "Force all robot movements to follow the single shortest path without cycle risks."
+   }
+  ],
+  "how_it_works": "Pure geometry proves that flat maps without sharp inward corners prevent paths from crossing into dead ends.",
+  "caveat": "This approach becomes too slow to calculate when too many independent resources depend on each other at once.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-predictive-coding-rao-ballard": {
+  "insight": "Drastically cut bandwidth by transmitting only unexpected changes instead of streaming full updates across your network.",
+  "steps": [
+   {
+    "title": "Run twin predictors",
+    "detail": "Deploy matching lightweight prediction models on both your edge devices and central servers."
+   },
+   {
+    "title": "Suppress routine updates",
+    "detail": "Block data transmission as long as actual network measurements match your shared prediction."
+   },
+   {
+    "title": "Send error spikes",
+    "detail": "Transmit brief update packets only when real events diverge significantly from the prediction."
+   }
+  ],
+  "how_it_works": "The brain saves nerve bandwidth by sending predicted images downward and only passing unexpected visual surprises upward.",
+  "caveat": "Missing even a single error update can cause the edge and server states to slowly drift apart.",
+  "model": "gemini-3.6-flash"
+ },
+ "cog-homeostatic-synaptic-scaling": {
+  "insight": "Stabilize server traffic by periodically scaling all routing scores uniformly to maintain target usage while preserving node priorities.",
+  "steps": [
+   {
+    "title": "Separate fast and slow loops",
+    "detail": "Keep fast route updates separate from a slower controller that adjusts overall system balance."
+   },
+   {
+    "title": "Scale scores uniformly",
+    "detail": "Multiply all worker routing scores by the ratio of target usage to actual usage at regular intervals."
+   },
+   {
+    "title": "Protect task relative priorities",
+    "detail": "Ensure total worker load stays in a safe band while maintaining the relative preference ranking between routes."
+   }
+  ],
+  "how_it_works": "Brain cells prevent runaway excitement by scaling all incoming connection strengths up or down together. This maintains a steady average activity level while preserving the relative strength differences between connections.",
+  "caveat": "This adjustment loop must run much slower than individual request traffic and cannot fix single-node structural bottlenecks.",
+  "model": "gemini-3.6-flash"
+ },
+ "cog-working-memory-theta-gamma": {
+  "insight": "Organize your processing into repeating macro time windows holding up to seven strict execution slots to prevent lock contention.",
+  "steps": [
+   {
+    "title": "Fix your macro frames",
+    "detail": "Divide your shared worker event loops into fixed time windows subdivided into seven micro-slots."
+   },
+   {
+    "title": "Assign tenant slots",
+    "detail": "Give each active tenant a dedicated phase slot so context switches happen deterministically without locks."
+   },
+   {
+    "title": "Pre-fetch data early",
+    "detail": "Load the next slot's working set into cache during the execution of the current slot."
+   }
+  ],
+  "how_it_works": "The brain holds multiple memories at once without mixing them up by slotting fast bursts inside a slow carrier wave.",
+  "caveat": "This approach caps active tenant capacity at roughly eight concurrent contexts and wastes time slots if fewer tenants are active.",
+  "model": "gemini-3.5-flash-lite"
+ },
+ "cog-cerebellar-forward-model": {
+  "insight": "Predicting your cloud system's future state locally prevents over-correction while waiting for delayed remote feedback.",
+  "steps": [
+   {
+    "title": "Route command copies",
+    "detail": "Send an immediate copy of every scaling command to a local load model."
+   },
+   {
+    "title": "Subtract in-flight load",
+    "detail": "Remove predicted pending load from incoming delayed telemetry before deciding to scale."
+   },
+   {
+    "title": "Update delay parameters",
+    "detail": "Continuously adjust your local model using actual round-trip acknowledgment times."
+   }
+  ],
+  "how_it_works": "The brain uses an internal copy of motor commands to instantly predict body movements, bypassing slow sensory nerve delays to stop wobbling.",
+  "caveat": "If your local load predictions are inaccurate, genuine system stalls might go unnoticed until timeouts happen.",
+  "model": "gemini-3.5-flash-lite"
+ }
+}

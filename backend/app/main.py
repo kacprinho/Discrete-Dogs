@@ -205,20 +205,23 @@ async def teleport_endpoint(
         computation.match.setdefault("point", computation.target_point)
         computation.match.setdefault("coords", computation.target_point)
 
-    # Plain-English explanation (optional LLM layer; falls back silently to corpus text)
+    # Plain-English executive card: live LLM (problem-specific) -> pre-generated card for this
+    # corpus entry -> nothing (UI then shows the curated corpus text).
+    explanation = None
     if explainer.enabled():
         explanation = await explainer.explain(fallback_query or effective_context, computation.match)
-        if explanation:
-            computation.match["explanation"] = explanation
-            fallback_logs.append(
-                {"type": "log", "stage": "EXPLAIN", "agent": "explainer",
-                 "text": f"Plain-English explanation generated ({explanation['model']})"}
-            )
-        else:
-            fallback_logs.append(
-                {"type": "log", "stage": "EXPLAIN", "agent": "explainer",
-                 "text": "Explanation unavailable — showing curated corpus text"}
-            )
+    if explanation:
+        explain_note = f"Plain-English briefing written for your problem ({explanation['model']})"
+    else:
+        explanation = explainer.precomputed(computation.match.get("id", ""))
+        explain_note = (
+            "Plain-English briefing loaded (pre-generated for this mechanism)"
+            if explanation
+            else "Plain-English briefing unavailable — showing curated text"
+        )
+    if explanation:
+        computation.match["explanation"] = explanation
+    fallback_logs.append({"type": "log", "stage": "EXPLAIN", "agent": "explainer", "text": explain_note})
 
     # Build structured agent reasoning events
     events: List[Dict[str, Any]] = []

@@ -22,10 +22,14 @@ MATCH = {
     "paper_ref": "Bonabeau et al., Nature 2000",
 }
 GOOD = {
-    "headline": "Ants spread traffic by letting busy trails fade.",
-    "connection": "Both systems overload popular paths.",
-    "steps": ["Decay route weights", "Penalise slow routes", "Probe idle routes"],
-    "caveats": "Needs enough traffic to learn.",
+    "insight": "Ants spread traffic by letting busy trails fade.",
+    "steps": [
+        {"title": "Score each route", "detail": "Raise a route's score when requests succeed."},
+        {"title": "Let scores fade", "detail": "Lower every score a little each second."},
+        {"title": "Try quiet routes", "detail": "Send a few requests down idle paths."},
+    ],
+    "how_it_works": "Ant trails evaporate, so crowded paths lose their pull.",
+    "caveat": "Needs enough traffic to learn.",
 }
 
 
@@ -54,7 +58,8 @@ def _install(monkeypatch, behaviour):
 def test_success_returns_structured_explanation(monkeypatch: pytest.MonkeyPatch) -> None:
     fake = _install(monkeypatch, ("end_turn", json.dumps(GOOD)))
     out = asyncio.run(explainer.explain("Traffic piles onto a few routes", MATCH))
-    assert out and out["headline"] == GOOD["headline"] and len(out["steps"]) == 3
+    assert out and out["insight"] == GOOD["insight"] and len(out["steps"]) == 3
+    assert out["steps"][0]["title"] == "Score each route"
     assert fake.kwargs["model"] == "claude-haiku-5-5"
     assert fake.kwargs["output_config"]["format"]["type"] == "json_schema"
     assert "Bonabeau" in fake.kwargs["messages"][0]["content"]  # grounded on the retrieved entry
@@ -157,3 +162,20 @@ def test_gemini_invalid_json_falls_through_to_next_model(monkeypatch: pytest.Mon
     calls = _use_gemini(monkeypatch, [_gemini_resp(200, _gemini_ok('{"headline": "trunc')),
                                       _gemini_resp(200, _gemini_ok(json.dumps(GOOD)))])
     assert asyncio.run(explainer.explain("Traffic", MATCH)) is not None and len(calls) == 2
+
+
+def test_jargon_is_translated_in_output(monkeypatch: pytest.MonkeyPatch) -> None:
+    jargon = dict(GOOD, insight="Use verification gates on 2-hop neighbors to collapse R_eff below 1.0.")
+    _use_gemini(monkeypatch, [_gemini_resp(200, _gemini_ok(json.dumps(jargon)))])
+    out = asyncio.run(explainer.explain("Misinformation spreads", MATCH))
+    assert out is not None
+    low = out["insight"].lower()
+    assert "verification gate" not in low and "r_eff" not in low and "2-hop" not in low
+    assert "automatic safety checks" in low and "stop the spread" in low
+
+
+def test_precomputed_card_lookup() -> None:
+    explainer._plain = {"bio-ant-pheromone": {"insight": "x", "steps": [], "how_it_works": "", "caveat": ""}}
+    assert explainer.precomputed("bio-ant-pheromone")["model"] == "pre-generated"
+    assert explainer.precomputed("missing") is None
+    explainer._plain = None

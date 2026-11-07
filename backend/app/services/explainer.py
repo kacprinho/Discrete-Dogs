@@ -56,39 +56,110 @@ def enabled() -> bool:
     return provider() is not None
 
 
+# Jargon -> executive language. Used in the prompt AND applied to the output as a safety net.
+JARGON_MAP: List["tuple[str, str]"] = [
+    (r"scale-free (graph )?acquaintance (sampling|immunization)", "target high-impact hubs via their connected peers"),
+    (r"acquaintance (sampling|immunization)", "finding key hubs through their connections"),
+    (r"collaps\w* r[_ ]?eff\w*( below 1(\.0)?)?", "stop the spread before it multiplies"),
+    (r"r[_ ]?eff(ective)?( reproduction number)?\s*(<|below)\s*1(\.0)?", "the spread stops multiplying"),
+    (r"(two|2)-hop ring inoculation|ring inoculation", "isolating the immediate contact circle"),
+    (r"(1|one|2|two)-hop (topological )?neighbou?rs?|topological neighbou?rs?", "immediate contact circle"),
+    (r"verification gates?", "automatic safety checks"),
+    (r"circuit[- ]breakers?", "automatic safety checks"),
+    (r"dynamic velocity throttling( along edges)?", "slowing down how fast content moves"),
+    (r"super-?spreaders?", "biggest spreaders"),
+    (r"stigmerg\w*", "trail-following"),
+    (r"allosteric", "shape-changing"),
+    (r"exponential (volatile )?(decay|evaporation)", "gradual fading"),
+    (r"kinematic viscosity", "built-in friction"),
+    (r"\bviscosity\b", "friction"),
+    (r"\btopolog(y|ies)\b", "network layout"),
+    (r"\btopological\b", "structural"),
+    (r"\bthermodynamics?\b", "heat-and-energy"),
+    (r"\bthermodynamically\b", "energy-wise"),
+    (r"\bstochastic(ally)?\b", "random"),
+    (r"\beigenvectors?\b", "influence scores"),
+    (r"\beigenvalues?\b", "key numbers"),
+    (r"\bmarkov chains?\b", "step-by-step random process"),
+    (r"\bmarkov\b", "step-by-step"),
+    (r"\bentropy\b", "disorder"),
+    (r"\btensors?\b", "multi-direction"),
+    (r"\bgradients\b", "differences"),
+    (r"\bgradient\b", "difference"),
+    (r"epsilon-greedy", "occasional random"),
+    (r"\bMVCC\b", "versioned records"),
+    (r"\bp95\b", "normal worst-case"),
+]
+
+# (detect pattern in the source, jargon, executive translation) — only matching rows are sent.
+JARGON_GUIDE: List["tuple[str, str, str]"] = [
+    (r"acquaintance|scale-free", "Scale-free graph acquaintance sampling", "Target high-impact hubs via connected peers"),
+    (r"r[_ ]?eff|reproduction number", "Collapse R_eff below 1.0", "Stop the spread before it multiplies"),
+    (r"hop|ring inoculation|topological neighbou?r", "Topological neighbors / 2-hop ring inoculation", "Isolate the immediate contact circle"),
+    (r"verification gate|circuit[- ]breaker", "Verification gates / circuit breakers", "Set up automatic safety checks"),
+    (r"velocity throttl|throttl\w* along edges", "Dynamic velocity throttling along edges", "Slow down content/data transfer speed"),
+    (r"stigmerg|pheromone", "Stigmergy / pheromone reinforcement", "Popular paths get marked, and the marks fade over time"),
+    (r"allosteric", "Allosteric feedback", "The output itself tells the input to slow down"),
+]
+
+
+def _relevant_guide(entry_text: str) -> str:
+    import re
+
+    rows = [f"- {j} -> {t}" for pat, j, t in JARGON_GUIDE if re.search(pat, entry_text, re.IGNORECASE)]
+    return "\n".join(rows)
+
+
 SYSTEM = (
-    "You explain cross-disciplinary analogies to a smart non-specialist, e.g. a hackathon judge. "
-    "You get a user's problem and one research mechanism retrieved for it. "
-    "Use only the information provided; do not invent results, numbers or sources. "
-    "Write plain English: short sentences, no jargon unless you explain it in a few words. "
-    "Make the steps specific to the user's situation, not generic. "
-    "If the analogy is weak, say so plainly in 'caveats'."
+    "You turn a research analogy into an executive briefing a busy judge can read in 10 seconds. "
+    "You get a user's problem and one research mechanism retrieved for it.\n"
+    "Rules:\n"
+    "- Use only the information provided; never invent results, numbers or sources.\n"
+    "- Zero academic or technical jargon: no equations, Greek letters, model names, author names, "
+    "or field-specific terms. If an idea needs a term, replace it with everyday words.\n"
+    "- Short, direct, action-oriented sentences. Talk about the user's own system, not the paper.\n"
+    "- Each step must be specific to the user's situation (their domain, their nouns).\n"
+    "- If the analogy is weak, say so plainly in 'caveat'."
 )
 
 SCHEMA: Dict[str, Any] = {
     "type": "object",
     "properties": {
-        "headline": {
+        "insight": {
             "type": "string",
-            "description": "One sentence, max 20 words: how the other field solves the same problem.",
-        },
-        "connection": {
-            "type": "string",
-            "description": "2-3 sentences: what the shared underlying problem is, in plain words.",
+            "description": "The core insight in ONE plain sentence (max 25 words) a non-expert understands instantly.",
         },
         "steps": {
             "type": "array",
-            "items": {"type": "string"},
-            "description": "Exactly 3 concrete things to try in the user's own system.",
+            "description": "Exactly 3 steps of an execution plan for the user's own system, in order.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string", "description": "2-6 word imperative, e.g. 'Find the source'."},
+                    "detail": {"type": "string", "description": "One plain sentence, max 20 words."},
+                },
+                "required": ["title", "detail"],
+                "additionalProperties": False,
+            },
         },
-        "caveats": {
+        "how_it_works": {
             "type": "string",
-            "description": "One or two sentences on where the analogy may break down.",
+            "description": "1-2 plain sentences: how the other field (nature, physics, ...) solves the same problem.",
         },
+        "caveat": {"type": "string", "description": "One plain sentence on where this may not apply."},
     },
-    "required": ["headline", "connection", "steps", "caveats"],
+    "required": ["insight", "steps", "how_it_works", "caveat"],
     "additionalProperties": False,
 }
+
+
+def dejargon(text: str) -> str:
+    import re
+
+    out = text
+    for pattern, repl in JARGON_MAP:
+        out = re.sub(pattern, repl, out, flags=re.IGNORECASE)
+    return re.sub(r"\s{2,}", " ", out).strip()
 
 
 def _build_prompt(problem: str, match: Dict[str, Any]) -> str:
@@ -101,23 +172,37 @@ def _build_prompt(problem: str, match: Dict[str, Any]) -> str:
         "known_limitations": match.get("limitations") or [],
         "citation": match.get("paper_ref"),
     }
+    guide = _relevant_guide(json.dumps(entry, ensure_ascii=False))
+    guide_block = (
+        "<jargon_translations>\nThe source uses these terms; if you need them, say them like this:\n"
+        f"{guide}\n</jargon_translations>\n\n"
+        if guide
+        else ""
+    )
     return (
         f"<user_problem>\n{problem.strip()[:2000]}\n</user_problem>\n\n"
-        f"<retrieved_mechanism>\n{json.dumps(entry, ensure_ascii=False, indent=1)}\n</retrieved_mechanism>\n\n"
-        "Explain how this mechanism could help with the user's problem."
+        + guide_block
+        + f"<retrieved_mechanism>\n{json.dumps(entry, ensure_ascii=False, indent=1)}\n</retrieved_mechanism>\n\n"
+        "Write the executive briefing for this user's problem."
     )
 
 
 def _validate(text: str, model: str) -> Optional[Dict[str, Any]]:
     data = json.loads(text)
-    steps = [s.strip() for s in data.get("steps", []) if isinstance(s, str) and s.strip()][:3]
-    if not isinstance(data.get("headline"), str) or not data["headline"].strip() or not steps:
+    steps: List[Dict[str, str]] = []
+    for st in data.get("steps", []) or []:
+        if isinstance(st, dict) and str(st.get("title", "")).strip():
+            steps.append({"title": dejargon(str(st["title"])), "detail": dejargon(str(st.get("detail", "")))})
+        elif isinstance(st, str) and st.strip():
+            steps.append({"title": dejargon(st), "detail": ""})
+    insight = str(data.get("insight", "")).strip()
+    if not insight or not steps:
         return None
     return {
-        "headline": data["headline"].strip(),
-        "connection": str(data.get("connection", "")).strip(),
-        "steps": steps,
-        "caveats": str(data.get("caveats", "")).strip(),
+        "insight": dejargon(insight),
+        "steps": steps[:3],
+        "how_it_works": dejargon(str(data.get("how_it_works", ""))),
+        "caveat": dejargon(str(data.get("caveat", ""))),
         "model": model,
     }
 
@@ -222,6 +307,35 @@ async def _explain_anthropic(prompt: str) -> Optional[Dict[str, Any]]:
         return None
     text = next((b.text for b in response.content if b.type == "text"), "")
     return _validate(text, ANTHROPIC_MODEL)
+
+
+_PLAIN_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "plain_cards.json")
+_plain: Optional[Dict[str, Dict[str, Any]]] = None
+
+
+def precomputed(doc_id: str) -> Optional[Dict[str, Any]]:
+    """Pre-generated plain-English card for a corpus entry (see scripts/build_plain_cards.py)."""
+    global _plain
+    if _plain is None:
+        try:
+            with open(_PLAIN_PATH, encoding="utf-8") as fh:
+                _plain = json.load(fh)
+        except (OSError, json.JSONDecodeError):
+            _plain = {}
+    card = _plain.get(doc_id)
+    if not card:
+        return None
+    return {
+        "insight": dejargon(card.get("insight", "")),
+        "steps": [
+            {"title": dejargon(st.get("title", "")), "detail": dejargon(st.get("detail", ""))}
+            for st in card.get("steps", [])
+            if isinstance(st, dict)
+        ],
+        "how_it_works": dejargon(card.get("how_it_works", "")),
+        "caveat": dejargon(card.get("caveat", "")),
+        "model": "pre-generated",
+    }
 
 
 _cache: Dict[str, Dict[str, Any]] = {}  # same problem + same match -> no repeat API call

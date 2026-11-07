@@ -41,15 +41,18 @@ export type Match = {
   passes_offset_cosine_gate?: boolean;
   below_threshold?: boolean;
   situation_description?: string;
-  /** Optional plain-English explanation from the LLM layer (absent if no key / failure). */
-  explanation?: {
-    headline: string;
-    connection: string;
-    steps: string[];
-    caveats: string;
-    model?: string;
-  };
+  /** Plain-English executive briefing (live LLM, or pre-generated per corpus entry). */
+  explanation?: Briefing;
   why_it_maps?: string;
+};
+
+export type Briefing = {
+  insight: string;
+  steps: { title: string; detail: string }[];
+  how_it_works: string;
+  caveat: string;
+  /** model that wrote it, or "pre-generated" */
+  model?: string;
 };
 
 export type TeleportResult = {

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Paperclip, X } from "lucide-react";
 import GalaxyCanvas, { type GalaxyCanvasHandle } from "@/components/GalaxyCanvas";
+import AnalogyCard from "@/components/AnalogyCard";
 import { streamTeleport, type TeleportEvent, type TeleportResult } from "@/lib/teleport-api";
 
 export const Route = createFileRoute("/console")({
@@ -253,7 +254,7 @@ function Console() {
         </header>
         <div
           ref={scrollRef}
-          className="terminal min-h-40 flex-1 space-y-1 overflow-y-auto p-4 text-xs leading-relaxed"
+          className={`terminal ${result ? "min-h-20" : "min-h-40"} flex-1 space-y-1 overflow-y-auto p-4 text-xs leading-relaxed`}
         >
           {lines.map((l, i) => (
             <div key={i} className="animate-in fade-in slide-in-from-bottom-1">
@@ -264,7 +265,7 @@ function Console() {
           {busy && <div className="caret text-primary">▋</div>}
         </div>
 
-        {result && <MatchCard result={result} problem={lastProblem} />}
+        {result && <AnalogyCard result={result} problem={lastProblem} />}
 
         <form
           onSubmit={(e) => {
@@ -382,95 +383,6 @@ function Status({
       <span className={`status-dot ${tone === "accent" ? "bg-accent" : "bg-primary"}`} />
       <span className="text-muted-foreground">{label}:</span>
       <span className={tone === "accent" ? "text-accent" : "text-primary"}>{value}</span>
-    </div>
-  );
-}
-
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-0.5">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
-      <div className="text-foreground/90">{children}</div>
-    </div>
-  );
-}
-
-function MatchCard({ result, problem }: { result: TeleportResult; problem: string }) {
-  const m = result.match;
-  const ex = m.explanation;
-  const steps = ex?.steps?.length ? ex.steps : (m.adaptation ?? []);
-  const strength = m.score >= 0.55 ? "strong" : m.score >= 0.4 ? "moderate" : "weak";
-  return (
-    <div className="max-h-[22rem] space-y-2.5 overflow-y-auto border-t border-border bg-card/60 p-3 text-xs leading-relaxed">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-bold text-primary">{ex?.headline ?? m.title}</p>
-        <span className="flex shrink-0 items-center gap-1.5">
-          {m.source === "arxiv-live" && (
-            <span className="rounded border border-accent px-1 text-[10px] uppercase tracking-wider text-accent">
-              live · arXiv
-            </span>
-          )}
-          <span
-            className="rounded border border-border px-1 text-[10px] uppercase tracking-wider text-accent"
-            title={`cosine similarity ${m.score.toFixed(2)}`}
-          >
-            {strength} match · {m.score.toFixed(2)}
-          </span>
-        </span>
-      </div>
-
-      {problem && (
-        <Section label="Your problem">
-          <p>{problem}</p>
-        </Section>
-      )}
-
-      <Section label={`Borrowed from · ${m.domain}`}>
-        {ex && <p className="font-semibold">{m.title}</p>}
-        <p>{ex?.connection || m.summary}</p>
-      </Section>
-
-      {steps.length > 0 && (
-        <Section label="Try this">
-          <ol className="list-inside list-decimal space-y-0.5">
-            {steps.slice(0, 3).map((a, i) => (
-              <li key={i}>{a}</li>
-            ))}
-          </ol>
-        </Section>
-      )}
-
-      {(ex?.caveats || m.limitations?.length) && (
-        <Section label="Watch out for">
-          <p className="text-foreground/75">{ex?.caveats || m.limitations!.join(" ")}</p>
-        </Section>
-      )}
-
-      <Section label="Source">
-        {m.url ? (
-          <a href={m.url} target="_blank" rel="noreferrer" className="text-primary underline">
-            {m.paper_ref || m.title}
-          </a>
-        ) : (
-          <p>{m.paper_ref || m.title}</p>
-        )}
-        {ex && (
-          <p className="text-[10px] text-muted-foreground">
-            Explanation written by {ex.model ?? "an LLM"} from this source only.
-          </p>
-        )}
-      </Section>
-
-      {result.candidates?.length ? (
-        <Section label="Other analogies">
-          <p className="text-muted-foreground">
-            {result.candidates
-              .slice(0, 3)
-              .map((c) => `${c.title} (${c.domain})`)
-              .join(" · ")}
-          </p>
-        </Section>
-      ) : null}
     </div>
   );
 }
