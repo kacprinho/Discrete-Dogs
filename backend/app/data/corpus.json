@@ -438,5 +438,805 @@
     ],
     "url": "https://doi.org/10.1038/nrn.2018.2",
     "paper_ref": "Ólafsdóttir, Bush & Barry, Nature Reviews Neuroscience 2018"
+  },
+  {
+    "id": "bio-honeybee-waggle-dance",
+    "title": "Honeybee Waggle Dance Decentralized Quorum Sensing (Seeley Model)",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Honeybee swarms evaluate competing nest sites without a central leader by cross-inhibiting alternative waggle dances until a population quorum threshold triggers swarm liftoff.",
+    "abstract": "Distributed Byzantine consensus and leaderless cluster quorum voting modeled on Apis mellifera swarm decision-making. Scouting bees perform positive feedback waggle dances proportional to site quality while applying stop signals (cross-inhibition) to scout bees advertising competing sites. The swarm reaches deadlock-free, noise-tolerant consensus when local scout density reaches a critical quorum threshold.",
+    "mechanism": "Decentralized cross-inhibitory positive feedback loops with non-linear quorum sensing thresholds",
+    "adaptation": [
+      "Implement mutual cross-inhibitory backpressure between competing consensus candidates to suppress split-vote churn",
+      "Replace strict majority voting with dynamic local quorum sensing thresholds calibrated to cluster network diameter",
+      "Introduce stop-signal damping packets to rapidly de-escalate stale leader elections during transient network partitions"
+    ],
+    "limitations": [
+      "Requires sufficient baseline agent population density for reliable quorum threshold detection",
+      "Slow initial convergence when two alternatives possess near-identical quality metrics"
+    ],
+    "url": "https://doi.org/10.1511/2006.59.99",
+    "paper_ref": "Seeley et al., American Scientist 2006"
+  },
+  {
+    "id": "bio-bacterial-quorum-sensing",
+    "title": "Bacterial Autoinducer Quorum Sensing & Population Threshold Activation",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Bacteria regulate collective virulence and biofilm formation by synthesizing diffusible autoinducer signaling molecules that trigger synchronized gene expression only at high cell density.",
+    "abstract": "Distributed circuit breaker coordination and batch job scheduling modeled on Vibrio fischeri autoinducer-1 (AI-1/AHL) quorum sensing. Independent microservices continuously emit lightweight heartbeats proportional to local queue saturation. When aggregate autoinducer concentration crosses a critical activation threshold, all nodes synchronously transition into high-throughput batching mode without centralized coordination.",
+    "mechanism": "Density-dependent diffusible autoinducer accumulation triggering coordinated step-function phase transitions",
+    "adaptation": [
+      "Synchronize microservice bulkhead isolation state by monitoring aggregate cluster-wide error autoinducer tokens",
+      "Dynamically switch logging and tracing verbosity from coarse to detailed once error concentration exceeds threshold",
+      "Coordinate distributed cache warmup by triggering pre-computation when read request signal density surges"
+    ],
+    "limitations": [
+      "Susceptible to autoinducer signal dilution under highly asymmetric network topologies",
+      "Small communication latency required for autoinducer accumulation to reflect instantaneous load"
+    ],
+    "url": "https://doi.org/10.1146/annurev.micro.55.1.165",
+    "paper_ref": "Miller & Bassler, Annu. Rev. Microbiol. 2001"
+  },
+  {
+    "id": "bio-plant-xylem-cavitation",
+    "title": "Plant Xylem Cavitation Resistance & Compartmentalized Vascular Perfusion",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Trees transport water under high negative pressures by isolating cavitation embolisms (air bubbles) inside micro-valved pit membranes, preventing catastrophic systemic hydraulic collapse.",
+    "abstract": "Cascading failure containment and fault-isolated connection pooling modeled on angiosperm xylem vessel architectures. High negative pressure (sap tension) risks acoustic cavitation bubbles. Bordered pits with torus-margo membranes automatically seal off cavitated conduits via surface tension capillary valves, preserving overall transpiration throughput across redundant vascular networks.",
+    "mechanism": "Capillary-sealed micro-valved pit membranes compartmentalizing acoustic embolisms",
+    "adaptation": [
+      "Partition connection pools into isolated vascular conduits with automatic micro-valved circuit isolation",
+      "Implement capillary backpressure gates that sever poisoned RPC channels without disturbing sibling socket threads",
+      "Maintain redundant parallel sub-channels with independent failure probabilities to guarantee baseline transport"
+    ],
+    "limitations": [
+      "Redundant vascular conduits incur memory and file descriptor overhead during low-contention operations",
+      "Severe drought stress (cluster-wide overload) can overwhelm compartmentalization if all pits close"
+    ],
+    "url": "https://doi.org/10.1007/978-3-662-04931-0",
+    "paper_ref": "Tyree & Zimmermann, Xylem Structure and Ascent of Sap 2002"
+  },
+  {
+    "id": "bio-locust-swarm-phase-transition",
+    "title": "Locust Swarm Density-Dependent Phase Transition & Serotonergic Shift",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Solitary locusts rapidly transform into voracious, coordinated swarms when local crowding triggers mechanosensory stimulation of hind legs, mediated by sudden serotonin release.",
+    "abstract": "Dynamic thread execution scaling and worker pool re-architecting modeled on Schistocerca gregaria phase transitions. Under low request volume, worker threads operate in solitary, autonomous non-blocking mode. When tactile request arrival density exceeds a critical tipping point, mechanosensory feedback triggers a global shift into synchronized collective batch pipelines.",
+    "mechanism": "Mechanosensory-triggered neuromodulatory phase transition between solitary and gregarious collective modes",
+    "adaptation": [
+      "Trigger automatic transition from per-request async execution to SIMD vectorized batching when queue arrival rate surges",
+      "Introduce sensory tactile dampening to prevent high-frequency toggling between solitary and swarm operating modes",
+      "Scale internal thread communication from independent point-to-point queues to synchronized broadcast rings"
+    ],
+    "limitations": [
+      "Hysteresis during phase reversal: shifting back from gregarious to solitary requires extended calm period",
+      "Memory buffer pre-allocation spikes during sudden swarm phase activation"
+    ],
+    "url": "https://doi.org/10.1073/pnas.131154298",
+    "paper_ref": "Simpson et al., PNAS 2001"
+  },
+  {
+    "id": "bio-cephalopod-chromatophore",
+    "title": "Cephalopod Chromatophore Neuromuscular Distributed Pixel Array",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Cephalopods achieve instantaneous optical camouflage through millions of independent dermal chromatophore organs controlled by radial motor units without central frame-buffering.",
+    "abstract": "High-frequency distributed UI state rendering and decentralized edge display updates modeled on squid and octopus skin chromatophores. Instead of calculating a global frame-buffer in a centralized GPU pipeline, individual radial muscle units expand cytoelastic pigment sacs based on localized edge contrast stimuli, achieving millisecond-level visual pattern convergence.",
+    "mechanism": "Decentralized neuromuscular radial tension actuators governing local elastic pigment volume",
+    "adaptation": [
+      "Decompose complex UI dashboards into autonomous self-updating edge web components without global React rerenders",
+      "Distribute telemetry rendering across web workers that independently compute DOM visual opacity gradients",
+      "Replace monolithic canvas frame loops with event-driven radial delta updates on active viewports"
+    ],
+    "limitations": [
+      "Consumes higher CPU across distributed workers compared to unified hardware-accelerated GPU blitting",
+      "Requires tight clock synchronization for smooth multi-element visual transitions"
+    ],
+    "url": "https://doi.org/10.1017/s1464793101005772",
+    "paper_ref": "Messenger, Biol. Rev. 2001"
+  },
+  {
+    "id": "bio-bird-flock-boids-reynolds",
+    "title": "Starling Murmuration Topological Distance Interaction (Vicsek-Reynolds)",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Flocks of thousands of starlings evade predators and maintain collective coherence by interacting with a fixed number of topological nearest neighbors (k=6-7) rather than metric distance.",
+    "abstract": "Peer-to-peer overlay network maintenance and decentralized swarm robotics based on Sturnus vulgaris murmurations. Unlike metric-distance models that break when swarm density expands or contracts, starlings align velocity vectors strictly with their 6 to 7 topological nearest neighbors. This preserves scale-free behavioral correlation and instantaneous collective agility.",
+    "mechanism": "Fixed topological degree interaction (k-nearest neighbors) maintaining scale-free velocity correlation",
+    "adaptation": [
+      "Maintain P2P overlay routing tables using fixed topological degree rather than physical latency radius",
+      "Enforce strict k-nearest neighbor gossip connections to maintain swarm consensus independent of cluster expansion",
+      "Propagate directional routing updates through topological neighborhood alignment to prevent boundary scattering"
+    ],
+    "limitations": [
+      "Requires continuous background neighbor sampling to maintain accurate topological neighbor rankings",
+      "Boundary edge nodes experience higher variance in neighbor alignment signals"
+    ],
+    "url": "https://doi.org/10.1073/pnas.0711437105",
+    "paper_ref": "Ballerini et al., PNAS 2008"
+  },
+  {
+    "id": "bio-termite-mound-thermoregulation",
+    "title": "Macrotermes Termite Mound Passive Buoyancy-Driven Thermoregulation",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Termites construct multi-meter soil mounds that harness external wind oscillations and internal metabolic heat to passively pump air and stabilize internal temperature and CO2.",
+    "abstract": "Zero-power edge server cooling and self-regulating cloud workload thermal dissipation modeled on Macrotermes bellicosus architecture. Temperature and respiratory gas gradients drive natural convective air currents through porous surface flutes and central chimneys, maintaining constant chamber conditions despite extreme 40°C external diurnal temperature swings.",
+    "mechanism": "Oscillatory wind-induced convective siphoning through porous micro-architectural flutes",
+    "adaptation": [
+      "Schedule compute-intensive batch jobs to follow natural environmental diurnal convective cooling curves",
+      "Design serverless edge hardware enclosures that exploit passive buoyancy airflow to eliminate fan power",
+      "Balance container pod CPU throttling dynamically against ambient thermodynamic convection currents"
+    ],
+    "limitations": [
+      "Thermal equilibrium requires sustained airflow; stalled ambient winds require auxiliary active mitigation",
+      "Slow thermal inertia response time under abrupt localized heat spikes"
+    ],
+    "url": "https://doi.org/10.1086/588308",
+    "paper_ref": "Turner & Soar, Physiol. Biochem. Zool. 2008"
+  },
+  {
+    "id": "bio-atp-synthase-rotary-motor",
+    "title": "F0F1-ATP Synthase Rotary Motor Chemiosmotic Coupling",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Mitochondrial ATP synthase synthesizes cellular fuel with near 100% thermodynamic efficiency using a rotating gamma-subunit camshaft driven by transmembrane proton flux.",
+    "abstract": "High-throughput stream processing pipeline and lock-free round-robin aggregation modeled on the F0F1-ATP synthase molecular complex. Proton motive force across the inner mitochondrial membrane drives rotary mechanical stepping of the c-ring, which rotates an asymmetric gamma camshaft through three alpha-beta catalytic sites, stepping them through open, loose, and tight binding states.",
+    "mechanism": "Transmembrane proton-motive torque driving three-phase cyclic rotary conformational synthesis",
+    "adaptation": [
+      "Structure multi-stage event processing engines as three-phase rotary state machines (Open -> Loose -> Tight)",
+      "Harness stream backpressure gradients as the physical driving torque advancing the processing camshaft",
+      "Achieve near-frictionless throughput by eliminating shared locks between the three catalytic pipeline stages"
+    ],
+    "limitations": [
+      "Requires steady proton motive force (continuous inbound stream pressure) to avoid reverse hydrolysis idling",
+      "Rotational mechanical stepping speed bounded by substrate diffusion rates"
+    ],
+    "url": "https://doi.org/10.1146/annurev.biochem.66.1.717",
+    "paper_ref": "Boyer, Annu. Rev. Biochem. 1997"
+  },
+  {
+    "id": "phys-superconducting-josephson-junction",
+    "title": "Josephson Junction Superconducting Phase Coherence & Phase-Slip Quantization",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Superconducting Cooper pairs tunnel through an insulating barrier with zero resistance, governed by the quantum phase difference across the junction with discrete 2-pi phase-slip dynamics.",
+    "abstract": "Lossless token-bucket rate limiting and jitter-free distributed clock synchronization modeled on quantum Josephson effect physics. Current tunneling obeys I = Ic * sin(phi). When driving current exceeds the critical threshold Ic, the junction switches into a resistive state with discrete 2-pi phase slips, emitting ultra-fast quantized single flux quantum (SFQ) pulses.",
+    "mechanism": "Macroscopic quantum phase coherence tunneling with quantized 2-pi phase slip transitions",
+    "adaptation": [
+      "Implement ultra-low jitter rate limiters that release burst tokens based on phase-slip quantization pulses",
+      "Maintain distributed clock synchronization using macroscopic phase locking across peer cluster nodes",
+      "Design lock-free ring buffers where buffer overflow triggers discrete quantized shedding without state corruption"
+    ],
+    "limitations": [
+      "Extreme sensitivity to thermal fluctuations near the critical transition boundary",
+      "Requires strict hysteresis damping to prevent high-frequency electrical ringing"
+    ],
+    "url": "https://doi.org/10.1063/1.881559",
+    "paper_ref": "Tinkham, Introduction to Superconductivity 1996"
+  },
+  {
+    "id": "phys-granular-jamming-transition",
+    "title": "Granular Jamming Phase Transition & Force-Chain Network Fragility",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Disordered granular media transition abruptly from fluid-like flow to rigid jammed solids when packing density crosses critical volume fraction phi_c, creating heterogeneous force chains.",
+    "abstract": "Network queue congestion control and thread pool lockup prevention modeled on granular jamming transitions. Packets in network switches act like disordered granular particles. Below critical packing fraction phi_c, flow is smooth; as arrival density nears phi_c, stress is transmitted along fragile, anisotropic force chains, causing sudden total throughput freezing.",
+    "mechanism": "Critical density thresholding triggering percolation of rigid force chains across disordered media",
+    "adaptation": [
+      "Monitor queue packing fraction to detect impending force-chain percolation before queue lockup occurs",
+      "Inject stochastic queue jitter to disrupt fragile force chains and restore fluid packet flow",
+      "Enforce hard density ceilings well below the critical packing fraction phi_c across ingress buffers"
+    ],
+    "limitations": [
+      "Jamming boundaries are history-dependent (hysteresis in unjamming requires lower density than initial jam)",
+      "Force chains are spatially heterogeneous and difficult to detect via average queue metrics alone"
+    ],
+    "url": "https://doi.org/10.1038/23819",
+    "paper_ref": "Liu & Nagel, Nature 1998"
+  },
+  {
+    "id": "phys-marangoni-surface-tension",
+    "title": "Marangoni Convective Mass Transfer Driven by Surface Tension Gradients",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Fluid flows along an interface away from areas of low surface tension toward areas of high surface tension, generating vigorous convective currents from thermal or chemical gradients.",
+    "abstract": "Priority-driven packet routing and autonomous load rebalancing modeled on Marangoni convective surface flows. In fluid systems, surface tension gradients dsigma/dx drive tangential shear stresses that drag bulk fluid. In distributed queues, latency and error gradients create an artificial surface tension differential that pulls pending requests toward underutilized nodes.",
+    "mechanism": "Tangential interfacial shear stress induced by spatial surface tension gradients",
+    "adaptation": [
+      "Define an artificial surface tension scalar across server pools proportional to idle CPU and available bandwidth",
+      "Route incoming microservice requests along surface tension gradients toward maximum affinity sinks",
+      "Dampen Marangoni flow oscillations by introducing localized interfacial viscosity resistance"
+    ],
+    "limitations": [
+      "Can trigger Benard-Marangoni hexagonal convective cells under intense heat/load gradients",
+      "Requires continuous real-time telemetry gradient estimation across all edge nodes"
+    ],
+    "url": "https://doi.org/10.1038/187186a0",
+    "paper_ref": "Scriven & Sternling, Nature 1960"
+  },
+  {
+    "id": "phys-peristaltic-non-newtonian",
+    "title": "Peristaltic Pumping of Non-Newtonian Fluids with Dynamic Viscosity Dilation",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Progressive waves of area contraction along flexible tube walls pump highly viscous and shear-thickening fluids against adverse mean pressure gradients without internal mechanical impellers.",
+    "abstract": "Stream processing batch orchestration and Kafka consumer queue flushing modeled on biological peristalsis. When handling non-Newtonian request flows that resist standard pumping, sinusoidal wall displacement waves trap discrete boluses of fluid and propel them forward, preventing internal shear degradation and maintaining throughput against severe backpressure.",
+    "mechanism": "Progressive transverse wall contraction waves generating continuous positive displacement flow",
+    "adaptation": [
+      "Structure stream consumer ingestion as synchronized peristaltic contraction waves that push batch boluses",
+      "Isolate variable-sized request payloads into discrete peristaltic packets to eliminate head-of-line blocking",
+      "Adjust wave speed and contraction amplitude dynamically in response to adverse downstream backpressure"
+    ],
+    "limitations": [
+      "Mechanical reflux and fluid trapping can occur if wave amplitude falls below critical occlusion threshold",
+      "Requires memory pre-allocation for traveling wave envelope buffers"
+    ],
+    "url": "https://doi.org/10.1017/s0022112069000899",
+    "paper_ref": "Shapiro, Jaffrin & Weinberg, J. Fluid Mech. 1969"
+  },
+  {
+    "id": "phys-optical-soliton-persistence",
+    "title": "Nonlinear Schrodinger Optical Soliton Dispersion-Kerr Balance",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Optical solitons propagate thousands of kilometers through optical fibers without broadening by maintaining an exact balance between anomalous group velocity dispersion and nonlinear Kerr self-phase modulation.",
+    "abstract": "Zero-degradation long-distance RPC packet transport and state snapshot persistence modeled on fundamental optical solitons. As packets traverse heterogeneous WAN topologies, temporal jitter causes packet dispersion. By coupling packet size with processing velocity through an artificial Kerr nonlinearity, packets preserve invariant envelope profiles over arbitrary network hops.",
+    "mechanism": "Nonlinear self-phase modulation counterbalancing linear dispersive wave broadening",
+    "adaptation": [
+      "Design RPC envelope protocols that dynamically adapt header compression to cancel out WAN link jitter dispersion",
+      "Maintain invariant temporal shape of real-time video streaming packets across noisy heterogeneous networks",
+      "Use soliton perturbation theory to detect and correct transmission anomalies without full packet retransmission"
+    ],
+    "limitations": [
+      "Requires precise matching of nonlinear parameter to channel dispersion; mismatched pulses shed radiation",
+      "Susceptible to Gordon-Haus timing jitter induced by repeated amplifier noise accumulation"
+    ],
+    "url": "https://doi.org/10.1063/1.1654836",
+    "paper_ref": "Hasegawa & Tappert, Appl. Phys. Lett. 1973"
+  },
+  {
+    "id": "phys-casimir-vacuum-fluctuation",
+    "title": "Casimir Cavity Boundary Restriction of Quantum Vacuum Modes",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Two uncharged parallel conductive plates placed nanometers apart experience an attractive force because boundary conditions exclude electromagnetic vacuum modes with wavelengths larger than the gap.",
+    "abstract": "Thread pool optimization and resource contention minimization modeled on the Casimir effect. In unconstrained runtime environments, the infinite spectrum of background thread allocations produces chaotic context-switching pressure. By imposing rigid boundary constraints on worker pool dimensions, spurious execution modes are physically excluded, yielding deterministic execution.",
+    "mechanism": "Geometric boundary exclusion of zero-point vacuum fluctuation modes generating inward pressure",
+    "adaptation": [
+      "Impose strict upper and lower limits on concurrency pools to exclude turbulent short-lived thread allocations",
+      "Harness geometric resource boundaries to eliminate memory thrashing in multi-tenant container runtimes",
+      "Stabilize CPU cache residency by restricting thread execution gaps to match CPU cache line boundaries"
+    ],
+    "limitations": [
+      "Extreme boundary proximity can cause stiction and permanent collapse of dynamic thread scaling",
+      "Surface roughness (heterogeneous hardware specs) introduces non-ideal boundary corrections"
+    ],
+    "url": "https://doi.org/10.1016/0031-8914(48)90038-0",
+    "paper_ref": "Casimir, Proc. K. Ned. Akad. Wet. 1948"
+  },
+  {
+    "id": "phys-renormalization-group-flow",
+    "title": "Wilson Renormalization Group Fixed Points & Scale-Invariant Effective Field Theory",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Renormalization groups integrate out microscopic high-momentum degrees of freedom iteratively, revealing universal scale-invariant fixed points that govern macroscopic system behavior.",
+    "abstract": "Distributed telemetry aggregation and root-cause observability modeled on Wilsonian renormalization group flow. Raw distributed tracing produces overwhelming gigabytes of micro-level telemetry. By iteratively coarse-graining high-frequency request jitter and integrating out short-range RPC noise, system monitors extract universal macro-level fault trajectories.",
+    "mechanism": "Successive momentum-shell integration and spatial coarse-graining isolating relevant scaling operators",
+    "adaptation": [
+      "Filter raw microservice telemetry through multi-layer coarse-graining steps that eliminate high-frequency RPC noise",
+      "Identify cluster-wide system failures by detecting when operational telemetry flows toward unstable RG fixed points",
+      "Compress distributed execution traces by retaining only relevant scaling variables across architectural levels"
+    ],
+    "limitations": [
+      "Irrelevant microscopic details that trigger sudden catastrophic black-swan events may be filtered out",
+      "Requires verified conformal symmetry to guarantee existence of clean scale-invariant fixed points"
+    ],
+    "url": "https://doi.org/10.1103/revmodphys.47.773",
+    "paper_ref": "Wilson, Rev. Mod. Phys. 1975"
+  },
+  {
+    "id": "phys-chladni-acoustic-levitation",
+    "title": "Chladni Plate Resonance Nodal Line Trapping & Acoustic Levitation",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Vibrating plates driven at resonant acoustic frequencies cause dispersed granular particles to migrate toward zero-displacement nodal lines, forming intricate geometric patterns.",
+    "abstract": "Distributed database shard key partitioning and zero-copy cache affinity modeled on Chladni nodal patterns. Dispersed data partitions in high-throughput clusters experience severe vibrational transport overhead. By establishing standing latency waves across the network fabric, data records naturally self-assemble into zero-churn nodal cache partitions.",
+    "mechanism": "Resonant two-dimensional standing wave patterns generating stable zero-displacement nodal geometries",
+    "adaptation": [
+      "Align database shard keys with network topology standing wave nodes to achieve zero cross-switch traffic",
+      "Trap volatile cache entries in stable latency nodal zones to minimize inter-region cache replication churn",
+      "Modulate query arrival frequencies to dynamically reorganize shard boundary geometries under shifting workloads"
+    ],
+    "limitations": [
+      "Harmonic mode shifts under frequency changes cause sudden explosive redistribution of trapped data",
+      "Requires symmetric network topologies to establish clean, predictable acoustic standing waves"
+    ],
+    "url": "https://doi.org/10.1017/cbo9781139058087",
+    "paper_ref": "Rayleigh, The Theory of Sound 1896"
+  },
+  {
+    "id": "soc-scale-free-acquaintance-immunization",
+    "title": "Cohen Acquaintance Immunization on Scale-Free Contact Graphs",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Random neighbor probing immunizes super-spreader hubs on scale-free graphs without requiring global network topology knowledge, by exploiting the friendship paradox.",
+    "abstract": "Zero-day vulnerability patching and targeted DDoS firewall hardening modeled on acquaintance immunization. Scale-free networks possess divergent degree variance, making random node immunization completely ineffective. By selecting a random node and immunizing its random acquaintance, high-degree hub nodes are sampled with probability proportional to degree k, neutralizing contagion.",
+    "mechanism": "Degree-biased random walk sampling exploiting the friendship paradox (E[k^2]/E[k] hub bias)",
+    "adaptation": [
+      "Harden microservice security perimeters by sampling random downstream API clients and securing their targets",
+      "Protect critical databases from cascading query floods by placing rate limiters on discovered high-degree callers",
+      "Eliminate single-point-of-failure bottlenecks without running expensive global dependency graph analyses"
+    ],
+    "limitations": [
+      "Ineffective on homogeneous random graphs (Erdos-Renyi) where degree variance is near zero",
+      "Requires truthful disclosure of neighbor pointers during the acquaintance discovery probe"
+    ],
+    "url": "https://doi.org/10.1103/physrevlett.91.247901",
+    "paper_ref": "Cohen, Havlin & ben-Avraham, Phys. Rev. Lett. 2003"
+  },
+  {
+    "id": "soc-dunbars-number-sharding",
+    "title": "Dunbar Cognitive Group Boundary & Neocortex Ratio Sharding",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Human social groups exhibit an upper cognitive limit of ~150 individuals, beyond which maintaining stable social cohesion requires formal, coercive hierarchical structures.",
+    "abstract": "Consensus cluster sizing and gossip protocol peer group sharding modeled on Dunbar's number and neocortex volume ratios. In peer-to-peer networks, fully connected peer graphs experience O(N^2) heartbeat message overhead. By enforcing a hard cognitive ceiling of 128 to 150 peers per cluster shard, nodes maintain zero-coordination consensus without hierarchy.",
+    "mechanism": "Cognitive neocortical processing limits constraining stable bilateral relationship graphs",
+    "adaptation": [
+      "Shard distributed Raft/Paxos clusters into peer cells capped at 128 nodes to eliminate gossip overhead",
+      "Organize engineering microservices into bounded context teams aligned with natural communication limits",
+      "Hierarchically federate autonomous peer cells using sparse bridge delegates rather than flat peer graphs"
+    ],
+    "limitations": [
+      "Cross-cell communication requires formal inter-cell federation bridges that introduce boundary latency",
+      "Rigid sharding limits can cause resource fragmentation during asymmetric burst traffic"
+    ],
+    "url": "https://doi.org/10.1016/0047-2484(92)90081-j",
+    "paper_ref": "Dunbar, J. Hum. Evol. 1992"
+  },
+  {
+    "id": "soc-axelrod-iterative-cooperation",
+    "title": "Axelrod Evolution of Cooperation & Tit-for-Tat Reciprocal Strategies",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "In iterated Prisoner's Dilemma tournaments, the simple Tit-for-Tat strategy (start cooperative, then reciprocate opponent's previous move) outperforms all complex exploitative strategies.",
+    "abstract": "Inter-tenant API rate allocation and cooperative caching modeled on Axelrod's evolutionary game theory. Competing multi-tenant microservices exploit shared memory and database pools. By implementing Tit-for-Tat quota management—cooperating unconditionally on initial requests, immediately retaliating against quota spikes, and instantly forgiving upon return to limits—system achieves high throughput.",
+    "mechanism": "Iterated reciprocal retribution and immediate forgiveness under the Shadow of the Future",
+    "adaptation": [
+      "Reward well-behaved API tenants with burst capacity credits while instantly throttling defecting burst spikes",
+      "Enable immediate rate-limit recovery once a tenant reduces request arrival rates below target thresholds",
+      "Prevent exploitative starvation attacks on shared worker pools without requiring complex dynamic priority queues"
+    ],
+    "limitations": [
+      "Susceptible to eternal vendetta deadlock spirals in the presence of noisy network packet loss",
+      "Requires continuous interaction history (shadow of the future) to deter hit-and-run tenant exploitation"
+    ],
+    "url": "https://doi.org/10.1126/science.7466396",
+    "paper_ref": "Axelrod & Hamilton, Science 1981"
+  },
+  {
+    "id": "soc-bikhchandani-informational-cascade",
+    "title": "Bikhchandani Informational Cascades & Rational Herd Dynamics",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Sequential rational agents rationally ignore their private information signals and imitate predecessor actions once public signals exceed a critical weight, creating fragile informational cascades.",
+    "abstract": "Consensus voting herd prevention and canary deployment validation modeled on Bikhchandani informational cascade dynamics. In distributed leader election or multi-region canary health checks, initial positive votes create a cascade where subsequent nodes blindly rubber-stamp failing deployments. Injecting contrarian noise breaks cascades and restores independent signal aggregation.",
+    "mechanism": "Bayesian probability updates causing public history signals to dominate private evidence",
+    "adaptation": [
+      "Force distributed health checkers to evaluate private telemetry without viewing peer node consensus status",
+      "Introduce contrarian canary probe workers that intentionally stress candidate builds under adverse conditions",
+      "Break dangerous failover herd behavior in load balancers by adding stochastic jitter to peer health scores"
+    ],
+    "limitations": [
+      "Contrarian signal injection increases the time required to reach legitimate emergency consensus",
+      "Can cause transient vote splitting during initial deployment verification phases"
+    ],
+    "url": "https://doi.org/10.1086/261849",
+    "paper_ref": "Bikhchandani, Hirshleifer & Welch, J. Polit. Econ. 1992"
+  },
+  {
+    "id": "soc-ostrom-polycentric-governance",
+    "title": "Elinor Ostrom Polycentric Common-Pool Resource Governance",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Communities successfully prevent Tragedy of the Commons resource collapse through nested polycentric institutions, clear boundary rules, graduated sanctions, and rapid conflict resolution.",
+    "abstract": "Multi-tenant Kubernetes compute governance and shared database IOPS management modeled on Ostrom's Nobel prize-winning eight design principles. Centralized quota systems become bureaucratic bottlenecks; unmanaged shared resources collapse. Ostrom polycentric governance empowers localized namespace pods to negotiate resource trade-offs with graduated penalties.",
+    "mechanism": "Nested polycentric institutional rule enforcement with graduated sanctions and clear boundary rights",
+    "adaptation": [
+      "Enforce clear namespace resource boundaries with self-monitoring tenant quota pools",
+      "Apply graduated eviction sanctions (warning -> CPU throttling -> memory capping -> pod termination)",
+      "Deploy localized conflict resolution arbitration services to settle IOPS contention without cluster-wide lockups"
+    ],
+    "limitations": [
+      "Higher administrative metadata overhead compared to primitive hard quota cutoffs",
+      "Requires active tenant telemetry participation to calculate fair graduated sanctions"
+    ],
+    "url": "https://doi.org/10.1017/cbo9780511807763",
+    "paper_ref": "Ostrom, Governing the Commons 1990"
+  },
+  {
+    "id": "soc-braess-paradox-routing",
+    "title": "Braess Paradox in Transportation Networks & Flow Redistribution",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Adding a new high-capacity shortcut edge to a congested road network can paradoxically increase the average travel time for all users when selfish Nash equilibrium diverges from social optimum.",
+    "abstract": "Microservice routing optimization and connection fabric topology pruning modeled on the Braess paradox. When software engineers add high-speed direct network links between microservices to reduce latency, all traffic routes through the shortcut, overloading shared downstream dependencies and increasing global p99 response times. Pruning redundant edges restores optimal flow.",
+    "mechanism": "Nash equilibrium divergence from Pareto social optimum in non-cooperative flow networks",
+    "adaptation": [
+      "Selectively disable direct low-latency RPC shortcut edges under peak cluster load to force distributed routing",
+      "Enforce congestion externality surcharges on high-throughput microservice shortcuts to prevent routing collapse",
+      "Continuously simulate network topology edge removals to detect and eliminate dormant Braess paradox paths"
+    ],
+    "limitations": [
+      "Counter-intuitive to infrastructure teams who expect adding network links to always improve throughput",
+      "Requires global flow monitoring to compute true Nash vs social optimum divergence"
+    ],
+    "url": "https://doi.org/10.1007/bf01918331",
+    "paper_ref": "Braess, Unternehmensforschung 1968"
+  },
+  {
+    "id": "soc-minority-game-challet",
+    "title": "Challet-Zhang Minority Game & Inductive Adaptive Coordination",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Autonomous agents repeatedly choose between two resources with bounded capacity; only agents picking the minority option win, driving the population into highly efficient self-organized coordination.",
+    "abstract": "Distributed database read-replica selection and dynamic ingress gateway balancing modeled on the Challet-Zhang Minority Game. When multiple edge routers simultaneously route traffic to the currently fastest replica, that replica immediately becomes congested. Agents using inductive strategy evaluation dynamically disperse across replicas without central coordination.",
+    "mechanism": "Inductive historical strategy evaluation under antagonistic negative feedback resource competition",
+    "adaptation": [
+      "Route traffic across read replicas using predictive minority game scoring rather than lagging latency metrics",
+      "Equip routing clients with competing internal strategy heuristics that are rewarded only when picking the idle replica",
+      "Prevent synchronized thundering-herd routing spikes by encouraging heterogeneous client prediction strategies"
+    ],
+    "limitations": [
+      "Can experience transient volatility clusters when client strategy diversity drops below critical threshold",
+      "Requires agents to track historical minority outcome bits over recent time horizons"
+    ],
+    "url": "https://doi.org/10.1016/s0378-4371(97)00419-6",
+    "paper_ref": "Challet & Zhang, Physica A 1997"
+  },
+  {
+    "id": "soc-granovetter-strength-weak-ties",
+    "title": "Granovetter Strength of Weak Ties & Bridging Edge Centrality",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Infrequent weak ties connecting disparate social cliques provide the critical topological bridges through which novel information, innovation, and systemic risk diffuse across society.",
+    "abstract": "Cross-region database replication and distributed gossip mesh optimization modeled on Granovetter's weak ties sociology. Dense local clusters (microservice availability zones) share redundant high-frequency heartbeats, but cross-zone bandwidth is scarce. Maintaining sparse weak-tie bridges between zones maximizes information diffusion while cutting WAN egress costs.",
+    "mechanism": "Low-frequency bridging edges between high-clustering-coefficient topological subgraphs",
+    "adaptation": [
+      "Maintain dense high-frequency heartbeats within local availability zones, connected by sparse weak-tie WAN bridges",
+      "Propagate cache invalidation digests primarily across weak-tie bridge nodes to minimize cross-region traffic",
+      "Detect architectural silos by monitoring the density of weak ties between disparate software engineering teams"
+    ],
+    "limitations": [
+      "Weak-tie bridge nodes become high-leverage single points of failure if not redundantly provisioned",
+      "Information transmission latency across weak ties is higher than within dense local cliques"
+    ],
+    "url": "https://doi.org/10.1086/225469",
+    "paper_ref": "Granovetter, Am. J. Sociol. 1973"
+  },
+  {
+    "id": "math-johnson-lindenstrauss-lemma",
+    "title": "Johnson-Lindenstrauss Lemma Metric-Preserving Random Projection",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Points in a high-dimensional space can be projected into a logarithmic dimensional subspace while preserving pairwise Euclidean distances within a factor of (1 +- epsilon).",
+    "abstract": "Ultra-fast distributed trace indexing and vector database search compression modeled on the Johnson-Lindenstrauss (JL) Lemma. Telemetry embeddings with thousands of dimensions incur severe RAM and network transfer penalties. Multiplying embeddings by a random Gaussian projection matrix into d = O(log N / epsilon^2) dimensions preserves distance metrics while reducing data volume by 95%.",
+    "mechanism": "Random orthogonal projection matrix mapping preserving pairwise Euclidean distances",
+    "adaptation": [
+      "Compress high-dimensional microservice trace embeddings into compact bit vectors for microsecond search",
+      "Accelerate nearest-neighbor similarity searches in FAISS by performing coarse pre-filtering in JL projection space",
+      "Reduce telemetry network bandwidth consumption by projecting high-dim metrics at the edge before transmission"
+    ],
+    "limitations": [
+      "Introduces a small bounded distortion factor epsilon on pairwise distance calculations",
+      "Target dimension depends logarithmically on the total number of points N, requiring re-projection as N scales"
+    ],
+    "url": "https://doi.org/10.1090/conm/026/737400",
+    "paper_ref": "Johnson & Lindenstrauss, Contemp. Math. 1984"
+  },
+  {
+    "id": "math-perron-frobenius-spectral",
+    "title": "Perron-Frobenius Dominant Eigenvector Centrality & Markov Stationarity",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Any irreducible non-negative real square matrix has a unique largest real eigenvalue whose corresponding eigenvector has strictly positive components, governing steady-state Markov convergence.",
+    "abstract": "Critical microservice dependency prioritization and chaos engineering blast-radius ranking modeled on Perron-Frobenius spectral graph theory. By treating the service dependency graph as a stochastic transition matrix, the dominant right eigenvector represents steady-state request centrality, identifying critical bottlenecks that dictate overall system availability.",
+    "mechanism": "Spectral radius dominance and positive eigenvector uniqueness in irreducible non-negative operators",
+    "adaptation": [
+      "Compute real-time spectral centrality of microservices from live call graphs to allocate redundancy budgets",
+      "Prioritize incident alert triage by weighting services proportional to their Perron-Frobenius centrality vector",
+      "Target chaos engineering fault injection at nodes with maximal dominant eigenvector components"
+    ],
+    "limitations": [
+      "Matrix must remain irreducible (strongly connected); disconnected graphs require PageRank damping factors",
+      "Eigenvector recomputation on massive dynamic graphs requires iterative power methods with convergence latency"
+    ],
+    "url": "https://doi.org/10.1007/978-3-642-10874-7",
+    "paper_ref": "Frobenius, Sitzungsber. K. Preuss. Akad. Wiss. 1912"
+  },
+  {
+    "id": "math-banach-fixed-point-contraction",
+    "title": "Banach Fixed-Point Contraction Mapping Principle",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "A contraction mapping on a complete metric space admits a unique fixed point, and the sequence of successive function iterations converges geometrically to that fixed point.",
+    "abstract": "Distributed state synchronization and Kubernetes declarative controller reconciliation modeled on the Banach fixed-point theorem. When multiple controllers asynchronously reconcile desired vs actual system states, naive reconciliation causes infinite flapping oscillations. Enforcing a strict Lipschitz contraction condition L < 1 guarantees geometric convergence to the unique target state.",
+    "mechanism": "Metric contraction mapping with Lipschitz constant L < 1 guaranteeing geometric convergence",
+    "adaptation": [
+      "Design Kubernetes reconciliation controllers whose state transition functions satisfy strict contraction criteria",
+      "Eliminate infinite flapping loops in autoscaling algorithms by enforcing contraction bounds on scaling steps",
+      "Guarantee fast geometric convergence in distributed CRDT state merges by bounding update variance"
+    ],
+    "limitations": [
+      "State space must form a complete metric space with well-defined distance metrics",
+      "Convergence rate slows down dramatically as the Lipschitz contraction constant L approaches 1"
+    ],
+    "url": "https://doi.org/10.4064/fm-3-1-133-181",
+    "paper_ref": "Banach, Fundam. Math. 1922"
+  },
+  {
+    "id": "math-voronoi-delaunay-tessellation",
+    "title": "Voronoi-Delaunay Dual Spatial Partitioning & Nearest-Neighbor Graphs",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Voronoi diagrams partition space into convex polygonal cells closest to each seed, whose geometric dual Delaunay triangulation maximizes the minimum angle of all triangle faces.",
+    "abstract": "Geospatial edge computing routing and distributed spatial database indexing modeled on Voronoi-Delaunay geometric duality. Mobile clients and IoT devices require millisecond routing to nearest edge computing nodes. Dynamically updating Voronoi cell boundaries as edge nodes experience variable load enables zero-churn request handoffs without coverage gaps.",
+    "mechanism": "Empty-circumcircle Delaunay criterion generating optimal convex polygonal Voronoi cell partitions",
+    "adaptation": [
+      "Partition edge computing workloads across cellular base stations using dynamic Voronoi cell boundaries",
+      "Route mobile user requests to edge data centers based on dual Delaunay proximity graphs to guarantee minimal latency",
+      "Rebalance spatial database shards by shifting Voronoi generator points in proportion to query density"
+    ],
+    "limitations": [
+      "High-dimensional Voronoi partitioning suffers from exponential combinatorial complexity explosion",
+      "Rapid movement of generator seeds causes boundary cell recalculation overhead"
+    ],
+    "url": "https://doi.org/10.1007/s00453-010-9423-1",
+    "paper_ref": "Delaunay, Izv. Akad. Nauk SSSR 1934"
+  },
+  {
+    "id": "math-haar-wavelet-multiresolution",
+    "title": "Mallat Multiresolution Wavelet Decomposition & Subband Filtering",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Multiresolution analysis decomposes continuous or discrete signals into orthogonal detail and approximation subbands across dyadic scales, isolating transient bursts from baseline trends.",
+    "abstract": "Real-time infrastructure metric compression and anomaly spike detection modeled on Mallat multiresolution wavelet analysis. Time-series monitoring generates overwhelming telemetry volumes. Passing metrics through quadrature mirror filters decomposes signals into smooth low-frequency trends and sparse high-frequency wavelets, enabling 90% compression and instantaneous spike isolation.",
+    "mechanism": "Orthogonal projection across nested Hilbert approximation spaces via discrete wavelet transforms",
+    "adaptation": [
+      "Compress real-time server telemetry by discarding insignificant high-frequency wavelet detail coefficients",
+      "Detect microsecond network latency spikes by isolating sparse high-frequency wavelet subband energy",
+      "Reconstruct long-term capacity trends from low-frequency approximation subbands without storing raw metrics"
+    ],
+    "limitations": [
+      "Boundary edge effects at the start and end of finite measurement windows can introduce wavelet ringing",
+      "Non-stationary signals with sudden structural shifts require adaptive wavelet basis selection"
+    ],
+    "url": "https://doi.org/10.1109/34.192463",
+    "paper_ref": "Mallat, IEEE Trans. Pattern Anal. Mach. Intell. 1989"
+  },
+  {
+    "id": "math-erdos-renyi-percolation",
+    "title": "Erdos-Renyi Giant Component Percolation Phase Transition",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "In random graphs G(n, p), a sharp phase transition occurs at critical edge probability p = 1/n, where isolated components suddenly coalesce into a single macroscopic giant component.",
+    "abstract": "Malware worm blast-radius containment and microservice partition tolerance modeled on Erdős-Rényi percolation theory. If inter-service communication permissions exceed the critical percolation threshold p_c, a security vulnerability or cascading failure instantly propagates across the entire cluster. Maintaining network edge density strictly below p_c guarantees macroscopic isolation.",
+    "mechanism": "Nonlinear percolation thresholding governing emergence of connected infinite giant components",
+    "adaptation": [
+      "Configure zero-trust service mesh firewall policies to maintain connection density strictly below critical percolation p_c",
+      "Prevent cascading database failures by dynamically pruning non-essential inter-service dependencies during incidents",
+      "Design resilient P2P overlay networks that operate safely just above the percolation threshold to guarantee connectivity"
+    ],
+    "limitations": [
+      "Microservice networks exhibit scale-free power-law degree distributions rather than purely random Poisson graphs",
+      "Near the percolation threshold, finite-size effects make the transition boundary fuzzy in small clusters"
+    ],
+    "url": "https://doi.org/10.1007/978-1-4612-4098-3_14",
+    "paper_ref": "Erdos & Renyi, Publ. Math. Inst. Hung. Acad. Sci. 1960"
+  },
+  {
+    "id": "math-hodge-helmholtz-decomposition",
+    "title": "Helmholtz-Hodge Vector Field Orthogonal Decomposition",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Any sufficiently smooth vector field decomposes uniquely into an orthogonal sum of a curl-free (gradient of potential) field and a divergence-free (solenoidal rotational) field.",
+    "abstract": "Cloud infrastructure cost optimization and network traffic churn analysis modeled on Helmholtz-Hodge orthogonal decomposition. In multidimensional resource telemetry, request routing exhibits both direct forward throughput (curl-free gradient flow) and wasteful cyclic retry loops (divergence-free rotational churn). Decomposing traffic isolates and eliminates parasitic circular dependencies.",
+    "mechanism": "Orthogonal L2 decomposition into irrotational gradient fields and solenoidal divergence-free curls",
+    "adaptation": [
+      "Decompose distributed RPC call graphs into direct value-producing flows and circular retry loops",
+      "Eliminate redundant cyclic dependency calls between microservices by zeroing out solenoidal curl components",
+      "Optimize multi-cloud traffic routing by aligning packet velocity vectors with conservative potential gradients"
+    ],
+    "limitations": [
+      "Requires well-defined boundary conditions on the manifold to ensure mathematical orthogonality",
+      "Harmonic components (fields that are both curl-free and divergence-free) appear on manifolds with non-trivial topology"
+    ],
+    "url": "https://doi.org/10.1109/tvcg.2012.290",
+    "paper_ref": "Bhatia et al., IEEE TVCG 2013"
+  },
+  {
+    "id": "math-radon-transform-tomography",
+    "title": "Radon Transform Projection Integral & Tomographic Inversion",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "The Radon transform computes integrals of a function over straight hyperplanes, allowing complete internal multidimensional reconstruction from 1D projection profiles via back-projection.",
+    "abstract": "Non-intrusive microservice performance profiling and black-box latency reconstruction modeled on Radon transform computed tomography (CT scanning). Directly instrumenting every line of production code adds unacceptable latency. By measuring external 1D line-integral projections (ingress/egress packet timing), tomographic inversion reconstructs internal microservice latency bottlenecks.",
+    "mechanism": "Continuous line integral hyperplane projections inverted via Fourier slice projection theorems",
+    "adaptation": [
+      "Reconstruct internal distributed service dependency call latencies solely from external boundary packet timings",
+      "Eliminate invasive tracing overhead by deploying tomographic ingress/egress passive network sniffers",
+      "Detect hidden resource contention bottlenecks inside legacy black-box binary containers without source code"
+    ],
+    "limitations": [
+      "Requires sufficient angular projection coverage; sparse sampling leads to streak artifacts in reconstruction",
+      "High computational cost of continuous filtered back-projection (FBP) under high packet arrival rates"
+    ],
+    "url": "https://doi.org/10.1090/bull/1986-14-02/s0273-0979-1986-15440-6",
+    "paper_ref": "Radon, Ber. Verh. Sachs. Akad. Wiss. Leipzig 1917"
+  },
+  {
+    "id": "cog-dopaminergic-reward-prediction-error",
+    "title": "Schultz Dopaminergic Reward Prediction Error (TD Learning)",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Midbrain dopamine neurons signal temporal difference prediction error: the difference between received and expected rewards, driving reinforcement learning across the basal ganglia.",
+    "abstract": "Autonomous database query optimization and autoscaling resource allocation modeled on Schultz dopaminergic reward prediction error (RPE). Traditional cost optimizers rely on static table statistics that degrade under skewed writes. By computing real-time prediction error delta = R + gamma * V(s') - V(s) between estimated and actual execution latency, query plans continuously self-optimize.",
+    "mechanism": "Phasic dopaminergic firing proportional to temporal difference expectation error delta",
+    "adaptation": [
+      "Continuously update SQL query cost estimates using temporal-difference prediction error from execution runtimes",
+      "Drive Kubernetes auto-scaling policies via reward prediction error rather than static CPU threshold rules",
+      "Optimize CDN cache pre-fetching affinity weights using dopamine-like predictive reinforcement rewards"
+    ],
+    "limitations": [
+      "Susceptible to policy instability or divergence when combined with non-linear function approximation",
+      "Requires careful tuning of discount factor gamma to balance immediate vs long-term latency rewards"
+    ],
+    "url": "https://doi.org/10.1126/science.275.5306.1593",
+    "paper_ref": "Schultz, Dayan & Montague, Science 1997"
+  },
+  {
+    "id": "cog-sparse-distributed-representations",
+    "title": "Hawkins Cortical Minicolumn Sparse Distributed Representations (SDR)",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Neocortical layers encode semantic concepts using sparse distributed representations (SDRs) where only 1-2% of bits are active, providing extreme noise tolerance and semantic overlap.",
+    "abstract": "High-throughput log classification and semantic anomaly detection modeled on Hawkins neocortical sparse distributed representations. Traditional dense vectors suffer from catastrophic interference when merging streaming logs. SDRs represent complex system error states as 2048-bit sparse vectors with 2% active bits, enabling bitwise boolean union searches and zero-collision storage.",
+    "mechanism": "Extremely sparse binary bit activation vectors (>98% inactive) with high semantic overlap capacity",
+    "adaptation": [
+      "Encode distributed microservice log stack traces into 2048-bit sparse vectors for sub-microsecond classification",
+      "Detect novel zero-day attack patterns by measuring bitwise overlap with known healthy system SDR baselines",
+      "Store and query millions of operational system states in memory with negligible RAM footprint"
+    ],
+    "limitations": [
+      "Requires dedicated spatial pooler algorithms to transform raw continuous metrics into sparse binary vectors",
+      "Bitwise overlap calculations lose fine-grained metric scalar precision in exchange for semantic robustness"
+    ],
+    "url": "https://doi.org/10.3389/fncir.2016.00023",
+    "paper_ref": "Hawkins & Ahmad, Front. Neural Circuits 2016"
+  },
+  {
+    "id": "cog-global-workspace-broadcast",
+    "title": "Baars-Dehaene Global Workspace Theory of Attentional Broadcast",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Modular, subconscious cognitive processors compete for attentional access to a central global workspace, which then broadcasts the winning content cluster-wide to mobilize action.",
+    "abstract": "Event-driven microservice orchestration and incident alert deduplication modeled on the Dehaene-Changeux Global Workspace Theory. In chaotic distributed outages, thousands of microservices emit independent alert storms, causing cognitive overload. Specialized modules compete in an attentional bottleneck; only the highest-entropy synthesis gains workspace broadcast privileges.",
+    "mechanism": "Competitive long-range recurrent excitatory ignition driving wide-area broadcast across modular processors",
+    "adaptation": [
+      "Replace chaotic microservice alert storms with an attentional global workspace bus that filters noise",
+      "Enable specialized anomaly detection agents to compete for broadcast rights based on anomaly entropy scores",
+      "Broadcast only the winning incident root-cause hypothesis to operational response teams to eliminate alert fatigue"
+    ],
+    "limitations": [
+      "Global workspace constitutes an attentional bottleneck; serial broadcast throughput is strictly bounded",
+      "Requires calibrated competition metrics to prevent loud non-critical alerts from capturing the workspace"
+    ],
+    "url": "https://doi.org/10.1073/pnas.95.24.14529",
+    "paper_ref": "Dehaene, Kerszberg & Changeux, PNAS 1998"
+  },
+  {
+    "id": "cog-stdp-spike-timing-plasticity",
+    "title": "Bi & Poo Spike-Timing-Dependent Plasticity (STDP) Causal Window",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Synaptic weight changes depend precisely on the relative timing of pre- and post-synaptic action potentials: pre before post induces potentiation, while post before pre induces depression.",
+    "abstract": "Adaptive circuit breaker tuning and RPC timeout calibration modeled on Bi-Poo spike-timing-dependent plasticity (STDP). Fixed timeout configs cause cascading failures or unnecessary retries. By applying an asymmetrical STDP learning window, connection weights strengthen when downstream replies precede internal SLO deadlines, and depress exponentially when replies lag.",
+    "mechanism": "Millisecond-scale asymmetrical temporal causality learning window modulating synaptic conductance",
+    "adaptation": [
+      "Dynamically calibrate RPC timeout thresholds based on temporal delta between request launch and response receipt",
+      "Strengthen connection pool weights for fast microservice downstream replicas while depressing slow replicas",
+      "Automatically isolate degrading third-party API dependencies before they trigger thread pool starvation"
+    ],
+    "limitations": [
+      "Sensitive to high-frequency network clock skew if timestamps are not synchronized across distributed hosts",
+      "Can trigger premature connection depression during transient external network blips"
+    ],
+    "url": "https://doi.org/10.1523/jneurosci.18-24-10464.1998",
+    "paper_ref": "Bi & Poo, J. Neurosci. 1998"
+  },
+  {
+    "id": "cog-lateral-inhibition-retinal",
+    "title": "Hartline-Kuffler Retinal Lateral Inhibition & Center-Surround Contrast",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Excited sensory neurons inhibit the activity of their lateral neighboring neurons, sharpening spatial boundaries, suppressing redundant background signals, and highlighting edge contrast.",
+    "abstract": "Distributed incident alert deduplication and log noise suppression modeled on retinal lateral inhibition. During an availability outage, a core database failure triggers hundreds of secondary errors across dependent microservices. Implementing lateral inhibitory connections allows the primary alert node to suppress sibling alerts, isolating the true architectural fault line.",
+    "mechanism": "Reciprocal inhibitory interneuron signaling enhancing contrast gradients and suppressing uniform background",
+    "adaptation": [
+      "Suppress downstream microservice incident alerts when an upstream dependency has fired an active primary alert",
+      "Enhance log anomaly contrast by laterally dampening repetitive normal status logs surrounding error spikes",
+      "Highlight critical architectural fault boundaries on live infrastructure topology dashboards"
+    ],
+    "limitations": [
+      "Overly aggressive lateral inhibition can suppress genuine secondary independent failures occurring simultaneously",
+      "Requires an accurate map of neighbor adjacency to route inhibitory signaling correctly"
+    ],
+    "url": "https://doi.org/10.1085/jgp.40.3.357",
+    "paper_ref": "Hartline, Ratliff & Miller, J. Gen. Physiol. 1956"
+  },
+  {
+    "id": "cog-free-energy-active-inference",
+    "title": "Friston Free Energy Principle & Sensory-Motor Active Inference",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Biological systems maintain homeostatic structural integrity by minimizing variational free energy (an upper bound on sensory surprise) through updating internal beliefs or taking action.",
+    "abstract": "Self-healing cloud infrastructure and autonomous SRE control loops modeled on Karl Friston's Free Energy Principle. Autonomous clusters maintain a generative model of expected normal telemetry. When runtime observations deviate, the system minimizes free energy by either updating its internal model (learning new traffic patterns) or acting on the environment (spinning up pods).",
+    "mechanism": "Variational free energy minimization driving dual-action loops between perception and environmental action",
+    "adaptation": [
+      "Build autonomous infrastructure controllers that minimize variational free energy across operational metrics",
+      "Distinguish between expected traffic surges (requiring model updates) and true failures (requiring corrective action)",
+      "Automate Kubernetes pod scaling and node provisioning through active inference optimization loops"
+    ],
+    "limitations": [
+      "Computing exact variational free energy bounds on high-dimensional systems requires laplace approximations",
+      "Incorrect generative internal models can cause active inference loops to perform pathological corrective actions"
+    ],
+    "url": "https://doi.org/10.1038/nrn2787",
+    "paper_ref": "Friston, Nat. Rev. Neurosci. 2010"
+  },
+  {
+    "id": "cog-place-cell-grid-cell-navigation",
+    "title": "Moser-O'Keefe Entorhinal Grid Cell Metric Coordinate Navigation",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Medial entorhinal grid cells fire in periodic hexagonal spatial tessellations, providing an intrinsic metric coordinate system that enables dead reckoning, spatial integration, and path navigation.",
+    "abstract": "Distributed hash ring partitioning and multi-dimensional query routing modeled on mammalian entorhinal grid cell networks. Conventional 1D consistent hash rings suffer from hot-spotting under skewed multidimensional queries. Mapping data keys onto periodic hexagonal grid cell coordinates provides continuous distance metrics and eliminates boundary boundary shard imbalance.",
+    "mechanism": "Periodic hexagonal spatial firing fields generating an intrinsic metric coordinate lattice",
+    "adaptation": [
+      "Map sharded database keys onto periodic hexagonal grid cell coordinates to eliminate hotspot load imbalance",
+      "Enable multidimensional range query routing across distributed clusters without central coordinate indexes",
+      "Calculate shortest path execution plans in complex microservice meshes using intrinsic grid cell metrics"
+    ],
+    "limitations": [
+      "Requires higher computational overhead to calculate hexagonal distance metrics compared to simple modulus hashing",
+      "Grid module scale alignment requires calibration to avoid spatial aliasing in massive clusters"
+    ],
+    "url": "https://doi.org/10.1038/nature03721",
+    "paper_ref": "Hafting et al., Nature 2005"
+  },
+  {
+    "id": "cog-synaptic-tagging-cross-capture",
+    "title": "Frey & Morris Synaptic Tagging & Capture in Memory Consolidation",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Weak synaptic stimulation sets a transient local tag; subsequent strong heterosynaptic stimulation synthesizes plasticity-related proteins captured by tagged synapses for permanent consolidation.",
+    "abstract": "Two-phase distributed transaction commit optimization and write-ahead log consolidation modeled on synaptic tagging and capture. Synchronous 2PC commits incur high latency penalties. By setting lightweight local memory tags for pending transactions and consolidating state permanently only during periodic asynchronous checkpoint pulses, database engines achieve high write throughput.",
+    "mechanism": "Transient local synaptic marking coupled with protein-synthesis-dependent heterosynaptic capture",
+    "adaptation": [
+      "Accelerate high-throughput distributed commits by marking transactions with lightweight in-memory tags",
+      "Consolidate tagged transactions asynchronously during scheduled durability pulses to minimize disk I/O",
+      "Prevent transaction data loss during crashes by bounding tag decay timeouts to match pulse intervals"
+    ],
+    "limitations": [
+      "Tagged transactions that fail to receive a consolidation pulse within the tag lifetime must be aborted",
+      "Requires memory buffers to maintain active tags across high-frequency write bursts"
+    ],
+    "url": "https://doi.org/10.1038/385533a0",
+    "paper_ref": "Frey & Morris, Nature 1997"
   }
 ]
