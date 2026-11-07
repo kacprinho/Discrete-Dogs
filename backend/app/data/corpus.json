@@ -1,0 +1,442 @@
+[
+  {
+    "id": "bio-ant-pheromone",
+    "title": "Ant Colony Pheromone Trail Reinforcement & Evaporation (Stigmergy)",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Foraging ants balance multi-path routing under congestion via positive feedback pheromone deposition coupled with exponential volatile evaporation, preventing premature lock-in on saturated paths.",
+    "abstract": "Decentralized packet routing and traffic congestion control modeled on Linepithema humile foraging trails. Agents deposit volatile chemical markers proportional to path throughput and inverse travel latency. Exponential evaporation decays stale routes when capacity bottlenecks emerge, enabling autonomous load balancing without global topology state.",
+    "mechanism": "Stigmergic positive feedback coupled with exponential volatile decay and capacity-induced bifurcations",
+    "adaptation": [
+      "Replace static routing weights with decaying congestion credits updated on each request completion",
+      "Introduce negative reinforcement (trail volatility spike) when queue latency exceeds p95 threshold",
+      "Inject stochastic exploration probability (epsilon-greedy path probing) to discover unutilized secondary routes"
+    ],
+    "limitations": [
+      "Requires warm-up traffic volume to stabilize pheromone gradients",
+      "Abrupt topology shifts can cause brief oscillatory routing until volatile decay clears stale state"
+    ],
+    "url": "https://doi.org/10.1038/35022643",
+    "paper_ref": "Bonabeau, Dorigo & Theraulaz, Nature 2000"
+  },
+  {
+    "id": "bio-allosteric-enzymes",
+    "title": "Allosteric Enzyme Cooperativity & Non-Competitive Substrate Gating",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Enzymes regulate high-contention metabolic pathways without global mutex locks by using conformational allosteric feedback—downstream product concentration automatically throttles upstream binding affinity.",
+    "abstract": "Database lock contention, mutex convoying, and read-write starvation resolved via Monod-Wyman-Changeux (MWC) allosteric enzyme regulation. Instead of exclusive blocking locks on shared catalytic sites, effector ligands bind to regulatory allosteric sites, shifting conformational equilibrium between tense (low-affinity) and relaxed (high-affinity) states based on local backpressure.",
+    "mechanism": "Conformational state shifting via non-competitive allosteric effector binding (MWC cooperativity)",
+    "adaptation": [
+      "Replace coarse-grained exclusive database locks with optimistic MVCC shards gated by downstream queue pressure",
+      "Implement allosteric admission control: dynamically adjust write-batch affinity when commit log contention rises",
+      "Decouple control signaling (allosteric site) from hot-path execution (active catalytic site) to eliminate lock convoys"
+    ],
+    "limitations": [
+      "Eventual consistency window during conformational state transitions",
+      "Requires careful tuning of Hill cooperativity coefficients to avoid bistable thrashing"
+    ],
+    "url": "https://doi.org/10.1016/S0022-2836(65)80285-6",
+    "paper_ref": "Monod, Wyman & Changeux, J. Mol. Biol. 1965"
+  },
+  {
+    "id": "bio-physarum-slime-mold",
+    "title": "Slime Mold (Physarum polycephalum) Flux-Driven Tube Dilation",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Physarum polycephalum constructs fault-tolerant, near-optimal Steiner networks by dilating protoplasmic tubes in proportion to peristaltic flow flux and pruning low-flux branches.",
+    "abstract": "Self-healing distributed network topology and microservice connection pooling via Physarum polycephalum conductance adaptation. Tube conductivity dD/dt = f(|Q|) - r*D grows non-linearly with flux Q and decays at constant metabolic rate r, converging to resilient minimum-cost transport graphs with automatic failover.",
+    "mechanism": "Non-linear flux-driven conductance reinforcement with metabolic pruning",
+    "adaptation": [
+      "Scale connection pool capacities and worker concurrency dynamically via dD/dt = |Q|^gamma - decay * D",
+      "Maintain redundant warm standby edges near critical bottlenecks using sub-linear sigmoidal flux response",
+      "Automatically prune idle worker channels whose throughput falls below the metabolic maintenance threshold"
+    ],
+    "limitations": [
+      "Metabolic overhead of maintaining redundant backup paths during low-load periods",
+      "Non-convex cost landscapes can trap topology in local minima without periodic oscillatory pumping"
+    ],
+    "url": "https://doi.org/10.1126/science.1177894",
+    "paper_ref": "Tero et al., Science 2010"
+  },
+  {
+    "id": "bio-mycelial-nutrient-trading",
+    "title": "Mycorrhizal Mycelial Bidirectional Sink-Source Nutrient Allocation",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Fungal mycelium networks reallocate scarce phosphorus and carbon across heterogeneous resource nodes using local osmotic turgor differentials and reciprocal exchange pricing.",
+    "abstract": "Distributed cache eviction, memory pressure balancing, and multi-tenant resource scheduling via arbuscular mycorrhizal networks. Resource translocation follows Munch pressure-flow gradients combined with biological market exchange rates where scarce resources command higher reciprocal allocation across sink-source boundaries.",
+    "mechanism": "Osmotic turgor gradient transport with reciprocal biological market pricing",
+    "adaptation": [
+      "Price compute/memory allocation dynamically based on local scarcity gradients across cluster nodes",
+      "Stream cold cache segments away from high-turgor (memory-pressured) nodes toward underutilized sinks",
+      "Enforce reciprocal fairness quotas so bursty tenants replenish shared buffer capacity"
+    ],
+    "limitations": [
+      "Transport latency across multi-hop mycelial edges under uniform pressure",
+      "Susceptible to parasitic free-riding nodes without strict reciprocal accounting"
+    ],
+    "url": "https://doi.org/10.1126/science.1208473",
+    "paper_ref": "Kiers et al., Science 2011"
+  },
+  {
+    "id": "bio-immune-clonal-selection",
+    "title": "Adaptive Immune Clonal Selection & Somatic Hypermutation",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "B-cells detect novel pathogens via affinity maturation: high-affinity receptors proliferate exponentially while undergoing targeted somatic hypermutation to lock onto mutating threats.",
+    "abstract": "Zero-day anomaly detection, adaptive rate-limiting, and polymorphic signature synthesis via clonal selection theory. Lymphocyte detectors undergo negative selection against self-traffic, followed by affinity-proportional proliferation and somatic hypermutation when anomalous request vectors appear.",
+    "mechanism": "Negative self-selection followed by affinity-proportional clonal expansion and hypermutation",
+    "adaptation": [
+      "Generate mutated filter variations around high-scoring anomaly predicates in real time",
+      "Promote high-affinity rate-limit rules to long-lived memory caches while decaying unused detectors",
+      "Filter out benign baseline traffic patterns via negative selection during staging windows"
+    ],
+    "limitations": [
+      "Autoimmune false-positive risk if baseline self-traffic shifts abruptly during legitimate flash crowds",
+      "Compute cost of evaluating candidate detector mutations during initial pathogen spike"
+    ],
+    "url": "https://doi.org/10.1109/TEVC.2002.1011539",
+    "paper_ref": "De Castro & Von Zuben, IEEE Trans. Evol. Comput. 2002"
+  },
+  {
+    "id": "phys-navier-stokes-orderbook",
+    "title": "Navier-Stokes Compressible Fluid Dynamics & Limit Order Book Viscosity",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "High-frequency limit order books behave like compressible viscous fluids where bid-ask order flow creates density waves, Reynolds turbulence, and shock fronts during liquidity cascades.",
+    "abstract": "Order book liquidity crunches, flash crashes, and high-frequency execution bottlenecks modeled via compressible Navier-Stokes partial differential equations and Burgers shock dynamics. Order density rho(p,t) evolves under advection by market orders, diffusion by cancellations, and kinematic viscosity nu that damps high-Reynolds-number microstructural turbulence.",
+    "mechanism": "Advection-diffusion conservation with kinematic viscosity damping and Rankine-Hugoniot shock stabilization",
+    "adaptation": [
+      "Model order queue depth as a continuous density field rho(p,t) and compute local Reynolds number Re = u*L/nu before routing",
+      "Inject synthetic kinematic viscosity (adaptive tick-size or micro-batching delay) when Re approaches turbulent flash-crash regime",
+      "Split large execution payloads along characteristic Riemann invariants to avoid triggering liquidity shock waves"
+    ],
+    "limitations": [
+      "Continuum fluid approximation breaks down when discrete order queue depth approaches zero (Knudsen regime)",
+      "Requires sub-millisecond estimation of effective diffusivity from cancellation rates"
+    ],
+    "url": "https://doi.org/10.1088/1469-7688/12/4/351",
+    "paper_ref": "Bouchaud, Farmer & Lillo, Quantitative Finance 2009"
+  },
+  {
+    "id": "phys-kolmogorov-turbulence",
+    "title": "Kolmogorov Energy Cascade & Eddy Viscosity Subgrid Damping",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Turbulent kinetic energy cascades from macro-scale injections down to the Kolmogorov microscale, where molecular viscosity dissipates bursty vortices into thermal equilibrium.",
+    "abstract": "Microservice retry storms, cascading thundering herds, and network packet microbursts stabilized via Kolmogorov k^(-5/3) spectral cascade and Smagorinsky eddy viscosity. Large-scale traffic bursts are recursively decomposed into smaller asynchronous eddies and dissipated at the viscous Kolmogorov scale.",
+    "mechanism": "Multi-scale spectral energy transfer with Smagorinsky subgrid eddy viscosity dissipation",
+    "adaptation": [
+      "Decompose macro-scale batch jobs into power-law-sized micro-tasks across hierarchical worker queues",
+      "Apply Smagorinsky eddy damping proportional to local velocity gradient |du/dx| to suppress retry amplification",
+      "Size leaf-node ring buffers to match the Kolmogorov dissipation scale where service rate exceeds arrival variance"
+    ],
+    "limitations": [
+      "Adds bounded micro-buffering latency at intermediate cascade tiers",
+      "Assumes isotropic load distribution across worker shards"
+    ],
+    "url": "https://doi.org/10.1098/rspa.1991.0075",
+    "paper_ref": "Kolmogorov, Proc. R. Soc. Lond. A 1941"
+  },
+  {
+    "id": "phys-spin-glass-annealing",
+    "title": "Spin-Glass Frustration Resolution via Parallel Tempering (Replica Exchange)",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Disordered magnetic spin glasses escape rugged, frustrated energy local minima by running coupled replicas across a temperature ladder and swapping configurations via Metropolis criteria.",
+    "abstract": "NP-hard combinatorial scheduling, dependency deadlock resolution, and non-convex hyperparameter routing via Sherrington-Kirkpatrick spin-glass Hamiltonian minimization and parallel tempering replica exchange.",
+    "mechanism": "Metropolis-Hastings replica exchange across a geometric inverse-temperature beta ladder",
+    "adaptation": [
+      "Maintain N parallel solver state replicas operating at geometric exploration temperatures T_1 < T_2 < ... < T_N",
+      "Periodically swap state schedules between adjacent replicas with probability min(1, exp(delta_beta * delta_E))",
+      "Read production routing decisions from the cold ground-state replica (T_1) while hot replicas tunnel through barriers"
+    ],
+    "limitations": [
+      "Requires N-fold memory footprint for concurrent state replicas",
+      "First-order phase transitions can bottleneck replica exchange acceptance rates"
+    ],
+    "url": "https://doi.org/10.1143/JPSJ.65.1604",
+    "paper_ref": "Hukushima & Nemoto, J. Phys. Soc. Jpn. 1996"
+  },
+  {
+    "id": "phys-kuramoto-synchronization",
+    "title": "Kuramoto Coupled Oscillator Phase Synchronization & Chimera Damping",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Populations of heterogeneous oscillators spontaneously lock phase or desynchronize depending on coupling strength K relative to natural frequency dispersion.",
+    "abstract": "Distributed clock drift, synchronized cron-storm prevention, and BGP route-flap damping via the Kuramoto phase model d(theta_i)/dt = omega_i + (K/N)*sum(sin(theta_j - theta_i)). Tuning coupling K below critical threshold K_c intentionally desynchronizes periodic client heartbeats to flatten peak server load.",
+    "mechanism": "Mean-field trigonometric phase coupling across heterogeneous natural frequencies",
+    "adaptation": [
+      "To eliminate synchronized retry/heartbeat storms, set negative coupling K < 0 (repulsive splay state) across client instances",
+      "To coordinate distributed barrier checkpoints without a leader, set K > K_c and exchange compact scalar phase angles",
+      "Monitor order parameter r = |mean(exp(i*theta))| as a real-time metric of dangerous traffic synchronization"
+    ],
+    "limitations": [
+      "Requires approximate knowledge of natural frequency variance across nodes",
+      "Time-delayed coupling can induce metastable chimera states where subsets remain desynchronized"
+    ],
+    "url": "https://doi.org/10.1103/RevModPhys.77.137",
+    "paper_ref": "Acebrón et al., Rev. Mod. Phys. 2005"
+  },
+  {
+    "id": "phys-maxwell-demon-thermodynamics",
+    "title": "Landauer-Szilard Information Thermodynamics & Entropy-Bounded Caching",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Maxwell's Demon sorts high-energy particles across a partition by expending mutual information, bounded by Landauer's k_B*T*ln(2) erasure cost.",
+    "abstract": "Zero-copy stream partitioning, hot/cold storage tiering, and garbage collection write-amplification reduction via information thermodynamics. Treats metadata bit erasures as thermodynamic work and minimizes entropy production during state compaction.",
+    "mechanism": "Mutual-information-driven phase-space partitioning under Landauer erasure constraints",
+    "adaptation": [
+      "Gate data promotion across storage tiers using a lightweight Bloom/entropy filter ('Maxwell gate') before full deserialization",
+      "Batch state deletions into coarse epoch generational drops to amortize Landauer write-amplification costs",
+      "Prioritize evicting high-entropy (uncompressible, low-reuse) pages over low-entropy structural templates"
+    ],
+    "limitations": [
+      "Demon measurement state (Bloom filter metadata) consumes bounded fast memory",
+      "Diminishing returns when workload access distribution is completely uniform (maximum entropy)"
+    ],
+    "url": "https://doi.org/10.1038/nphys3230",
+    "paper_ref": "Parrondo, Horowitz & Sagawa, Nature Physics 2015"
+  },
+  {
+    "id": "soc-sir-ring-inoculation",
+    "title": "Epidemiological SIR Ring Inoculation (Viral & Misinformation Bottleneck Containment)",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Resolves misinformation bottlenecks, viral cascade outbreaks, and rumor propagation by tracing and immunizing two-hop topological neighbors around infected super-spreaders, collapsing R_eff below 1.",
+    "abstract": "Misinformation bottleneck, fake news cascade containment, rumor propagation, viral cascade containment, faulty config blast-radius isolation, and DDoS botnet mitigation in scale-free networks via SIR/SEIR ring inoculation and acquaintance immunization. Because scale-free graphs have vanishing epidemic threshold tau_c -> 0, random throttling fails; immunizing random neighbors of infected nodes selectively targets high-degree misinformation super-spreaders.",
+    "mechanism": "Two-hop contact-traced ring immunization and acquaintance targeting on scale-free graphs",
+    "adaptation": [
+      "When a poisoned message, faulty payload, or misinformation cascade is detected at node u, immediately apply verification gates to u's 1-hop and 2-hop outbound subscribers",
+      "Use acquaintance sampling (pick random node, inspect its highest-in-degree upstream peer) to place circuit breakers on super-spreader hubs without computing global graph centrality",
+      "Dynamically throttle forwarding velocity along edges where local R_eff = beta * <k^2>/<k> exceeds 1.0"
+    ],
+    "limitations": [
+      "Requires low-latency lineage tracking (1-hop/2-hop provenance headers) to beat high transmission velocity beta",
+      "Pre-symptomatic (latent SEIR) propagation before detection requires wider 2-hop ring radius"
+    ],
+    "url": "https://doi.org/10.1103/PhysRevLett.91.247901",
+    "paper_ref": "Cohen, Havlin & ben-Avraham, Phys. Rev. Lett. 2003"
+  },
+  {
+    "id": "soc-granovetter-threshold",
+    "title": "Granovetter Collective Action Thresholds & Weak-Tie Bridge Gating",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Complex contagions require multiple independent reinforcements to cross adoption thresholds, whereas simple contagions jump across single weak-tie bridges.",
+    "abstract": "Byzantine quorum consensus, rumor suppression, and multi-path cache invalidation via Centola-Granovetter complex contagion models. Distinguishes noisy single-source signals from genuine structural state changes by requiring k-independent cluster reinforcements across non-overlapping topological paths.",
+    "mechanism": "k-reinforcement complex contagion gating across high-clustering local triads vs. weak-tie bridges",
+    "adaptation": [
+      "Convert vulnerable single-hop state invalidations (simple contagion) into k-of-n multi-path quorum confirmations (complex contagion)",
+      "Rate-limit high-betweenness weak-tie bridge edges when unverified state spikes occur in a single cluster",
+      "Preserve high local clustering among replica cohorts so valid state updates rapidly reach threshold inside a shard"
+    ],
+    "limitations": [
+      "Increases cross-cluster propagation latency by requiring multi-path corroboration",
+      "Can stall legitimate urgent broadcasts if bridge diversity is too sparse"
+    ],
+    "url": "https://doi.org/10.1126/science.1185231",
+    "paper_ref": "Centola, Science 2010"
+  },
+  {
+    "id": "soc-schelling-segregation",
+    "title": "Schelling Micromotive Spatial Coalescence & Homophily Sharding",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Agents relocate whenever local neighborhood similarity drops below a mild tolerance threshold tau, spontaneously self-organizing into contiguous homogeneous macro-clusters.",
+    "abstract": "Zero-coordinator data locality optimization, graph partitioning, and multi-tenant cache co-location via Schelling tipping-point dynamics. Autonomous shards swap boundary keys whenever cross-partition RPC ratio exceeds local tolerance tau.",
+    "mechanism": "Local satisfaction threshold migration driving macro-scale phase separation",
+    "adaptation": [
+      "Track each data record's ratio of local vs. cross-node joins; trigger background migration when local affinity drops below tau = 0.6",
+      "Reserve 10-15% vacant buffer slots per shard so records can relocate without cascading swap deadlocks",
+      "Damp migration frequency with exponential backoff once cluster boundary modularity stabilizes"
+    ],
+    "limitations": [
+      "Too high a threshold tau (>0.75) causes perpetual migration churn without convergence",
+      "Requires slack capacity in target shards to permit low-cost swaps"
+    ],
+    "url": "https://doi.org/10.1080/0022250X.1971.9989794",
+    "paper_ref": "Schelling, J. Math. Sociol. 1971"
+  },
+  {
+    "id": "soc-vickrey-congestion-pricing",
+    "title": "Vickrey-Clarke-Groves (VCG) Congestion Externality Auction",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Truthful mechanism design charges each agent the exact marginal delay externality their resource consumption imposes on all other concurrent participants.",
+    "abstract": "Fair GPU cluster scheduling, API rate-limiting under bursty demand, and priority queue inversion prevention via Vickrey-Clarke-Groves (VCG) dominant-strategy truthful auctions.",
+    "mechanism": "Marginal social externality pricing for incentive-compatible resource allocation",
+    "adaptation": [
+      "Assign internal priority budgets to services and deduct credits equal to the marginal queue delay imposed on displaced jobs",
+      "Allow latency-insensitive batch jobs to bid negative externality credits (running during troughs) to replenish quota",
+      "Eliminate priority spoofing since truthful urgency valuation is a dominant strategy under VCG externality pricing"
+    ],
+    "limitations": [
+      "Computing exact counterfactual queue externalities requires fast simulator lookahead",
+      "Susceptible to collusion if multiple sub-services share a single budget pool"
+    ],
+    "url": "https://doi.org/10.1007/BF01726210",
+    "paper_ref": "Clarke, Public Choice 1971"
+  },
+  {
+    "id": "math-ricci-flow-surgery",
+    "title": "Ollivier-Ricci Graph Curvature Flow & Bottleneck Edge Surgery",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Discrete Ollivier-Ricci curvature identifies negatively curved hyperbolic bridge edges (structural bottlenecks) and smooths metric congestion via Ricci flow with topological surgery.",
+    "abstract": "Network bottleneck detection, microservice dependency refactoring, and GNN over-squashing mitigation via discrete Ollivier-Ricci curvature kappa(x,y) = 1 - W_1(mu_x, mu_y)/d(x,y). Positively curved cliques exhibit redundant paths, whereas negatively curved edges act as pinched hyperbolic bottlenecks where information queues up.",
+    "mechanism": "Wasserstein-1 optimal transport curvature estimation with discrete Ricci flow metric smoothing",
+    "adaptation": [
+      "Compute discrete Ollivier-Ricci curvature kappa(u,v) via 1-hop neighborhood Wasserstein distance across service call graphs",
+      "Flag strongly negative edges (kappa < -0.3) as structural bottlenecks and perform 'Ricci surgery' by adding parallel shortcut edges or read-replicas",
+      "Consolidate positively curved cliques (kappa > +0.4) into co-located deployment units"
+    ],
+    "limitations": [
+      "Exact Wasserstein-1 LP per edge scales cubically with node degree unless approximated via Sinkhorn regularization",
+      "Static topology metric must be recomputed when traffic weights shift significantly"
+    ],
+    "url": "https://doi.org/10.1016/j.jfa.2008.11.001",
+    "paper_ref": "Ollivier, J. Funct. Anal. 2009"
+  },
+  {
+    "id": "math-spectral-cheeger-expander",
+    "title": "Ramanujan Expander Graphs & Cheeger Spectral Gap Maximization",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Ramanujan graphs maximize the Laplacian spectral gap lambda_2 while staying sparse (d-regular), guaranteeing rapid mixing and zero topological bottlenecks via Cheeger's inequality.",
+    "abstract": "P2P gossip overlay design, distributed shuffle networks, and sparse neural attention routing via Ramanujan expander graphs and Cheeger constant h(G) >= lambda_2 / 2. Maximizing the second-smallest Laplacian eigenvalue eliminates cut bottlenecks while keeping connection degree O(1).",
+    "mechanism": "Alon-Boppana optimal spectral gap (lambda_2) bounding the Cheeger isoperimetric bottleneck constant",
+    "adaptation": [
+      "Rewire overlay peer connections using random 2-switches that strictly increase the graph Laplacian Fiedler value lambda_2",
+      "Bound worst-case gossip convergence and shuffle tail latency directly via tau_mix <= O(log N / lambda_2)",
+      "Replace dense all-to-all mesh health checks with a sparse d=4 Ramanujan expander topology"
+    ],
+    "limitations": [
+      "Uniform degree assumption requires virtual node splitting when physical host capacities vary",
+      "Lacks geographic locality unless combined with hierarchical cluster expanders"
+    ],
+    "url": "https://doi.org/10.1090/S0273-0979-06-01126-8",
+    "paper_ref": "Hoory, Linial & Wigderson, Bull. Amer. Math. Soc. 2006"
+  },
+  {
+    "id": "math-sinkhorn-optimal-transport",
+    "title": "Entropic Optimal Transport & Sinkhorn-Knopp Matrix Scaling",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Entropic regularization turns linear-programming optimal transport into fast, parallelizable Sinkhorn-Knopp alternating row/column normalizations on GPU/SIMD.",
+    "abstract": "Load balancing heterogeneous request distributions across capacity-constrained worker pools via entropic Kantorovich optimal transport min <P, C> - epsilon * H(P). Alternating Sinkhorn projections converge linearly to a doubly-stochastic routing plan that respects both source arrival rates and target capacities.",
+    "mechanism": "Entropic-regularized Kantorovich transport solved via alternating Bregman/Sinkhorn projections",
+    "adaptation": [
+      "Formulate request-to-worker routing as a cost matrix C_ij (latency + queue depth) with entropic penalty epsilon",
+      "Run 5-10 iterations of Sinkhorn row/column scaling every control epoch to obtain exact fractional routing probabilities P_ij",
+      "Tune epsilon to trade off strict lowest-latency greedy routing (small epsilon) against smooth load spreading (large epsilon)"
+    ],
+    "limitations": [
+      "Very small epsilon causes numerical underflow unless computed in log-domain Sinkhorn",
+      "Requires periodic broadcasting of target capacity vectors"
+    ],
+    "url": "https://doi.org/10.48550/arXiv.1306.0895",
+    "paper_ref": "Cuturi, NeurIPS 2013"
+  },
+  {
+    "id": "math-persistent-homology",
+    "title": "Topological Data Analysis (Persistent Homology) Coverage Hole Detection",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Vietoris-Rips filtration tracks Betti numbers (H_0 connected components, H_1 loops/voids) across scales to pinpoint persistent structural coverage holes without coordinate dependence.",
+    "abstract": "Embedding space blind-spot detection, sensor/CDN coverage gap discovery, and state-machine deadlock loop identification via persistent homology Betti barcodes.",
+    "mechanism": "Simplicial Vietoris-Rips filtration and Betti persistence diagram barcode extraction",
+    "adaptation": [
+      "Construct a Vietoris-Rips complex over failure or latency embedding vectors and compute H_1 persistence barcodes",
+      "Target synthetic test generation or cache pre-warming specifically at the circumcenters of long-lived H_1 topological voids",
+      "Use H_0 persistence death thresholds to automatically calibrate clustering radii without manual k selection"
+    ],
+    "limitations": [
+      "Vietoris-Rips complex size grows combinatorially in high dimensions unless sparsified via witness complexes",
+      "Sensitive to extreme outlier points unless filtered by density codimension"
+    ],
+    "url": "https://doi.org/10.1090/S0273-0979-09-01249-X",
+    "paper_ref": "Carlsson, Bull. Amer. Math. Soc. 2009"
+  },
+  {
+    "id": "cog-synaptic-homeostatic-pruning",
+    "title": "Synaptic Pruning & Turrigiano Homeostatic Plasticity Scaling",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Biological neural circuits prevent runaway Hebbian excitation by combining activity-dependent microglial pruning of weak synapses with global multiplicative homeostatic scaling.",
+    "abstract": "Attention sink mitigation, model weight bloat reduction, and memory-leak pruning in long-running agent graphs via Hebbian LTP/LTD coupled with Turrigiano multiplicative homeostatic synaptic scaling.",
+    "mechanism": "Hebbian correlation reinforcement stabilized by multiplicative homeostatic firing-rate normalization and microglial pruning",
+    "adaptation": [
+      "Multiply all outgoing edge weights of every routing/attention node by a homeostatic factor (target_rate / actual_rate) per epoch to prevent hub saturation",
+      "Tag edges whose variance of contribution stays below threshold for microglial garbage collection during low-traffic sleep phases",
+      "Consolidate high-frequency transient episodic traces into compressed structural priors (systems consolidation)"
+    ],
+    "limitations": [
+      "Aggressive pruning without replay can induce catastrophic forgetting of rare tail events",
+      "Homeostatic time constant must be slower than task-level signal adaptation"
+    ],
+    "url": "https://doi.org/10.1016/j.cell.2008.08.008",
+    "paper_ref": "Turrigiano, Cell 2008"
+  },
+  {
+    "id": "cog-predictive-coding-friston",
+    "title": "Hierarchical Predictive Coding & Precision-Weighted Residual Transmission",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Cortical hierarchies suppress redundant sensory bandwidth by passing top-down generative predictions downward and transmitting only precision-weighted prediction errors (surprise) upward.",
+    "abstract": "Telemetry bandwidth reduction, distributed state synchronization, and streaming event compression via Rao-Ballard / Friston hierarchical predictive coding. Nodes maintain synchronized lightweight forward models of peer state and transmit packets only when precision-weighted residual error exceeds free-energy bounds.",
+    "mechanism": "Top-down generative prediction subtraction with bottom-up precision-weighted residual error signaling",
+    "adaptation": [
+      "Deploy lightweight linear/Kalman state predictors at both sender and receiver so links transmit only residual prediction errors",
+      "Weight each residual by inverse variance (precision) so noisy flapping metrics are automatically attenuated before alerting",
+      "Update generative model parameters only when cumulative variational free energy crosses significance threshold"
+    ],
+    "limitations": [
+      "Predictor state desynchronization after packet loss requires periodic full-keyframe state checkpoints",
+      "Adds lightweight local CPU overhead to maintain forward generative predictors"
+    ],
+    "url": "https://doi.org/10.1038/81402",
+    "paper_ref": "Rao & Ballard, Nature Neuroscience 1999"
+  },
+  {
+    "id": "cog-thalamic-reticular-gating",
+    "title": "Thalamic Reticular Nucleus (TRN) Inhibitory Spotlight Attention Gating",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "The Thalamic Reticular Nucleus wraps the thalamus in an inhibitory GABAergic shell, selectively opening narrow sensory channels while actively suppressing competing distractors.",
+    "abstract": "Multi-agent context window saturation, noisy tool-output filtering, and high-priority interrupt handling via Crick's thalamic reticular searchlight hypothesis. Lateral inhibition across TRN sectors ensures only the highest-salience sensory stream enters expensive cortical working memory.",
+    "mechanism": "Surround GABAergic lateral inhibition with top-down prefrontal gain modulation",
+    "adaptation": [
+      "Place an inhibitory TRN pre-filter in front of expensive LLM/worker nodes that scores incoming streams by task-salience gain",
+      "Apply winner-take-most lateral inhibition so high-priority incident streams automatically suppress verbose background logs",
+      "Trigger burst-mode wakeup firing when a suppressed channel experiences a sharp derivative spike"
+    ],
+    "limitations": [
+      "Strong lateral inhibition can temporarily mask secondary correlated faults during a primary incident",
+      "Requires accurate top-down task-context embeddings to steer the attentional spotlight"
+    ],
+    "url": "https://doi.org/10.1073/pnas.81.14.4586",
+    "paper_ref": "Crick, PNAS 1984"
+  },
+  {
+    "id": "cog-hippocampal-replay",
+    "title": "Hippocampal Sharp-Wave Ripple (SWR) Prioritized Experience Replay",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "During quiet rest, the hippocampus replays compressed sequences of high-reward or high-error trajectories at 10-20x speed via sharp-wave ripples to train neocortical policy weights.",
+    "abstract": "Online system self-tuning, tail-latency regression prevention, and continual index optimization via prioritized hippocampal sharp-wave ripple replay.",
+    "mechanism": "TD-error prioritized trajectory compression and offline fast-forward neocortical consolidation",
+    "adaptation": [
+      "Record compact trace signatures of p99 latency spikes and deadlock near-misses into an episodic ring buffer",
+      "During low-traffic windows, replay compressed failure traces at 20x speed against shadow routing tables to pre-optimize index weights",
+      "Weight replay sampling probability by temporal-difference surprise (actual latency minus predicted latency)"
+    ],
+    "limitations": [
+      "Requires isolation between shadow replay execution and live production side effects",
+      "Episodic buffer must stratify across failure modes to avoid overfitting to the most recent incident"
+    ],
+    "url": "https://doi.org/10.1038/nrn.2018.2",
+    "paper_ref": "Ólafsdóttir, Bush & Barry, Nature Reviews Neuroscience 2018"
+  }
+]
