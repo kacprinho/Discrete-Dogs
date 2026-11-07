@@ -202,7 +202,10 @@ async def _run(
         doc = _to_doc(p, domain, domain_label, mechanism if p is best else "")
         _inject(engine, doc, vecs[int(i)])
         calibrated = float(np.clip(0.55 + 0.42 * float(score[int(i)]), 0.0, 0.99))
-        m = engine._format_match(doc, calibrated)
+        try:
+            m = engine._format_match(doc, calibrated, emb=vecs[int(i)])
+        except TypeError:
+            m = engine._format_match(doc, calibrated)
         m["source"] = "arxiv-live"
         injected.append(m)
     out.logs.append(

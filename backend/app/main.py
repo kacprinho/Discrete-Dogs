@@ -150,6 +150,7 @@ async def teleport_endpoint(
             computation.target_point = fb.target_point
             computation.raw_similarity = fb.raw_similarity or computation.raw_similarity
             computation.teleported_similarity = fb.match["score"]
+            computation.below_threshold = float(computation.match.get("score", 0.0)) < computation.similarity_threshold
 
     # Build structured agent reasoning events
     events: List[Dict[str, Any]] = []
@@ -249,6 +250,9 @@ async def teleport_endpoint(
         "inferred_source_domain": computation.inferred_source_domain,
         "target_domain": computation.target_domain,
         "raw_similarity": computation.raw_similarity,
+        "below_threshold": computation.below_threshold,
+        "similarity_threshold": computation.similarity_threshold,
+        "filtered_out_count": computation.filtered_out_count,
         "match_source": computation.match.get("source", "local") if isinstance(computation.match, dict) else "local",
     }
     events.append(result_event)
