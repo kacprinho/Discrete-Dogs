@@ -34,6 +34,12 @@ export type Match = {
   source?: "arxiv-live" | string; // set when the match came from the live arXiv fallback
   point?: Vec3;
   coords?: Vec3;
+  source_cosine?: number;
+  offset_cosine?: number;
+  relevance_score?: number;
+  passes_source_cosine_gate?: boolean;
+  passes_offset_cosine_gate?: boolean;
+  below_threshold?: boolean;
   situation_description?: string;
   why_it_maps?: string;
 };
@@ -44,6 +50,11 @@ export type TeleportResult = {
   match: Match;
   candidates?: Match[];
   offset_norm?: number;
+  source_cosine?: number;
+  offset_cosine?: number;
+  relevance_score?: number;
+  passes_source_cosine_gate?: boolean;
+  passes_offset_cosine_gate?: boolean;
   corpus_size?: number;
   below_threshold?: boolean;
 };

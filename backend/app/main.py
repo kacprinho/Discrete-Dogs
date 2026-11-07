@@ -170,8 +170,13 @@ async def teleport_endpoint(
             computation.match = fb.match
             computation.target_point = fb.target_point
             computation.raw_similarity = fb.raw_similarity or computation.raw_similarity
-            computation.teleported_similarity = fb.match["score"]
-            computation.below_threshold = float(computation.match.get("score", 0.0)) < computation.similarity_threshold
+            computation.source_cosine = float(fb.match.get("source_cosine", computation.raw_similarity))
+            computation.offset_cosine = float(fb.match.get("offset_cosine", computation.offset_cosine))
+            computation.relevance_score = float(fb.match.get("relevance_score", computation.relevance_score))
+            computation.teleported_similarity = computation.offset_cosine
+            computation.passes_source_cosine_gate = bool(computation.source_cosine >= computation.similarity_threshold)
+            computation.passes_offset_cosine_gate = bool(computation.offset_cosine >= computation.similarity_threshold)
+            computation.below_threshold = bool(not computation.passes_source_cosine_gate)
 
     signals = extract_structural_signals(combined_problem)
     sit_desc, why_maps = engine.build_situation_description(
@@ -249,7 +254,9 @@ async def teleport_endpoint(
             "agent": "faiss",
             "text": (
                 f"FAISS k-NN Search — manifold={computation.target_domain_label} · "
-                f"raw_cos={local_raw_similarity:.3f} → teleported_sim={local_teleported_similarity:.3f}"
+                f"source_cos={local_raw_similarity:.4f} · offset_cos={local_teleported_similarity:.4f} · "
+                f"relevance={computation.relevance_score:.4f} · "
+                f"gate_0.65={'PASS' if computation.passes_source_cosine_gate else 'FAIL (<0.65)'}"
             ),
         }
     )
@@ -283,6 +290,11 @@ async def teleport_endpoint(
         "target_cluster_preview": computation.target_cluster_preview,
         "inferred_source_domain": computation.inferred_source_domain,
         "target_domain": computation.target_domain,
+        "source_cosine": computation.source_cosine,
+        "offset_cosine": computation.offset_cosine,
+        "relevance_score": computation.relevance_score,
+        "passes_source_cosine_gate": computation.passes_source_cosine_gate,
+        "passes_offset_cosine_gate": computation.passes_offset_cosine_gate,
         "raw_similarity": computation.raw_similarity,
         "below_threshold": computation.below_threshold,
         "similarity_threshold": computation.similarity_threshold,

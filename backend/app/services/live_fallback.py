@@ -201,11 +201,22 @@ async def _run(
         p = plist[int(i)]
         doc = _to_doc(p, domain, domain_label, mechanism if p is best else "")
         _inject(engine, doc, vecs[int(i)])
-        calibrated = float(np.clip(0.55 + 0.42 * float(score[int(i)]), 0.0, 0.99))
+        src_c = round(float(raw[int(i)]), 4)
+        off_c = round(float(tele[int(i)]), 4)
+        calibrated = round(float(np.clip(0.55 + 0.42 * float(score[int(i)]), 0.0, 0.99)), 4)
+        cutoff = float(getattr(engine, "similarity_threshold", 0.65))
         try:
-            m = engine._format_match(doc, calibrated, emb=vecs[int(i)])
+            m = engine._format_match(doc, src_c, emb=vecs[int(i)])
         except TypeError:
-            m = engine._format_match(doc, calibrated)
+            m = engine._format_match(doc, src_c)
+        m["source_cosine"] = src_c
+        m["offset_cosine"] = off_c
+        m["relevance_score"] = calibrated
+        m["raw_similarity"] = src_c
+        m["teleported_cosine"] = off_c
+        m["passes_source_cosine_gate"] = bool(src_c >= cutoff)
+        m["passes_offset_cosine_gate"] = bool(off_c >= cutoff)
+        m["below_threshold"] = bool(src_c < cutoff)
         m["source"] = "arxiv-live"
         injected.append(m)
     out.logs.append(

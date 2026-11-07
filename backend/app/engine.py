@@ -18,9 +18,10 @@ CORPUS_PATH = Path(__file__).parent / "data" / "corpus.json"
 EMBEDDING_DIM = 384
 MODEL_NAME = "all-MiniLM-L6-v2"
 
-# Strict semantic similarity cutoff threshold & source-bottleneck grounding floor
+# Strict semantic similarity cutoff threshold & source-bottleneck cosine gate
 SIMILARITY_THRESHOLD: float = 0.65
-RAW_SOURCE_COSINE_FLOOR: float = 0.22
+SOURCE_COSINE_THRESHOLD: float = 0.65
+RAW_SOURCE_COSINE_FLOOR: float = 0.25
 
 SOURCE_DOMAIN_ANCHORS: Dict[str, str] = {
     "distributed_systems": (
@@ -154,6 +155,11 @@ class TeleportComputation:
     match: Dict[str, Any]
     candidates: List[Dict[str, Any]]
     backend_mode: str
+    source_cosine: float = 0.0
+    offset_cosine: float = 0.0
+    relevance_score: float = 0.0
+    passes_source_cosine_gate: bool = False
+    passes_offset_cosine_gate: bool = False
     below_threshold: bool = False
     similarity_threshold: float = SIMILARITY_THRESHOLD
     filtered_out_count: int = 0
@@ -433,11 +439,18 @@ class LatentTeleportationEngine:
             if doc.get("domain") != chosen_target_domain:
                 continue
             raw_cos = float(raw_scores_vec[doc_idx])
-            calibrated_score = self._calibrate_similarity(float(sim_score), raw_cos)
+            off_cos = float(sim_score)
+            calibrated_score = self._calibrate_similarity(off_cos, raw_cos)
             pt_3d = self._project_3d(self.corpus_embeddings[doc_idx], manifold="target")
-            match_dict = self._format_match(doc, calibrated_score, point_3d=pt_3d)
+            match_dict = self._format_match(doc, raw_cos, point_3d=pt_3d)
+            match_dict["source_cosine"] = round(raw_cos, 4)
+            match_dict["offset_cosine"] = round(off_cos, 4)
+            match_dict["relevance_score"] = round(calibrated_score, 4)
             match_dict["raw_similarity"] = round(raw_cos, 4)
-            match_dict["teleported_cosine"] = round(float(sim_score), 4)
+            match_dict["teleported_cosine"] = round(off_cos, 4)
+            match_dict["passes_source_cosine_gate"] = bool(raw_cos >= cutoff)
+            match_dict["passes_offset_cosine_gate"] = bool(off_cos >= cutoff)
+            match_dict["below_threshold"] = bool(raw_cos < cutoff)
             all_domain_matches.append(match_dict)
             target_cluster_vecs.append(self.corpus_embeddings[doc_idx])
 
@@ -445,25 +458,35 @@ class LatentTeleportationEngine:
             top_idx = int(indices[0][0])
             doc = self.corpus[top_idx]
             raw_cos = float(raw_scores_vec[top_idx])
-            calibrated_score = self._calibrate_similarity(float(scores[0][0]), raw_cos)
+            off_cos = float(scores[0][0])
+            calibrated_score = self._calibrate_similarity(off_cos, raw_cos)
             pt_3d = self._project_3d(self.corpus_embeddings[top_idx], manifold="target")
-            match_dict = self._format_match(doc, calibrated_score, point_3d=pt_3d)
+            match_dict = self._format_match(doc, raw_cos, point_3d=pt_3d)
+            match_dict["source_cosine"] = round(raw_cos, 4)
+            match_dict["offset_cosine"] = round(off_cos, 4)
+            match_dict["relevance_score"] = round(calibrated_score, 4)
             match_dict["raw_similarity"] = round(raw_cos, 4)
-            match_dict["teleported_cosine"] = round(float(scores[0][0]), 4)
+            match_dict["teleported_cosine"] = round(off_cos, 4)
+            match_dict["passes_source_cosine_gate"] = bool(raw_cos >= cutoff)
+            match_dict["passes_offset_cosine_gate"] = bool(off_cos >= cutoff)
+            match_dict["below_threshold"] = bool(raw_cos < cutoff)
             all_domain_matches.append(match_dict)
             target_cluster_vecs.append(self.corpus_embeddings[top_idx])
 
-        # Enforce strict similarity cutoff threshold (SIMILARITY_THRESHOLD = 0.65)
-        passing_matches = [m for m in all_domain_matches if m["score"] >= cutoff]
+        # Enforce strict 0.65 cosine gate directly on actual source_cosine (not transformed relevance_score)
+        passing_matches = [m for m in all_domain_matches if m["source_cosine"] >= cutoff]
         filtered_out_count = len(all_domain_matches) - len(passing_matches)
 
         primary_match = all_domain_matches[0]
         primary_doc_idx = next(
             (i for i, d in enumerate(self.corpus) if d["id"] == primary_match["id"]), 0
         )
-        raw_sim = round(float(raw_scores_vec[primary_doc_idx]), 4)
-        teleported_sim = primary_match["score"]
-        below_threshold = bool(teleported_sim < cutoff or raw_sim < self.raw_cosine_floor)
+        source_cos = primary_match["source_cosine"]
+        offset_cos = primary_match["offset_cosine"]
+        rel_score = primary_match["relevance_score"]
+        passes_src_gate = bool(source_cos >= cutoff)
+        passes_off_gate = bool(offset_cos >= cutoff)
+        below_threshold = bool(not passes_src_gate)
         primary_match["below_threshold"] = below_threshold
         sit_desc, why_maps = self.build_situation_description(
             problem_text, source_domain_key, primary_match
@@ -471,7 +494,7 @@ class LatentTeleportationEngine:
         primary_match["situation_description"] = sit_desc
         primary_match["why_it_maps"] = why_maps
 
-        # Only include secondary candidates that strictly pass the 0.65 threshold
+        # Only include secondary candidates that strictly pass the 0.65 source-cosine gate
         filtered_candidates = [
             m for m in passing_matches if m["id"] != primary_match["id"]
         ][: max(0, top_k - 1)]
@@ -494,8 +517,8 @@ class LatentTeleportationEngine:
             target_domain=chosen_target_domain,
             target_domain_label=DOMAIN_LABELS.get(chosen_target_domain, chosen_target_domain),
             offset_norm=offset_norm,
-            raw_similarity=raw_sim,
-            teleported_similarity=teleported_sim,
+            raw_similarity=source_cos,
+            teleported_similarity=offset_cos,
             source_point=source_point,
             target_point=target_point,
             source_cluster_preview=source_cluster_preview,
@@ -503,6 +526,11 @@ class LatentTeleportationEngine:
             match=primary_match,
             candidates=filtered_candidates,
             backend_mode=self.backend_mode,
+            source_cosine=source_cos,
+            offset_cosine=offset_cos,
+            relevance_score=rel_score,
+            passes_source_cosine_gate=passes_src_gate,
+            passes_offset_cosine_gate=passes_off_gate,
             below_threshold=below_threshold,
             similarity_threshold=cutoff,
             filtered_out_count=filtered_out_count,

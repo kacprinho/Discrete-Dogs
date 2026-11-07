@@ -60,21 +60,47 @@ def test_engine_presets_and_threshold_filtering() -> None:
         res = eng.teleport(desc, dom)
         print(
             f"Query [{dom}] '{desc}' -> {res.match['id']} "
-            f"(score={res.match['score']}, raw_cos={res.raw_similarity}, "
-            f"teleported_cos={res.match.get('teleported_cosine')}, "
+            f"(source_cos={res.source_cosine}, offset_cos={res.offset_cosine}, "
+            f"relevance_score={res.relevance_score}, passes_gate={res.passes_source_cosine_gate}, "
             f"below_threshold={res.below_threshold}, filtered_out={res.filtered_out_count}, "
             f"src={res.source_point}, tgt={res.target_point})"
         )
         assert res.match["id"] == expected_id, f"Expected {expected_id}, got {res.match['id']}"
-        assert res.match["score"] >= SIMILARITY_THRESHOLD
-        assert res.below_threshold is False
+        assert res.match["score"] == res.source_cosine == res.raw_similarity
+        assert res.match["offset_cosine"] == res.offset_cosine == res.teleported_similarity
+        assert res.match["relevance_score"] == res.relevance_score
+        assert res.passes_source_cosine_gate == (res.source_cosine >= SIMILARITY_THRESHOLD)
+        assert res.below_threshold == (res.source_cosine < SIMILARITY_THRESHOLD)
         assert "point" in res.match and len(res.match["point"]) == 3
-        assert all(c["score"] >= SIMILARITY_THRESHOLD for c in res.candidates)
+        assert all(c["source_cosine"] >= SIMILARITY_THRESHOLD for c in res.candidates)
         assert all("point" in c and len(c["point"]) == 3 for c in res.candidates)
         assert -7.5 <= res.source_point[0] <= -2.5
         assert 2.5 <= res.target_point[0] <= 7.5
         assert abs(res.source_point[1]) <= 0.275
         assert abs(res.target_point[1]) <= 0.275
+
+    # Preset 2 honest gate check: raw source_cosine is 0.5982 (< 0.65), so below_threshold is True
+    preset2 = eng.teleport("Order Book bottleneck — find analogue in Fluid Dynamics", "physics")
+    assert preset2.match["id"] == "phys-navier-stokes-orderbook"
+    assert abs(preset2.source_cosine - 0.5982) < 1e-3
+    assert preset2.passes_source_cosine_gate is False
+    assert preset2.below_threshold is True
+
+    # High-overlap query (> 0.65 actual source_cosine) must pass the 0.65 gate with below_threshold=False
+    high_cos = eng.teleport(
+        "High-frequency limit order book viscosity, bid-ask order flow density waves, and Navier-Stokes Reynolds turbulence",
+        "physics",
+    )
+    print(
+        f"High-Cosine Query [physics] -> {high_cos.match['id']} "
+        f"(source_cos={high_cos.source_cosine}, offset_cos={high_cos.offset_cosine}, "
+        f"relevance_score={high_cos.relevance_score}, passes_gate={high_cos.passes_source_cosine_gate}, "
+        f"below_threshold={high_cos.below_threshold})"
+    )
+    assert high_cos.match["id"] == "phys-navier-stokes-orderbook"
+    assert high_cos.source_cosine >= SIMILARITY_THRESHOLD
+    assert high_cos.passes_source_cosine_gate is True
+    assert high_cos.below_threshold is False
 
     # Low-relevance / out-of-distribution queries must flag below_threshold=True (< 0.65)
     for ood_text, ood_dom in [
@@ -84,10 +110,12 @@ def test_engine_presets_and_threshold_filtering() -> None:
         ood = eng.teleport(ood_text, ood_dom)
         print(
             f"OOD Query [{ood_dom}] '{ood_text}' -> {ood.match['id']} "
-            f"(score={ood.match['score']}, raw_cos={ood.raw_similarity}, below_threshold={ood.below_threshold})"
+            f"(source_cos={ood.source_cosine}, offset_cos={ood.offset_cosine}, "
+            f"relevance_score={ood.relevance_score}, below_threshold={ood.below_threshold})"
         )
         assert ood.below_threshold is True
-        assert ood.match["score"] < SIMILARITY_THRESHOLD
+        assert ood.passes_source_cosine_gate is False
+        assert ood.source_cosine < SIMILARITY_THRESHOLD
 
 
 def test_ndjson_streaming_endpoint() -> None:
