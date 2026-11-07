@@ -4,15 +4,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Latent Teleportation — Translate problems across domains" },
-      {
-        name: "description",
-        content: "Teleport bottlenecks into analogous domains through latent vector offsets.",
-      },
+      { name: "description", content: "Teleport bottlenecks into analogous domains through latent vector offsets." },
       { property: "og:title", content: "Latent Teleportation" },
-      {
-        property: "og:description",
-        content: "Teleport bottlenecks into analogous domains through latent vector offsets.",
-      },
+      { property: "og:description", content: "Teleport bottlenecks into analogous domains through latent vector offsets." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
