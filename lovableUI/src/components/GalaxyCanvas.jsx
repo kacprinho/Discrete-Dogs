@@ -16,16 +16,16 @@ const DEFAULT_SOURCE_NODES = [
 ];
 
 const DEFAULT_TARGET_NODES = [
-  { id: 'bio-ant-pheromone', title: 'Ant Colony Pheromone Trails', domain: 'natural', coords: [5.565, -0.106, 0.809], score: 0.82 },
-  { id: 'phys-navier-stokes-orderbook', title: 'Navier-Stokes Order Book Viscosity', domain: 'physics', coords: [3.625, 0.135, -0.49], score: 0.77 },
-  { id: 'bio-allosteric-enzymes', title: 'Allosteric Enzyme Cooperativity', domain: 'natural', coords: [5.73, -0.053, 0.384], score: 0.79 },
-  { id: 'soc-sir-ring-inoculation', title: 'SIR Ring Inoculation', domain: 'social', coords: [4.801, -0.191, -0.644], score: 0.78 },
-  { id: 'phys-kuramoto-synchronization', title: 'Kuramoto Phase Synchronization', domain: 'physics', coords: [6.1, 0.08, -0.35], score: 0.74 },
-  { id: 'bio-physarum-slime-mold', title: 'Slime Mold Tube Dilation', domain: 'natural', coords: [4.3, 0.15, 0.95], score: 0.72 },
-  { id: 'phys-kolmogorov-turbulence', title: 'Kolmogorov Energy Cascade', domain: 'physics', coords: [3.9, -0.12, -0.85], score: 0.71 },
-  { id: 'math-sinkhorn-optimal-transport', title: 'Sinkhorn Optimal Transport', domain: 'math', coords: [5.2, 0.1, 1.25], score: 0.75 },
-  { id: 'cog-synaptic-pruning', title: 'Synaptic Pruning Microglia', domain: 'cognitive', coords: [6.25, -0.14, 0.45], score: 0.73 },
-  { id: 'bio-mycelial-nutrient-trading', title: 'Mycelial Nutrient Trading', domain: 'natural', coords: [4.95, -0.08, 0.22], score: 0.76 },
+  { id: 'bio-ant-pheromone', title: 'Ant Colony Pheromone Trails', domain: 'natural', coords: [5.565, -0.106, 0.809] },
+  { id: 'phys-navier-stokes-orderbook', title: 'Navier-Stokes Order Book Viscosity', domain: 'physics', coords: [3.625, 0.135, -0.49] },
+  { id: 'bio-allosteric-enzymes', title: 'Allosteric Enzyme Cooperativity', domain: 'natural', coords: [5.73, -0.053, 0.384] },
+  { id: 'soc-sir-ring-inoculation', title: 'SIR Ring Inoculation', domain: 'social', coords: [4.801, -0.191, -0.644] },
+  { id: 'phys-kuramoto-synchronization', title: 'Kuramoto Phase Synchronization', domain: 'physics', coords: [6.1, 0.08, -0.35] },
+  { id: 'bio-physarum-slime-mold', title: 'Slime Mold Tube Dilation', domain: 'natural', coords: [4.3, 0.15, 0.95] },
+  { id: 'phys-kolmogorov-turbulence', title: 'Kolmogorov Energy Cascade', domain: 'physics', coords: [3.9, -0.12, -0.85] },
+  { id: 'math-sinkhorn-optimal-transport', title: 'Sinkhorn Optimal Transport', domain: 'math', coords: [5.2, 0.1, 1.25] },
+  { id: 'cog-synaptic-pruning', title: 'Synaptic Pruning Microglia', domain: 'cognitive', coords: [6.25, -0.14, 0.45] },
+  { id: 'bio-mycelial-nutrient-trading', title: 'Mycelial Nutrient Trading', domain: 'natural', coords: [4.95, -0.08, 0.22] },
 ];
 
 const DOMAIN_COLORS = {
@@ -52,6 +52,9 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
 ) {
   const host = useRef(null);
   const engine = useRef(null);
+  const latest = useRef({ sourceLabel, targetLabel, onNodeSelect });
+  latest.current = { sourceLabel, targetLabel, onNodeSelect };
+  const appliedResult = useRef(null);
   const [error, setError] = useState('');
   const [matched, setMatched] = useState(false);
 
@@ -83,21 +86,6 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     []
   );
 
-  // Sync when result prop updates
-  useEffect(() => {
-    if (!result || !engine.current) return;
-    const targetPoint = result.target_point || result.target_coords;
-    const sourcePoint = result.source_point || result.source_coords || SOURCE_ORIGIN;
-    if (validCoords(targetPoint)) {
-      engine.current.teleport(targetPoint, sourcePoint, {
-        targetTitle: result.match?.title,
-        domain: result.match?.domain,
-        score: result.match?.score,
-        candidates: result.candidates,
-      });
-      setMatched(true);
-    }
-  }, [result]);
 
   useEffect(() => {
     const container = host.current;
@@ -386,6 +374,22 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     // ==========================================
     // 4. ENGINE TELEPORT & CAMERA CONTROL
     // ==========================================
+    function clearCandidates() {
+      for (const node of dynamicCandidateNodes) {
+        nodesGroup.remove(node.group);
+        const index = interactiveNodes.indexOf(node);
+        if (index !== -1) interactiveNodes.splice(index, 1);
+        node.group.traverse((object) => {
+          if (!object.material) return;
+          object.material.dispose();
+          const resourceIndex = resources.indexOf(object.material);
+          if (resourceIndex !== -1) resources.splice(resourceIndex, 1);
+        });
+      }
+      dynamicCandidateNodes.length = 0;
+      hoveredNode = null;
+      if (tooltipRef.current) tooltipRef.current.style.display = 'none';
+    }
     let activeMatchNode = null;
 
     engine.current = {
@@ -399,7 +403,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         activeSourceNode.group.visible = true;
         activeSourceNode.meta = {
           ...activeSourceNode.meta,
-          title: meta?.sourceTitle || sourceLabel || 'Source Bottleneck',
+          title: meta?.sourceTitle || latest.current.sourceLabel || 'Source Bottleneck',
           coords: source,
         };
 
@@ -407,7 +411,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         activeTargetNode.group.visible = true;
         activeTargetNode.meta = {
           ...activeTargetNode.meta,
-          title: meta?.targetTitle || targetLabel || 'Target Analogue',
+          title: meta?.targetTitle || latest.current.targetLabel || 'Target Analogue',
           domain: meta?.domain,
           score: meta?.score,
           coords: target,
@@ -415,17 +419,12 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         activeMatchNode = activeTargetNode;
 
         // Clear previous dynamic candidate nodes if any
-        dynamicCandidateNodes.forEach((node) => {
-          nodesGroup.remove(node.group);
-          const idx = interactiveNodes.indexOf(node);
-          if (idx !== -1) interactiveNodes.splice(idx, 1);
-        });
-        dynamicCandidateNodes.length = 0;
+        clearCandidates();
 
         // If meta provides candidates, instantiate them dynamically in 3D space
         if (Array.isArray(meta?.candidates)) {
           meta.candidates.forEach((cand) => {
-            const pt = cand.point || cand.coords;
+            const pt = cand.point || cand.coords || cand.target_point;
             if (validCoords(pt)) {
               // Skip if coords match active target exactly
               const d = Math.hypot(pt[0] - target[0], pt[1] - target[1], pt[2] - target[2]);
@@ -452,7 +451,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         }
         if (heroMetaRef.current) {
           const domainStr = (meta?.domain || '').toUpperCase();
-          const scoreStr = meta?.score !== undefined ? ` · SIM ${(meta.score * 100).toFixed(1)}%` : '';
+          const scoreStr = Number.isFinite(meta?.score) ? ` · SIM ${(meta.score * 100).toFixed(1)}%` : '';
           heroMetaRef.current.textContent = `${domainStr || 'ANALOGUE'}${scoreStr}`;
         }
 
@@ -487,12 +486,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         activeTargetNode.group.visible = false;
         activeMatchNode = null;
 
-        dynamicCandidateNodes.forEach((node) => {
-          nodesGroup.remove(node.group);
-          const idx = interactiveNodes.indexOf(node);
-          if (idx !== -1) interactiveNodes.splice(idx, 1);
-        });
-        dynamicCandidateNodes.length = 0;
+        clearCandidates();
 
         if (heroBadgeRef.current) heroBadgeRef.current.style.display = 'none';
         if (tooltipRef.current) tooltipRef.current.style.display = 'none';
@@ -546,6 +540,13 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       isDragging = false;
     };
 
+    const handleWheel = (event) => {
+      event.preventDefault();
+      const offset = desiredCamera.clone().sub(desiredLook);
+      const distance = THREE.MathUtils.clamp(offset.length() * Math.exp(THREE.MathUtils.clamp(event.deltaY, -100, 100) * 0.002), 7, 35);
+      desiredCamera.copy(desiredLook).add(offset.setLength(distance));
+    };
+
     const handlePointerLeave = () => {
       isDragging = false;
       pointer.x = -999;
@@ -556,8 +557,8 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     };
 
     const handleClick = () => {
-      if (hoveredNode && onNodeSelect) {
-        onNodeSelect(hoveredNode.meta);
+      if (hoveredNode && latest.current.onNodeSelect) {
+        latest.current.onNodeSelect(hoveredNode.meta);
       }
     };
 
@@ -567,6 +568,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
     domEl.addEventListener('pointerup', handlePointerUp);
     domEl.addEventListener('pointerleave', handlePointerLeave);
     domEl.addEventListener('click', handleClick);
+    domEl.addEventListener('wheel', handleWheel, { passive: false });
 
     // ==========================================
     // 6. RESIZE OBSERVER
@@ -598,8 +600,9 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       particleShaderMaterial.uniforms.uTime.value = now * 0.001;
 
       // Smooth Orbit Damping
-      orbitDelta.x = THREE.MathUtils.lerp(orbitDelta.x, targetOrbit.x, 0.1);
-      orbitDelta.y = THREE.MathUtils.lerp(orbitDelta.y, targetOrbit.y, 0.1);
+      const orbitAlpha = motion.matches ? 1 : 1 - Math.exp(-6.32 * dt);
+      orbitDelta.x = THREE.MathUtils.lerp(orbitDelta.x, targetOrbit.x, orbitAlpha);
+      orbitDelta.y = THREE.MathUtils.lerp(orbitDelta.y, targetOrbit.y, orbitAlpha);
 
       // Butter-Smooth Camera Position & LookAt Lerp (framerate-independent exponential smoothing)
       const alpha = motion.matches ? 1 : 1 - Math.exp(-3.8 * dt);
@@ -614,7 +617,9 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
 
       // Raycasting for interactive hover across all hit meshes
       raycaster.setFromCamera(pointer, camera);
-      const hitCandidates = interactiveNodes.map((n) => n.hitMesh || n.coreMesh);
+      scene.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
+      const hitCandidates = interactiveNodes.filter((n) => n.group.visible).map((n) => n.hitMesh || n.coreMesh);
       const hits = raycaster.intersectObjects(hitCandidates, false);
 
       if (hits.length > 0) {
@@ -633,7 +638,7 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
               tooltipDomainRef.current.style.color = `#${hitNode.colorHex.toString(16).padStart(6, '0')}`;
             }
             if (tooltipScoreRef.current) {
-              if (hitNode.meta.score !== undefined) {
+              if (Number.isFinite(hitNode.meta.score)) {
                 tooltipScoreRef.current.textContent = `SIM ${(hitNode.meta.score * 100).toFixed(1)}%`;
                 tooltipScoreRef.current.style.display = 'inline-block';
               } else {
@@ -702,23 +707,25 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
         const hoverMultiplier = isHovered ? 1.6 : isHeroTarget ? 1.35 : 1.0;
 
         node.targetScale = hoverMultiplier * zoomFactor;
-        node.currentScale = THREE.MathUtils.lerp(node.currentScale, node.targetScale, 0.16);
+        node.currentScale = THREE.MathUtils.lerp(node.currentScale, node.targetScale, motion.matches ? 1 : 1 - Math.exp(-10.46 * dt));
         node.group.scale.setScalar(node.currentScale);
 
         // Subtle slow orbital rotation of wireframe halo and ring
-        node.haloMesh.rotation.y += 0.012;
-        node.haloMesh.rotation.x += 0.006;
-        node.ringMesh.rotation.z += 0.008;
+        if (!motion.matches) {
+          node.haloMesh.rotation.y += 0.72 * dt;
+          node.haloMesh.rotation.x += 0.36 * dt;
+          node.ringMesh.rotation.z += 0.48 * dt;
+        }
 
         // Pulsing halo for heroes or hovered nodes
         if (node.isHero || isHovered) {
-          const pulse = 0.45 + 0.35 * Math.sin(time * 3.5);
+          const pulse = motion.matches ? 0.55 : 0.45 + 0.35 * Math.sin(time * 3.5);
           node.haloMat.opacity = pulse;
         }
       });
 
       // Animate Traveling Bridge Energy Pulse
-      if (activeCurve && pulseMesh.visible) {
+      if (activeCurve && pulseMesh.visible && !motion.matches) {
         const pulseT = (time * 0.55) % 1.0;
         const pulsePos = activeCurve.getPoint(pulseT);
         pulseMesh.position.copy(pulsePos);
@@ -748,14 +755,35 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
       domEl.removeEventListener('pointerup', handlePointerUp);
       domEl.removeEventListener('pointerleave', handlePointerLeave);
       domEl.removeEventListener('click', handleClick);
+      domEl.removeEventListener('wheel', handleWheel);
       domEl.removeEventListener('webglcontextlost', lost);
       clearBridge();
+      appliedResult.current = null;
       resources.forEach((r) => r.dispose());
       renderer.dispose();
       domEl.remove();
       engine.current = null;
     };
-  }, [onNodeSelect, sourceLabel, targetLabel]);
+  }, []);
+
+  // Sync when result prop updates
+  useEffect(() => {
+    if (!result) { engine.current?.reset(); appliedResult.current = null; setMatched(false); return; }
+    if (!engine.current || appliedResult.current === result) return;
+    const targetPoint = result.target_point || result.target_coords;
+    const sourcePoint = result.source_point || result.source_coords || SOURCE_ORIGIN;
+    if (validCoords(targetPoint) && validCoords(sourcePoint)) {
+      appliedResult.current = result;
+      engine.current.teleport(targetPoint, sourcePoint, {
+        targetTitle: result.match?.title,
+        domain: result.match?.domain,
+        score: result.match?.score,
+        candidates: result.candidates,
+      });
+      setMatched(true);
+    }
+  }, [result]);
+
 
   return (
     <section
@@ -1041,8 +1069,8 @@ const GalaxyCanvas = forwardRef(function GalaxyCanvas(
           <span>
             {error ||
               (matched
-                ? 'Latent teleportation bridge active · Concept aligned'
-                : 'Awaiting bottleneck query · 3D manifold ready')}
+                ? 'Retrieved match connected · Illustrative layout'
+                : 'Awaiting query · Illustrative concept layout')}
           </span>
         </div>
         <div

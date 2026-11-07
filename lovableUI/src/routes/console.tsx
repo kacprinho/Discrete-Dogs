@@ -101,12 +101,6 @@ function Console() {
       }
       case "result":
         setResult(ev);
-        canvasRef.current?.teleportCamera(ev.target_point, ev.source_point, {
-          targetTitle: ev.match.title,
-          domain: ev.match.domain,
-          score: ev.match.score,
-          candidates: ev.candidates,
-        });
         push({
           stage: "MATCH",
           text: `${ev.match.title} · ${ev.match.domain} · sim ${ev.match.score.toFixed(2)}`,
@@ -388,6 +382,11 @@ function MatchCard({ result }: { result: TeleportResult }) {
         {m.mechanism ? ` · mechanism: ${m.mechanism}` : ""}
       </p>
       {m.paper_ref && <p className="text-muted-foreground/80 italic">{m.paper_ref}</p>}
+      {m.situation_description && (
+        <p className="rounded border border-primary/30 bg-primary/5 px-2 py-1 text-foreground">
+          {m.situation_description}
+        </p>
+      )}
       <p className="text-foreground/80">{m.summary}</p>
       {m.adaptation?.length ? (
         <ul className="list-inside list-disc text-foreground/80">

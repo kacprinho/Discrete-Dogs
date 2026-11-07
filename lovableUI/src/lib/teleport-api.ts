@@ -32,6 +32,10 @@ export type Match = {
   limitations?: string[];
   paper_ref?: string; // citation, e.g. "Smith et al., arXiv:1502.05855 (2015)"
   source?: "arxiv-live" | string; // set when the match came from the live arXiv fallback
+  point?: Vec3;
+  coords?: Vec3;
+  situation_description?: string;
+  why_it_maps?: string;
 };
 
 export type TeleportResult = {
@@ -40,6 +44,8 @@ export type TeleportResult = {
   match: Match;
   candidates?: Match[];
   offset_norm?: number;
+  corpus_size?: number;
+  below_threshold?: boolean;
 };
 
 export type TeleportEvent =
