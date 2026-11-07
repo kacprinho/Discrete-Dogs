@@ -35,3 +35,18 @@ Returns engine readiness, active embedding model, FAISS vector count, and suppor
 ### `POST /api/teleport`
 Accepts `multipart/form-data` (`file`, `description`, `domain`, `domain_label`) or `application/json`.
 Streams `application/x-ndjson` by default (`?format=legacy` streams `STAGE|TEXT` + `COORDS|{...}`; `?format=json` returns a single JSON object).
+
+## Plain-English explanations (optional LLM layer)
+
+The result card can be rewritten in plain English by an LLM, grounded only on the retrieved
+paper. It is off unless a key is in the environment; without one the card shows the curated text.
+
+```bash
+export GEMINI_API_KEY=...        # Google AI Studio key (preferred, free tier)
+# or: export ANTHROPIC_API_KEY=...
+uvicorn app.main:app --port 8000
+```
+
+Optional settings: `EXPLAINER_PROVIDER` (auto | gemini | anthropic), `EXPLAINER_GEMINI_MODELS`
+(default `gemini-3.5-flash-lite,gemini-3.5-flash`, tried in order), `EXPLAINER_TIMEOUT_S` (12).
+Never commit keys; keep them in your shell or a file outside the repo.
