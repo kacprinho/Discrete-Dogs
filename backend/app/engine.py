@@ -18,6 +18,10 @@ CORPUS_PATH = Path(__file__).parent / "data" / "corpus.json"
 EMBEDDING_DIM = 384
 MODEL_NAME = "all-MiniLM-L6-v2"
 
+# Strict semantic similarity cutoff threshold & source-bottleneck grounding floor
+SIMILARITY_THRESHOLD: float = 0.65
+RAW_SOURCE_COSINE_FLOOR: float = 0.22
+
 SOURCE_DOMAIN_ANCHORS: Dict[str, str] = {
     "distributed_systems": (
         "Distributed systems engineering, microservice RPC congestion, packet routing, "
@@ -85,6 +89,40 @@ def _l2_normalize(vecs: np.ndarray) -> np.ndarray:
     return arr / norms
 
 
+def compute_unit_offset_vector(
+    v_prob: np.ndarray,
+    v_source_domain: np.ndarray,
+    v_target_domain: np.ndarray,
+    alpha: float = 0.45,
+    beta: float = 0.55,
+) -> Tuple[np.ndarray, float]:
+    """
+    Computes the unit-norm-preserving Latent Teleportation vector:
+      1. Orthogonalize & unit-normalize the problem residual against the source domain centroid:
+         v_invariant = normalize(v_prob - alpha * <v_prob, v_source> * v_source)
+      2. Unit-normalize the cross-manifold shift vector:
+         delta_manifold = normalize(v_target_domain - 0.5 * v_source_domain)
+      3. Combine on the unit sphere S^(d-1) without magnitude drift:
+         v_target = normalize(v_invariant + beta * delta_manifold)
+    Returns (v_target, chord_offset_norm).
+    """
+    u_prob = _l2_normalize(v_prob)
+    u_src = _l2_normalize(v_source_domain)
+    u_tgt = _l2_normalize(v_target_domain)
+
+    # Project out source-domain component proportional to collinearity <u_prob, u_src>
+    proj_coeff = float(np.dot(u_prob, u_src))
+    v_invariant = _l2_normalize(u_prob - (alpha * max(0.25, proj_coeff)) * u_src)
+
+    # Unit-normalized manifold shift direction
+    delta_manifold = _l2_normalize(u_tgt - 0.50 * u_src)
+
+    # Geodesic chord combination on unit sphere (zero magnitude drift: ||v_target||_2 == 1.0)
+    v_target = _l2_normalize(v_invariant + beta * delta_manifold)
+    chord_offset_norm = round(float(np.linalg.norm(v_target - u_prob)), 4)
+    return v_target, chord_offset_norm
+
+
 def _deterministic_fallback_embed(texts: List[str], dim: int = EMBEDDING_DIM) -> np.ndarray:
     """Deterministic char/word n-gram projection into 384-d used only if model weights cannot load."""
     out = np.zeros((len(texts), dim), dtype=np.float32)
@@ -116,6 +154,9 @@ class TeleportComputation:
     match: Dict[str, Any]
     candidates: List[Dict[str, Any]]
     backend_mode: str
+    below_threshold: bool = False
+    similarity_threshold: float = SIMILARITY_THRESHOLD
+    filtered_out_count: int = 0
 
 
 class LatentTeleportationEngine:
@@ -124,6 +165,8 @@ class LatentTeleportationEngine:
     def __init__(self, corpus_path: Path = CORPUS_PATH) -> None:
         self.corpus_path = corpus_path
         self.corpus: List[Dict[str, Any]] = json.loads(corpus_path.read_text(encoding="utf-8"))
+        self.similarity_threshold: float = SIMILARITY_THRESHOLD
+        self.raw_cosine_floor: float = RAW_SOURCE_COSINE_FLOOR
         self.model: Any = None
         self.backend_mode: str = "sentence-transformers/all-MiniLM-L6-v2"
         self._load_model()
@@ -181,8 +224,32 @@ class LatentTeleportationEngine:
     def encode(self, texts: List[str]) -> np.ndarray:
         if self.model is not None:
             vecs = self.model.encode(texts, convert_to_numpy=True, normalize_embeddings=True)
-            return np.asarray(vecs, dtype=np.float32)
+            return _l2_normalize(np.asarray(vecs, dtype=np.float32))
         return _deterministic_fallback_embed(texts, EMBEDDING_DIM)
+
+    def add_documents(self, new_docs: List[Dict[str, Any]]) -> List[int]:
+        """
+        Dynamically embeds and appends new research documents (e.g. from live arXiv fallback)
+        into the runtime corpus and in-memory FAISS index.
+        """
+        added_indices: List[int] = []
+        existing_ids = {d.get("id") for d in self.corpus}
+        docs_to_add = [d for d in new_docs if d.get("id") not in existing_ids]
+        if not docs_to_add:
+            return added_indices
+
+        texts = [
+            f"{doc['title']}. {doc.get('summary', '')} {doc.get('abstract', '')} {doc.get('mechanism', '')}"
+            for doc in docs_to_add
+        ]
+        vecs = self.encode(texts)
+        start_idx = len(self.corpus)
+        self.corpus.extend(docs_to_add)
+        self.corpus_embeddings = np.vstack([self.corpus_embeddings, vecs])
+        self.faiss_index.add(vecs)
+        for offset in range(len(docs_to_add)):
+            added_indices.append(start_idx + offset)
+        return added_indices
 
     def _infer_source_domain(self, v_prob: np.ndarray) -> Tuple[str, np.ndarray]:
         best_key = "distributed_systems"
@@ -193,6 +260,18 @@ class LatentTeleportationEngine:
                 best_sim = sim
                 best_key = key
         return best_key, self.source_centroids[best_key]
+
+    def compute_target_vector(self, v_prob: np.ndarray, domain: str) -> np.ndarray:
+        """
+        Computes the unit-normalized target vector v_target for a given problem embedding
+        and target domain (used by both local FAISS search and live arXiv fallback).
+        """
+        _, v_source = self._infer_source_domain(v_prob)
+        v_dom = self.target_centroids.get(domain)
+        if v_dom is None:
+            return _l2_normalize(v_prob)
+        v_target, _ = compute_unit_offset_vector(v_prob, v_source, v_dom)
+        return v_target
 
     def _project_3d(self, vec: np.ndarray, manifold: str) -> List[float]:
         """
@@ -211,9 +290,27 @@ class LatentTeleportationEngine:
         z = float(np.tanh(raw_z * 2.2)) * 1.8
         return [round(x, 3), round(y, 3), round(z, 3)]
 
-    def _format_match(self, doc: Dict[str, Any], score: float) -> Dict[str, Any]:
+    def _calibrate_similarity(self, teleported_cos: float, raw_source_cos: float) -> float:
+        """
+        Computes a source-bottleneck-grounded similarity score in [0, 0.97].
+        Tightly constrains the score by raw cosine similarity against the source bottleneck
+        so loosely associated cross-domain analogies fall below SIMILARITY_THRESHOLD (0.65).
+        """
+        base = 0.55 + 0.42 * float(teleported_cos)
+        if raw_source_cos < self.raw_cosine_floor:
+            # Penalize candidates that lack structural grounding to the source bottleneck
+            grounding_ratio = max(0.0, float(raw_source_cos) / self.raw_cosine_floor)
+            base = base * (0.45 + 0.55 * (grounding_ratio ** 1.2))
+        return float(np.clip(base, 0.05, 0.97))
+
+    def _format_match(
+        self,
+        doc: Dict[str, Any],
+        score: float,
+        point_3d: Optional[List[float]] = None,
+    ) -> Dict[str, Any]:
         clipped = round(float(np.clip(score, 0.0, 0.99)), 4)
-        return {
+        formatted: Dict[str, Any] = {
             "id": doc["id"],
             "title": doc["title"],
             "domain": doc.get("domain_label", DOMAIN_LABELS.get(doc["domain"], doc["domain"])),
@@ -227,16 +324,20 @@ class LatentTeleportationEngine:
             "adaptation": doc.get("adaptation", []),
             "limitations": doc.get("limitations", []),
         }
+        if point_3d is not None:
+            formatted["point"] = point_3d
+        return formatted
 
     def teleport(
         self,
         problem_text: str,
         target_domain: str = "universal",
         top_k: int = 5,
+        similarity_threshold: Optional[float] = None,
     ) -> TeleportComputation:
+        cutoff = self.similarity_threshold if similarity_threshold is None else float(similarity_threshold)
         normalized_domain = (target_domain or "universal").strip().lower()
         if normalized_domain not in DOMAIN_LABELS:
-            # Map descriptive labels if passed instead of ID
             for k in DOMAIN_LABELS:
                 if k in normalized_domain:
                     normalized_domain = k
@@ -247,17 +348,15 @@ class LatentTeleportationEngine:
         v_prob = self.encode([problem_text])[0]
         source_domain_key, v_source_domain = self._infer_source_domain(v_prob)
 
-        # Determine target domain centroid for vector offset arithmetic:
-        # v_target = v_prob - v_source_domain + v_target_domain
+        # Determine target domain centroid for unit-norm vector offset arithmetic
         if normalized_domain != "universal" and normalized_domain in self.target_centroids:
             chosen_target_domain = normalized_domain
             v_target_domain = self.target_centroids[chosen_target_domain]
         else:
-            # In universal mode, evaluate offset across all target manifolds and pick strongest resonance
             best_domain = "natural"
             best_resonance = -1.0
             for dom_key, dom_centroid in self.target_centroids.items():
-                candidate_v = _l2_normalize(v_prob - 0.35 * v_source_domain + 0.55 * dom_centroid)
+                candidate_v, _ = compute_unit_offset_vector(v_prob, v_source_domain, dom_centroid)
                 dom_idxs = [i for i, d in enumerate(self.corpus) if d.get("domain") == dom_key]
                 if dom_idxs:
                     sims = 0.45 * (self.corpus_embeddings[dom_idxs] @ candidate_v) + 0.55 * (
@@ -270,45 +369,64 @@ class LatentTeleportationEngine:
             chosen_target_domain = best_domain
             v_target_domain = self.target_centroids[chosen_target_domain]
 
-        v_target_raw = v_prob - 0.35 * v_source_domain + 0.55 * v_target_domain
-        offset_norm = round(float(np.linalg.norm(v_target_raw - v_prob)), 4)
-        v_target = _l2_normalize(v_target_raw)
+        v_target, offset_norm = compute_unit_offset_vector(
+            v_prob, v_source_domain, v_target_domain
+        )
 
-        # Query the FAISS index with the teleported vector v_target
+        # Query the FAISS index with the unit-normalized teleported vector v_target
         search_k = len(self.corpus)
         scores, indices = self.faiss_index.search(v_target.reshape(1, -1), search_k)
         raw_scores_vec = (self.corpus_embeddings @ v_prob).tolist()
 
-        ranked_matches: List[Dict[str, Any]] = []
+        all_domain_matches: List[Dict[str, Any]] = []
         target_cluster_vecs: List[np.ndarray] = []
+        filtered_out_count = 0
 
         for sim_score, idx in zip(scores[0], indices[0]):
             if idx < 0:
                 continue
-            doc = self.corpus[int(idx)]
+            doc_idx = int(idx)
+            doc = self.corpus[doc_idx]
             if doc.get("domain") != chosen_target_domain:
                 continue
-            # Rescale inner product on unit sphere into calibrated similarity [0.65, 0.96]
-            calibrated_score = float(np.clip(0.55 + 0.42 * float(sim_score), 0.52, 0.97))
-            ranked_matches.append(self._format_match(doc, calibrated_score))
-            target_cluster_vecs.append(self.corpus_embeddings[int(idx)])
-            if len(ranked_matches) >= top_k:
-                break
+            raw_cos = float(raw_scores_vec[doc_idx])
+            calibrated_score = self._calibrate_similarity(float(sim_score), raw_cos)
+            pt_3d = self._project_3d(self.corpus_embeddings[doc_idx], manifold="target")
+            match_dict = self._format_match(doc, calibrated_score, point_3d=pt_3d)
+            match_dict["raw_similarity"] = round(raw_cos, 4)
+            match_dict["teleported_cosine"] = round(float(sim_score), 4)
+            all_domain_matches.append(match_dict)
+            target_cluster_vecs.append(self.corpus_embeddings[doc_idx])
 
-        # Fallback if a custom domain had no filtered items
-        if not ranked_matches:
+        if not all_domain_matches:
             top_idx = int(indices[0][0])
             doc = self.corpus[top_idx]
-            calibrated_score = float(np.clip(0.55 + 0.42 * float(scores[0][0]), 0.52, 0.97))
-            ranked_matches.append(self._format_match(doc, calibrated_score))
+            raw_cos = float(raw_scores_vec[top_idx])
+            calibrated_score = self._calibrate_similarity(float(scores[0][0]), raw_cos)
+            pt_3d = self._project_3d(self.corpus_embeddings[top_idx], manifold="target")
+            match_dict = self._format_match(doc, calibrated_score, point_3d=pt_3d)
+            match_dict["raw_similarity"] = round(raw_cos, 4)
+            match_dict["teleported_cosine"] = round(float(scores[0][0]), 4)
+            all_domain_matches.append(match_dict)
             target_cluster_vecs.append(self.corpus_embeddings[top_idx])
 
-        primary_match = ranked_matches[0]
+        # Enforce strict similarity cutoff threshold (SIMILARITY_THRESHOLD = 0.65)
+        passing_matches = [m for m in all_domain_matches if m["score"] >= cutoff]
+        filtered_out_count = len(all_domain_matches) - len(passing_matches)
+
+        primary_match = all_domain_matches[0]
         primary_doc_idx = next(
             (i for i, d in enumerate(self.corpus) if d["id"] == primary_match["id"]), 0
         )
         raw_sim = round(float(raw_scores_vec[primary_doc_idx]), 4)
         teleported_sim = primary_match["score"]
+        below_threshold = bool(teleported_sim < cutoff or raw_sim < self.raw_cosine_floor)
+        primary_match["below_threshold"] = below_threshold
+
+        # Only include secondary candidates that strictly pass the 0.65 threshold
+        filtered_candidates = [
+            m for m in passing_matches if m["id"] != primary_match["id"]
+        ][: max(0, top_k - 1)]
 
         source_point = self._project_3d(v_prob, manifold="source")
         target_point = self._project_3d(
@@ -335,8 +453,11 @@ class LatentTeleportationEngine:
             source_cluster_preview=source_cluster_preview,
             target_cluster_preview=target_cluster_preview,
             match=primary_match,
-            candidates=ranked_matches[1:4],
+            candidates=filtered_candidates,
             backend_mode=self.backend_mode,
+            below_threshold=below_threshold,
+            similarity_threshold=cutoff,
+            filtered_out_count=filtered_out_count,
         )
 
 

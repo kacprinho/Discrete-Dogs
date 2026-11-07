@@ -373,12 +373,20 @@ function MatchCard({ result }: { result: TeleportResult }) {
             m.title
           )}
         </span>
-        <span className="shrink-0 text-accent">sim {m.score.toFixed(2)}</span>
+        <span className="flex shrink-0 items-center gap-2">
+          {m.source === "arxiv-live" && (
+            <span className="rounded border border-accent px-1 text-[10px] uppercase tracking-wider text-accent">
+              live · arXiv
+            </span>
+          )}
+          <span className="text-accent">sim {m.score.toFixed(2)}</span>
+        </span>
       </div>
       <p className="text-muted-foreground">
         {m.domain}
         {m.mechanism ? ` · mechanism: ${m.mechanism}` : ""}
       </p>
+      {m.paper_ref && <p className="text-muted-foreground/80 italic">{m.paper_ref}</p>}
       <p className="text-foreground/80">{m.summary}</p>
       {m.adaptation?.length ? (
         <ul className="list-inside list-disc text-foreground/80">

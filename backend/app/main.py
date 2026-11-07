@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from .engine import DOMAIN_LABELS, get_engine
 from .ingest import extract_structural_signals, ingest_file_bytes
+from .services.live_fallback import run_fallback, should_fallback
 
 
 @asynccontextmanager
@@ -68,6 +69,8 @@ async def teleport_endpoint(
     description: Optional[str] = Form(default=None),
     domain: Optional[str] = Form(default="universal"),
     domain_label: Optional[str] = Form(default=None),
+    live: Optional[str] = Form(default=None),
+    live_q: Optional[str] = Query(default=None, alias="live", description="1 = force live arXiv search"),
     format: Optional[str] = Query(default=None, description="ndjson (default) | legacy | json"),
 ):
     # Support both multipart/form-data and application/json requests seamlessly
@@ -78,6 +81,7 @@ async def teleport_endpoint(
             description = body.get("description", "")
             domain = body.get("domain", "universal")
             domain_label = body.get("domain_label")
+            live = str(body.get("live", "")) or None
         except Exception:
             pass
 
@@ -120,6 +124,33 @@ async def teleport_endpoint(
         target_domain=target_domain,
         top_k=5,
     )
+
+    # Live research fallback: low raw cosine against the local corpus -> query arXiv,
+    # embed on the fly, inject into the runtime FAISS index, and use the best paper.
+    local_raw_similarity = computation.raw_similarity
+    local_teleported_similarity = computation.teleported_similarity
+    force_live = any(
+        isinstance(v, str) and v.strip().lower() in ("1", "true", "yes", "on") for v in (live, live_q)
+    )
+    fallback_logs: List[Dict[str, Any]] = []
+    if should_fallback(computation.raw_similarity, force=force_live):
+        fb = await run_fallback(
+            engine,
+            combined_problem,
+            computation.target_domain,
+            computation.target_domain_label,
+            computation.raw_similarity,
+            force=force_live,
+        )
+        fallback_logs = fb.logs
+        if fb.used and fb.match and fb.target_point:
+            local_match = dict(computation.match, title=f"{computation.match['title']} (local corpus)")
+            computation.candidates = (fb.candidates + [local_match])[:4]
+            computation.match = fb.match
+            computation.target_point = fb.target_point
+            computation.raw_similarity = fb.raw_similarity or computation.raw_similarity
+            computation.teleported_similarity = fb.match["score"]
+            computation.below_threshold = float(computation.match.get("score", 0.0)) < computation.similarity_threshold
 
     # Build structured agent reasoning events
     events: List[Dict[str, Any]] = []
@@ -184,10 +215,12 @@ async def teleport_endpoint(
             "agent": "faiss",
             "text": (
                 f"FAISS k-NN Search — manifold={computation.target_domain_label} · "
-                f"raw_cos={computation.raw_similarity:.3f} → teleported_sim={computation.teleported_similarity:.3f}"
+                f"raw_cos={local_raw_similarity:.3f} → teleported_sim={local_teleported_similarity:.3f}"
             ),
         }
     )
+
+    events.extend(fallback_logs)
 
     events.append(
         {
@@ -217,6 +250,10 @@ async def teleport_endpoint(
         "inferred_source_domain": computation.inferred_source_domain,
         "target_domain": computation.target_domain,
         "raw_similarity": computation.raw_similarity,
+        "below_threshold": computation.below_threshold,
+        "similarity_threshold": computation.similarity_threshold,
+        "filtered_out_count": computation.filtered_out_count,
+        "match_source": computation.match.get("source", "local") if isinstance(computation.match, dict) else "local",
     }
     events.append(result_event)
 
