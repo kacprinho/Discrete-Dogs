@@ -4,15 +4,20 @@ import { createFileRoute } from "@tanstack/react-router";
 //
 // If TELEPORT_BACKEND_URL is set (e.g. http://localhost:8000), the multipart request is proxied
 // to the FastAPI engine at `${TELEPORT_BACKEND_URL}/api/teleport` and its NDJSON stream is piped
-// straight through. Otherwise a deterministic mock stream is returned so the UI works standalone.
+// straight through. Otherwise an error event is returned, unless TELEPORT_MOCK=1 opts into clearly
+// labelled demo data (never presented as retrieval evidence).
 
-function backendUrl(): string | undefined {
+function env(name: string): string | undefined {
   try {
-    const v = typeof process !== "undefined" ? process.env?.["TELEPORT_BACKEND_URL"] : undefined;
-    return v ? v.replace(/\/+$/, "") : undefined;
+    return typeof process !== "undefined" ? process.env?.[name] : undefined;
   } catch {
     return undefined;
   }
+}
+
+function backendUrl(): string | undefined {
+  const v = env("TELEPORT_BACKEND_URL");
+  return v ? v.replace(/\/+$/, "") : undefined;
 }
 
 const NDJSON = {
@@ -112,7 +117,15 @@ export const Route = createFileRoute("/api/teleport")({
       POST: async ({ request }) => {
         const form = await request.formData();
         const base = backendUrl();
-        return base ? proxy(base, form) : mock(form);
+        if (base) return proxy(base, form);
+        if (env("TELEPORT_MOCK") === "1") return mock(form);
+        return ndjson([
+          {
+            type: "error",
+            text: "backend not configured — set TELEPORT_BACKEND_URL (e.g. http://localhost:8000), or TELEPORT_MOCK=1 for demo data",
+          },
+          { type: "done" },
+        ]);
       },
     },
   },

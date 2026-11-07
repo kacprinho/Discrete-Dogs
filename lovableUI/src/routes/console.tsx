@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Paperclip, X } from "lucide-react";
-import { GalaxyCanvas, type GalaxyCanvasHandle } from "@/components/GalaxyCanvas";
+import GalaxyCanvas, { type GalaxyCanvasHandle } from "@/components/GalaxyCanvas";
 import { streamTeleport, type TeleportEvent, type TeleportResult } from "@/lib/teleport-api";
 
 export const Route = createFileRoute("/console")({
@@ -101,7 +101,7 @@ function Console() {
       }
       case "result":
         setResult(ev);
-        canvasRef.current?.teleportCamera(ev.target_point);
+        canvasRef.current?.teleportCamera(ev.target_point, ev.source_point);
         push({
           stage: "MATCH",
           text: `${ev.match.title} · ${ev.match.domain} · sim ${ev.match.score.toFixed(2)}`,
@@ -123,6 +123,7 @@ function Console() {
     const domainLabel = DOMAINS.find((d) => d.id === domainId)?.label ?? domainId;
     setBusy(true);
     setResult(null);
+    canvasRef.current?.reset();
     push({
       stage: "INPUT",
       text: `${file ? `file: ${file.name} · ` : ""}context: "${desc.trim() || "—"}" → ${domainLabel}`,
@@ -200,15 +201,15 @@ function Console() {
           id="galaxy-viewport"
           className="viewport relative flex-1 overflow-hidden rounded-lg border border-border"
         >
-          <GalaxyCanvas
-            ref={canvasRef}
-            result={result}
-            busy={busy}
-            label={active.replace("->", "→")}
-          />
-          <span className="absolute left-3 top-3 text-[10px] text-muted-foreground">
-            #galaxy-viewport
-          </span>
+          <div className="absolute inset-0">
+            <GalaxyCanvas
+              ref={canvasRef}
+              sourceLabel={active.split("->")[0]?.trim() || "Your problem"}
+              targetLabel={
+                result ? `${result.match.domain} · ${result.match.title}` : "Target domain"
+              }
+            />
+          </div>
         </div>
       </section>
 
@@ -236,6 +237,7 @@ function Console() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            setActive("Your problem");
             teleport();
           }}
           className="space-y-3 border-t border-border p-3 text-xs"
