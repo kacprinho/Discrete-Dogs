@@ -11,7 +11,7 @@ from starlette.requests import Request
 
 from app.engine import SIMILARITY_THRESHOLD, compute_unit_offset_vector, get_engine
 from app.ingest import ingest_file_bytes
-from app.main import health, teleport_endpoint
+from app.main import health, list_corpus, teleport_endpoint
 
 
 def make_request(accept: str = "application/x-ndjson") -> Request:
@@ -94,6 +94,10 @@ def test_ndjson_streaming_endpoint() -> None:
     async def _run() -> None:
         health_res = await health()
         assert health_res["status"] == "online"
+        assert health_res["corpus_size"] >= 80
+        corpus_res = await list_corpus(domain=None)
+        assert corpus_res["total"] >= 80
+        assert all("point" in item and "coords" in item for item in corpus_res["items"][:5])
 
         sample_py = b"""
 import asyncio
@@ -137,6 +141,9 @@ async def handle_order_flow(order):
         assert "source_point" in result_ev and "target_point" in result_ev
         assert "source_coords" in result_ev and "target_coords" in result_ev
         assert "match" in result_ev and "candidates" in result_ev
+        assert result_ev["match"].get("situation_description")
+        assert result_ev["match"].get("why_it_maps")
+        assert result_ev["match"].get("coords") == result_ev["match"].get("point")
 
     asyncio.run(_run())
 

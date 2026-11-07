@@ -1238,5 +1238,445 @@
     ],
     "url": "https://doi.org/10.1038/385533a0",
     "paper_ref": "Frey & Morris, Nature 1997"
+  },
+  {
+    "id": "bio-camel-renal-countercurrent",
+    "title": "Henle Loop Countercurrent Multiplier & Osmotic Gradient Concentrator",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Mammalian nephrons concentrate solutes with minimal active pump energy by running parallel descending and ascending tubules in countercurrent exchange across a medullary osmotic gradient.",
+    "abstract": "GPU KV-cache memory bandwidth bottlenecks and tiered DRAM/NVMe cache eviction optimized via Loop of Henle countercurrent multiplication. Instead of costly bulk memory copies across distant hierarchy tiers, small horizontal osmotic transfers between opposing bidirectional streams build an exponential concentration gradient, keeping hot attention keys in fast SRAM.",
+    "mechanism": "Bidirectional countercurrent flow exchange with low-energy transverse gradient multiplication",
+    "adaptation": [
+      "Pair eviction streams (cold demotion) with prefetch streams (hot promotion) across adjacent cache tiers",
+      "Swap small incremental key-value blocks across adjacent ring stages rather than issuing full-tensor DMA flushes",
+      "Concentrate highest-attention tokens in L1/SRAM proportional to transverse access frequency gradients"
+    ],
+    "limitations": [
+      "Requires steady bidirectional stream flow to maintain the transverse concentration gradient",
+      "High washout rates under uniform random scans can flatten the multiplier gradient"
+    ],
+    "url": "https://doi.org/10.1152/ajplegacy.1959.197.2.471",
+    "paper_ref": "Kuhn & Ramel, Helv. Chim. Acta / Am. J. Physiol. 1959"
+  },
+  {
+    "id": "bio-firefly-pulse-coupled-sync",
+    "title": "Mirollo-Strogatz Pulse-Coupled Firefly Oscillator Synchronization",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Thousands of Southeast Asian fireflies achieve global phase synchronization without a central clock by advancing their internal concave phase accumulator whenever a neighbor flashes.",
+    "abstract": "Clockless distributed barrier synchronization, heartbeat de-jittering, and leaderless epoch alignment via Mirollo-Strogatz integrate-and-fire pulse-coupled oscillators. Monotonically increasing concave state functions guarantee global synchronization from arbitrary initial phases using only instantaneous local broadcast pulses.",
+    "mechanism": "Concave integrate-and-fire phase advancement triggered by impulsive local broadcasts",
+    "adaptation": [
+      "Replace centralized NTP barrier coordinators with local UDP pulse broadcasts at epoch boundaries",
+      "Use a concave phase accumulation curve f(phi) so late nodes advance disproportionately upon receiving a peer pulse",
+      "Insert a brief refractory window immediately after firing to prevent echo loops on high-latency links"
+    ],
+    "limitations": [
+      "All-to-all or dense graph connectivity required for single-cycle lock-in",
+      "Packet loss bursts can partition phase clusters temporarily"
+    ],
+    "url": "https://doi.org/10.1137/0150098",
+    "paper_ref": "Mirollo & Strogatz, SIAM J. Appl. Math. 1990"
+  },
+  {
+    "id": "bio-bacteriophage-crispr-spacer",
+    "title": "CRISPR-Cas Adaptive Spacer Acquisition & Sequence-Specific Cleavage",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Prokaryotes archive short DNA snippets (spacers) from invading phages into a chronological CRISPR locus, enabling immediate RNA-guided cleavage if the same signature re-enters.",
+    "abstract": "Dead-letter queue poison-pill isolation, deterministic crash-loop signature filtering, and Byzantine payload rejection via prokaryote CRISPR-Cas adaptive immunity. Short canonical hashes of fault-inducing payloads are appended to a FIFO spacer array and compiled into crRNA ingress filters that cleave matching requests at the edge.",
+    "mechanism": "Chronological fault-snippet archival (spacer integration) with guide-RNA edge cleavage",
+    "adaptation": [
+      "Extract minimal canonical AST/bytecode fingerprints from requests that trigger worker crashes or timeouts",
+      "Append fingerprints to the head of a bounded chronological spacer ring buffer shared across edge proxies",
+      "Execute O(1) PAM-like prefix checks before running full payload deserialization"
+    ],
+    "limitations": [
+      "Spacer array growth must be bounded via oldest-spacer excision to cap edge filter latency",
+      "Attackers can evade exact spacer matches by mutating non-essential payload padding"
+    ],
+    "url": "https://doi.org/10.1126/science.1138140",
+    "paper_ref": "Barrangou et al., Science 2007"
+  },
+  {
+    "id": "bio-electric-fish-jamming-avoidance",
+    "title": "Eigenmannia Wave-Type Electric Fish Jamming Avoidance Response (JAR)",
+    "domain": "natural",
+    "domain_label": "Natural & Biological Systems",
+    "summary": "Weakly electric fish prevent electrolocation interference without central spectrum coordination by sensing beat phase-amplitude trajectories and shifting their emission frequencies apart.",
+    "abstract": "Multi-tenant noisy-neighbor cron collisions, wireless channel interference, and synchronized polling storms resolved via Heiligenberg's Jamming Avoidance Response (JAR). Each node compares the amplitude and differential phase of combined load beats to determine whether a neighbor's frequency is slightly higher or lower, reflexively shifting its own cadence away.",
+    "mechanism": "Decentralized beat-envelope phase comparison driving repulsive frequency shifting",
+    "adaptation": [
+      "Measure local queue latency beat envelopes to detect when a peer worker is polling at a colliding harmonic frequency",
+      "Shift local scheduled job cadence upward if beat phase leads, or downward if beat phase lags, without inter-node RPCs",
+      "Bound frequency excursions within an elastic SLA band around the nominal polling interval"
+    ],
+    "limitations": [
+      "Designed for continuous periodic workloads rather than one-shot sporadic tasks",
+      "Dense clusters (>20 overlapping harmonics) require wider frequency excursion bands"
+    ],
+    "url": "https://doi.org/10.1007/978-3-642-84491-1",
+    "paper_ref": "Heiligenberg, Neural Nets in Electric Fish (MIT Press) 1991"
+  },
+  {
+    "id": "phys-rayleigh-benard-convection",
+    "title": "Rayleigh-Benard Buoyancy Convection Cells & Boussinesq Plume Rollover",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "When a fluid layer's bottom thermal gradient exceeds the critical Rayleigh number, conductive stagnation spontaneously breaks symmetry into self-organizing hexagonal Bénard convection rolls.",
+    "abstract": "Hot-shard database write amplification, LSM-tree compaction stalls, and cold-storage tiering bottlenecks resolved via Rayleigh-Bénard convective instability. When write-heat accumulation at the bottom ingestion layer exceeds the critical Rayleigh threshold Ra_c = 1708, data blocks organize into buoyant upward plumes paired with sinking cold-read downdrafts.",
+    "mechanism": "Critical Rayleigh number symmetry breaking into counter-rotating buoyancy convection cells",
+    "adaptation": [
+      "Compute an effective shard Rayleigh number Ra = (write_heat_gradient * queue_depth^3) / (compaction_bandwidth * read_diffusivity)",
+      "Trigger autonomous convective roll rotation (promoting hot write pages while sinking cold read segments) when Ra > Ra_c",
+      "Partition storage nodes into hexagonal Bénard cells so every hot ascending shard borders cool descending shards"
+    ],
+    "limitations": [
+      "Exceeding turbulent Rayleigh regimes (Ra >> 10^6) breaks coherent rolls into chaotic plume collisions",
+      "Requires continuous telemetry of thermal (write-rate) gradients"
+    ],
+    "url": "https://doi.org/10.1080/14786441608635602",
+    "paper_ref": "Lord Rayleigh, Phil. Mag. 1916"
+  },
+  {
+    "id": "phys-mossbauer-recoil-free-resonance",
+    "title": "Mossbauer Recoil-Free Gamma Emission & Debye-Waller Lattice Locking",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Nuclei bound in a solid crystal lattice emit and absorb high-energy gamma photons with zero thermal recoil loss because momentum transfer is absorbed collectively by the macroscopic crystal.",
+    "abstract": "Zero-copy IPC serialization, high-frequency kernel-bypass packet dispatch, and microsecond RPC jitter elimination via the Mössbauer effect. By binding individual message buffers into a rigid pre-allocated shared-memory ring lattice (high Debye-Waller factor), dispatch momentum is absorbed by the collective page table without per-message heap allocation recoil.",
+    "mechanism": "Collective crystal-lattice momentum absorption eliminating single-emitter recoil loss",
+    "adaptation": [
+      "Pin producer and consumer ring buffers into a single hugepage memory lattice (io_uring / shared mmap) prior to burst emission",
+      "Align struct field offsets to cache-line phonons so zero-copy descriptors transfer without serialization recoil",
+      "Monitor the system Debye-Waller factor (fraction of recoil-free zero-copy transfers vs. page-fault allocations)"
+    ],
+    "limitations": [
+      "Rigid lattice pre-allocation trades memory elasticity for sub-microsecond deterministic resonance",
+      "Schema drift between emitter and absorber breaks resonance immediately"
+    ],
+    "url": "https://doi.org/10.1007/BF01340285",
+    "paper_ref": "Mössbauer, Z. Physik 1958"
+  },
+  {
+    "id": "phys-anderson-localization-disorder",
+    "title": "Anderson Localization of Wave Propagation in Disordered Lattices",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Introducing controlled random potential disorder into a conductive lattice causes destructive wave interference that exponentially localizes propagating modes, halting runaway transport.",
+    "abstract": "Cascading failure containment, broadcast storm suppression, and BGP route-flap damping via Anderson localization. In overly uniform mesh topologies, fault waves propagate ballistically across the entire cluster; injecting controlled randomized impedance jitter (disorder potential W) creates destructive interference that traps fault cascades within a finite localization length xi.",
+    "mechanism": "Disorder-induced destructive interference trapping wave transport within finite localization length",
+    "adaptation": [
+      "Inject randomized retry impedance and heterogeneous backoff potentials across uniform microservice mesh edges",
+      "Tune disorder strength W above the critical mobility edge so fault cascades decay as exp(-r / xi)",
+      "Preserve ballistic transport for low-frequency health probes while localizing high-frequency retry oscillations"
+    ],
+    "limitations": [
+      "Excessive static disorder slightly increases baseline multi-hop latency",
+      "Requires topology-aware calibration of localization length xi"
+    ],
+    "url": "https://doi.org/10.1103/PhysRev.109.1492",
+    "paper_ref": "Anderson, Phys. Rev. 1958"
+  },
+  {
+    "id": "phys-kosterlitz-thouless-vortex",
+    "title": "Berezinskii-Kosterlitz-Thouless (BKT) Topological Vortex-Antivortex Binding",
+    "domain": "physics",
+    "domain_label": "Applied Physics & Fluid Dynamics",
+    "summary": "Two-dimensional superfluids preserve quasi-long-range order below a critical temperature by binding disruptive topological defects into neutral, short-range vortex-antivortex dipole pairs.",
+    "abstract": "Distributed ledger rollback containment, compensating transaction pairing, and asynchronous state-drift stabilization via BKT topological phase transitions. Instead of global stop-the-world consensus locks, local state divergences (vortices +q) are immediately paired with opposite compensating micro-adjustments (antivortices -q) so net circulation vanishes at macro scales.",
+    "mechanism": "Logarithmic attraction binding opposite-charge topological defects into neutral dipole pairs",
+    "adaptation": [
+      "Emit an inverse compensating reservation token (-q) immediately adjacent to any optimistic inventory over-allocation (+q)",
+      "Increase logarithmic attraction stiffness (reconciliation priority) as temporal distance between paired shards grows",
+      "Keep operational load below the BKT unbinding temperature T_BKT where unbound defects proliferate across the cluster"
+    ],
+    "limitations": [
+      "Above T_BKT, dipole unbinding causes sudden exponential degradation in global state coherence",
+      "Requires invertible or commutative compensating operations"
+    ],
+    "url": "https://doi.org/10.1088/0022-3719/6/7/010",
+    "paper_ref": "Kosterlitz & Thouless, J. Phys. C: Solid State Phys. 1973"
+  },
+  {
+    "id": "soc-vickrey-clarke-groves-auction",
+    "title": "Vickrey-Clarke-Groves (VCG) Truthful Combinatorial Resource Mechanism",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "VCG auctions eliminate strategic bid shading and resource hoarding by charging each winning agent the exact social externality their allocation imposes on all other participants.",
+    "abstract": "Multi-tenant GPU cluster scheduling, spot-instance preemption, and microservice QoS quota gaming resolved via Vickrey-Clarke-Groves (VCG) dominant-strategy incentive compatibility. Services submit latency-utility curves; the scheduler maximizes aggregate throughput and deducts each tenant's congestion externality budget.",
+    "mechanism": "Externality-based pivot pricing making truthful priority revelation a dominant strategy",
+    "adaptation": [
+      "Replace static priority tiers with VCG token budgets where jobs pay the marginal latency delay inflicted on displaced peers",
+      "Compute Clarke pivot payments at each scheduling quantum to penalize bursty tenants that hoard idle GPU memory",
+      "Recycle collected congestion credits back to flexible batch jobs that voluntarily yield during peak contention"
+    ],
+    "limitations": [
+      "Exact combinatorial winner determination is NP-hard without convex bundle approximations",
+      "Susceptible to collusive bidding rings if single tenants spawn sybil service identities"
+    ],
+    "url": "https://doi.org/10.1007/BF01718997",
+    "paper_ref": "Vickrey (1961), Clarke (1971), Groves (1973)"
+  },
+  {
+    "id": "soc-schelling-segregation-tipping",
+    "title": "Schelling Micromotives Spatial Tipping & Affinity Colocation",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Agents enforcing mild local homophily thresholds spontaneously self-sort into sharply partitioned macro-clusters with minimal cross-boundary communication overhead.",
+    "abstract": "Graph database supernode partitioning, chatty microservice colocation, and cross-rack network egress minimization via Schelling's dynamic segregation model. Services relocate across host nodes whenever their fraction of local same-affinity RPC peers falls below a mild satisfaction threshold tau (~35%), rapidly eliminating cross-AZ chatter.",
+    "mechanism": "Local threshold-triggered agent relocation converging to low-cut macro-partitions",
+    "adaptation": [
+      "Track each container's ratio of intra-host vs. cross-rack RPC bytes over a sliding 60-second window",
+      "Trigger live migration to a peer-dense host when local affinity ratio drops below threshold tau = 0.40",
+      "Reserve 10% vacant slot capacity per rack so relocating containers can settle without swap deadlocks"
+    ],
+    "limitations": [
+      "Can over-concentrate correlated services onto a single failure domain if anti-affinity caps are omitted",
+      "Requires hysteresis cooldowns to prevent oscillatory ping-pong migrations"
+    ],
+    "url": "https://doi.org/10.1080/0022250X.1971.9989794",
+    "paper_ref": "Schelling, J. Math. Sociol. 1971"
+  },
+  {
+    "id": "soc-kyle-lambda-adverse-selection",
+    "title": "Kyle's Lambda Market Microstructure & Informed Order Flow Filtering",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Market makers protect inventory against toxic informed traders by adjusting price impact slope (Kyle's lambda) proportional to the signal-to-noise ratio of net order flow imbalance.",
+    "abstract": "HFT adverse selection, toxic arbitrage flow protection, and API scraping rate-control via Kyle (1985) sequential auction equilibrium. The gateway estimates Kyle's lambda = Cov(Delta_v, Q) / Var(Q) from batched request flow imbalance, dynamically widening admission spread or throttling execution when toxic informed sweeps are detected.",
+    "mechanism": "Linear price/latency impact scaling with informed-to-noise variance ratio (Kyle's lambda)",
+    "adaptation": [
+      "Batch incoming orders into micro-windows to pool noise traffic with latency-arbitrage snipers",
+      "Estimate flow toxicity (VPIN / Kyle's lambda) in real time from signed volume imbalance",
+      "Widen execution spread or inject randomized speed-bump delay proportional to lambda * |net_order_flow|"
+    ],
+    "limitations": [
+      "Over-estimating lambda during benign directional rallies penalizes organic liquidity",
+      "Requires stationary calibration of baseline noise-trader variance"
+    ],
+    "url": "https://doi.org/10.2307/1913210",
+    "paper_ref": "Kyle, Econometrica 1985"
+  },
+  {
+    "id": "soc-condorcet-jury-epistemic",
+    "title": "Condorcet Jury Theorem & Decorrelated Ensemble Quorum Aggregation",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "A majority vote among independent validators whose individual accuracy exceeds 50% converges exponentially toward 100% correctness as quorum size grows, provided error correlations are suppressed.",
+    "abstract": "Byzantine fault-tolerant oracle aggregation, multi-model LLM hallucination filtering, and noisy sensor fusion via the Condorcet Jury Theorem with Dietrich-List correlation penalty bounds. Maximizing ensemble reliability requires selecting maximally decorrelated validator architectures rather than cloning the single highest-scoring model.",
+    "mechanism": "Majority threshold aggregation with pairwise error-covariance decorrelation",
+    "adaptation": [
+      "Measure pairwise failure covariance Sigma_ij across validator nodes or model checkpoints on shadow traffic",
+      "Weight quorum votes inversely to each node's off-diagonal error correlation with the rest of the committee",
+      "Dynamically expand quorum size N when marginal competence p approaches the 0.50 uncertainty boundary"
+    ],
+    "limitations": [
+      "Shared upstream data biases violate conditional independence and can invert Condorcet convergence",
+      "Tail latency scales with the k-th order statistic of the quorum"
+    ],
+    "url": "https://doi.org/10.1017/S0266267104001269",
+    "paper_ref": "Condorcet (1785); Dietrich & List, Econ. Phil. 2004"
+  },
+  {
+    "id": "soc-diamond-dybvig-bank-run",
+    "title": "Diamond-Dybvig Liquidity Maturity Transformation & Suspension Gates",
+    "domain": "social",
+    "domain_label": "Social Systems & Epidemiology",
+    "summary": "Self-fulfilling panics where depositors rush to withdraw before illiquid long-term assets mature are eliminated by credible suspension-of-convertibility gates and lender-of-last-resort liquidity buffers.",
+    "abstract": "Client retry panics, connection-pool exhaustion cascades, and mass cache-miss stampedes stabilized via the Diamond-Dybvig (1983) bank-run equilibrium model. When impatient client timeouts trigger a self-fulfilling withdrawal run on slow backend compute, enforcing a deterministic convertibility gate (serving cached stale snapshots) eliminates the incentive to panic-retry.",
+    "mechanism": "Convertibility suspension gate eliminating self-fulfilling early-withdrawal panic equilibria",
+    "adaptation": [
+      "Detect self-fulfilling retry runs when client timeout rate falls below backend maturity (p99 compute time)",
+      "Activate a convertibility gate: immediately return last-known-good stale snapshots to impatient callers while single-flighting backend recomputation",
+      "Provide explicit queue-position leases so waiting clients know their slot is guaranteed without re-submitting"
+    ],
+    "limitations": [
+      "Stale-while-revalidate responses must be acceptable within business consistency bounds",
+      "Requires accurate distinction between liquidity panics (transient overload) and solvency failures (dead backend)"
+    ],
+    "url": "https://doi.org/10.1086/261155",
+    "paper_ref": "Diamond & Dybvig, J. Polit. Econ. 1983"
+  },
+  {
+    "id": "math-ricci-curvature-ollivier",
+    "title": "Ollivier-Ricci Discrete Graph Curvature & Bottleneck Bridge Surgery",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Edges bridging two dense clusters exhibit strongly negative Ollivier-Ricci curvature because the Wasserstein optimal-transport distance between their neighborhoods exceeds the edge length.",
+    "abstract": "Network backbone congestion hotspots, graph supernode bridge overload, and microservice API gateway bottlenecks diagnosed via Ollivier-Ricci discrete curvature kappa(x,y) = 1 - W_1(m_x, m_y)/d(x,y). Negatively curved edges (kappa << 0) act as hyperbolic hourglass bottlenecks where traffic from distinct communities collides; Ricci flow surgery adds parallel bypass edges specifically across minimum-curvature bridges.",
+    "mechanism": "Wasserstein neighborhood distance ratio identifying negatively curved hyperbolic bridge bottlenecks",
+    "adaptation": [
+      "Compute discrete Ollivier-Ricci curvature kappa(u,v) across service call-graph edges using 1-hop neighborhood transition distributions",
+      "Flag edges with kappa(u,v) < -0.35 as structural hourglass bottlenecks before saturation occurs",
+      "Perform discrete Ricci flow surgery: provision dedicated bypass channels or replicate state across the most negatively curved bridges"
+    ],
+    "limitations": [
+      "Computing exact Wasserstein-1 distances on high-degree supernodes requires Sinkhorn regularization",
+      "Static topology metrics must be weighted by real-time request byte volume"
+    ],
+    "url": "https://doi.org/10.1016/j.jfa.2008.11.001",
+    "paper_ref": "Ollivier, J. Funct. Anal. 2009"
+  },
+  {
+    "id": "math-candès-tao-compressed-sensing",
+    "title": "Candes-Romberg-Tao Compressed Sensing & L1 Sparse Telemetry Reconstruction",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Signals that are sparse in a transform basis can be reconstructed exactly from far fewer random incoherent projections than Nyquist sampling requires via convex L1 basis pursuit.",
+    "abstract": "High-cardinality observability telemetry overload, distributed tracing bandwidth bottlenecks, and heavy-hitter flow detection via Candès-Romberg-Tao compressed sensing (Restricted Isometry Property). Instead of streaming per-request logs from every microservice, nodes maintain compact random linear sketches y = Phi * x and reconstruct exact latency spikes via L1 minimization.",
+    "mechanism": "Incoherent random projection sketching with L1-norm basis pursuit sparse recovery",
+    "adaptation": [
+      "Project high-dimensional endpoint latency counters into a low-dimensional Count-Min / Gaussian sketch y = Phi * x",
+      "Transmit only the compressed sketch vector across the telemetry pipeline at fixed intervals",
+      "Run L1 basis pursuit (LASSO) at the collector to pinpoint the exact sparse subset of anomalous microservices"
+    ],
+    "limitations": [
+      "Reconstruction accuracy degrades if fault anomalies are dense (non-sparse) across >30% of endpoints simultaneously",
+      "L1 solver adds millisecond-scale decoding compute at the central aggregator"
+    ],
+    "url": "https://doi.org/10.1109/TIT.2005.862083",
+    "paper_ref": "Candès, Romberg & Tao, IEEE Trans. Inf. Theory 2006"
+  },
+  {
+    "id": "math-coupon-collector-coding",
+    "title": "Luby Transform Fountain Codes & Rateless Straggler Eradication",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Rateless erasure codes eliminate the coupon-collector straggler tail by emitting an endless stream of XOR-combined soliton-degree packets so any K+(epsilon) received symbols reconstruct the payload.",
+    "abstract": "Tail-latency stragglers in distributed scatter-gather queries, slow shard reads, and MapReduce barrier stalls eliminated via Luby Transform (LT) rateless fountain codes and Robust Soliton degree distributions. Instead of waiting for every specific K-th shard to respond, workers compute lightweight coded linear combinations so the aggregator completes as soon as any K*(1+epsilon) responses arrive.",
+    "mechanism": "Robust Soliton degree XOR encoding converting specific-shard dependencies into interchangeable symbols",
+    "adaptation": [
+      "Encode sharded read replicas or matrix-multiply tiles using lightweight XOR fountain parity blocks",
+      "Fan out queries to N > K coded workers and decode via peeling belief propagation as soon as K*(1+0.05) responses return",
+      "Cancel in-flight straggler requests immediately after belief propagation completes"
+    ],
+    "limitations": [
+      "5-10% storage or compute overhead to maintain coded parity shards",
+      "Best suited for linear, associative, or immutable read/compute workloads"
+    ],
+    "url": "https://doi.org/10.1109/SFCS.2002.1181950",
+    "paper_ref": "Luby, Proc. 43rd IEEE FOCS 2002"
+  },
+  {
+    "id": "math-littles-law-kingman-bound",
+    "title": "Kingman's G/G/1 Heavy-Traffic Approximation & Coefficient-of-Variation Shaping",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Queue waiting time in heavy traffic scales linearly with the sum of squared coefficients of variation of interarrival and service times multiplied by utilization rho/(1-rho).",
+    "abstract": "Tail latency explosion at high CPU utilization, Kafka consumer lag spikes, and thread-pool queueing delays diagnosed via Kingman's heavy-traffic formula E[W_q] ≈ (rho / (1 - rho)) * ((c_a^2 + c_s^2) / 2) * tau. Even at 80% utilization, high service-time variance c_s^2 causes 10x queue blowup; splitting heavy-tailed jobs away from deterministic fast-path lanes collapses c_s^2 toward zero.",
+    "mechanism": "Variance-utilization product decoupling via squared coefficient of variation (c_a^2 + c_s^2) lane isolation",
+    "adaptation": [
+      "Continuously measure arrival variance c_a^2 and service variance c_s^2 alongside mean utilization rho",
+      "Isolate high-variance (large payload / GC-prone) requests into a dedicated bulk lane so fast-path c_s^2 approaches 0",
+      "Pace upstream batch emissions with token-bucket shaping to squash arrival burstiness c_a^2 before utilization exceeds 0.75"
+    ],
+    "limitations": [
+      "Approximation is asymptotic as rho -> 1 and slightly overestimates delay at very low utilization",
+      "Requires accurate payload-size estimation at ingress for size-based lane routing"
+    ],
+    "url": "https://doi.org/10.1017/S0305004100035696",
+    "paper_ref": "Kingman, Proc. Camb. Philos. Soc. 1961"
+  },
+  {
+    "id": "math-braid-group-knot-deadlock",
+    "title": "Ghrist Configuration Space Topology & Non-Positively Curved Cubical Complexes",
+    "domain": "math",
+    "domain_label": "Pure & Applied Mathematics",
+    "summary": "Multi-agent collision and deadlock freedom are guaranteed globally when the state configuration space is a CAT(0) non-positively curved cubical complex where geodesics are unique.",
+    "abstract": "Multi-thread lock-order deadlocks, automated warehouse robot gridlocks, and concurrent transaction cycle prevention via Gromov's CAT(0) cubical complexes and Ghrist's state complexes. Commuting independent resource acquisitions form Euclidean cubes; eliminating positive-curvature resource triangles guarantees a unique shortest deadlock-free execution geodesic between any two system states.",
+    "mechanism": "CAT(0) non-positively curved cubical state space guaranteeing unique deadlock-free geodesics",
+    "adaptation": [
+      "Model concurrent lock/resource acquisitions as cells in a cubical complex where orthogonal axes represent commuting resources",
+      "Detect positive-curvature 'corner' violations (three pairwise-compatible locks that cannot be held simultaneously) at compile/admission time",
+      "Route concurrent state transitions along the unique CAT(0) geodesic to guarantee zero cyclic wait states"
+    ],
+    "limitations": [
+      "Constructing the full cubical complex scales with the clique size of mutually commuting operations",
+      "Requires static declaration of resource conflict pairs"
+    ],
+    "url": "https://doi.org/10.1177/0278364905057059",
+    "paper_ref": "Ghrist & Peterson, Int. J. Robot. Res. 2007"
+  },
+  {
+    "id": "cog-predictive-coding-rao-ballard",
+    "title": "Rao-Ballard Hierarchical Predictive Coding & Residual Error Transmission",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Visual cortex layers avoid saturating axonal bandwidth by sending top-down generative predictions downward and transmitting only unpredicted residual surprise errors upward.",
+    "abstract": "Client-server state synchronization, edge IoT bandwidth bottlenecks, and distributed cache invalidation optimized via Rao-Ballard hierarchical predictive coding. Instead of streaming full state snapshots across the network, both edge and core execute a shared deterministic forward predictor; only sparse prediction-error residuals exceeding precision thresholds traverse the wire.",
+    "mechanism": "Top-down generative state prediction paired with sparse bottom-up residual error propagation",
+    "adaptation": [
+      "Run an identical lightweight state predictor (Kalman / EWMA / deterministic state machine) at both producer and consumer",
+      "Suppress wire transmission whenever actual metric/state delta falls within the predicted confidence tube",
+      "Transmit precision-weighted residual packets only on surprise spikes, updating the shared model parameters"
+    ],
+    "limitations": [
+      "Silent packet drops of a residual update can cause predictor drift without periodic sequence checksums",
+      "Requires synchronized model weights between edge and core"
+    ],
+    "url": "https://doi.org/10.1038/4580",
+    "paper_ref": "Rao & Ballard, Nature Neuroscience 1999"
+  },
+  {
+    "id": "cog-homeostatic-synaptic-scaling",
+    "title": "Turrigiano Homeostatic Synaptic Scaling & Multiplicative Firing Stabilization",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "Cortical neurons prevent runaway Hebbian excitation or total silencing by multiplicatively scaling all incoming synaptic weights up or down to keep mean firing rate near a homeostatic set-point.",
+    "abstract": "Positive-feedback autoscaler thrashing, priority-queue starvation, and hot-route feedback loops stabilized via Turrigiano's homeostatic synaptic scaling. While fast routing heuristics reinforce successful workers (Hebbian LTP), a slower multiplicative homeostatic controller scales all weights by a uniform factor gamma so total node utilization stays pinned to its target operating band while preserving relative preference ratios.",
+    "mechanism": "Multiplicative global weight normalization preserving relative ratios while pinning mean firing rate",
+    "adaptation": [
+      "Decouple fast per-request routing score updates from a slower multiplicative normalization loop",
+      "Multiply all ingress routing weights on a node by (target_utilization / observed_utilization)^eta every control interval",
+      "Preserve relative priority ordering across task classes while preventing runaway saturation or cold-node starvation"
+    ],
+    "limitations": [
+      "Homeostatic time constant must be 5-10x slower than request routing dynamics to avoid interfering with transient bursts",
+      "Cannot correct structural single-point-of-failure bottlenecks if only one node is capable of serving a route"
+    ],
+    "url": "https://doi.org/10.1038/36182",
+    "paper_ref": "Turrigiano et al., Nature 1998"
+  },
+  {
+    "id": "cog-working-memory-theta-gamma",
+    "title": "Lisman-Idiart Theta-Gamma Phase-Amplitude Multiplexing of Working Memory",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "The hippocampus holds multiple distinct items in working memory simultaneously without cross-talk by slotting up to 7 fast gamma-band sub-cycles inside each slow theta-band carrier wave.",
+    "abstract": "Single-thread event-loop head-of-line blocking, GPU kernel multi-tenancy, and shared bus time-division multiplexing via Lisman-Idiart theta-gamma neural oscillations. A slow macro-cycle (theta ~ 100ms) defines the frame window, while 6-8 fast phase-locked micro-slots (gamma ~ 15ms) execute distinct tenant contexts sequentially without mutex locking or cache thrashing.",
+    "mechanism": "Cross-frequency phase-amplitude coupling slotting discrete fast gamma bursts inside a slow theta carrier",
+    "adaptation": [
+      "Structure shared worker event loops into fixed macro-frames (theta) subdivided into K=7 phase-locked micro-quanta (gamma)",
+      "Assign each active tenant or query class a dedicated gamma phase slot so context switches occur deterministically without lock contention",
+      "Pre-fetch the next gamma slot's working set into L2 cache during the preceding slot's execution window"
+    ],
+    "limitations": [
+      "Active item capacity is bounded by the theta-to-gamma frequency ratio (typically 5 to 8 concurrent contexts)",
+      "Fixed slot framing can leave micro-quanta underutilized if fewer than K tenants are active"
+    ],
+    "url": "https://doi.org/10.1126/science.7878473",
+    "paper_ref": "Lisman & Idiart, Science 1995"
+  },
+  {
+    "id": "cog-cerebellar-forward-model",
+    "title": "Wolpert-Miall Cerebellar Internal Forward Model & Efference Copy Cancellation",
+    "domain": "cognitive",
+    "domain_label": "Cognitive Science & Neuroscience",
+    "summary": "The cerebellum enables rapid, oscillation-free motor control despite 100ms sensory feedback delays by routing an efference copy of motor commands through an internal forward model to predict state immediately.",
+    "abstract": "Autoscaling lag oscillations, high-latency cross-region load balancing, and stale telemetry over-correction resolved via cerebellar efference copy and Smith predictor forward modeling. When cloud provisioning or remote health metrics lag by seconds, feeding an 'efference copy' of in-flight dispatch commands into a local forward model prevents duplicate scaling actions during the feedback dead-time.",
+    "mechanism": "Efference copy feed-forward state estimation cancelling delayed feedback oscillations",
+    "adaptation": [
+      "Route an immediate efference copy of every dispatched job or scale-out command to a local fast forward model of worker load",
+      "Subtract predicted in-flight load from delayed remote telemetry so the controller reacts only to unpredicted external disturbances",
+      "Update forward model latency parameters continuously from observed round-trip acknowledgments"
+    ],
+    "limitations": [
+      "Inaccurate forward capacity estimates can mask genuine remote worker stalls until the timeout horizon expires",
+      "Requires explicit tracking of in-flight command lifecycles"
+    ],
+    "url": "https://doi.org/10.1016/S1364-6613(98)01221-2",
+    "paper_ref": "Wolpert, Miall & Kawato, Trends Cogn. Sci. 1998"
   }
 ]

@@ -44,10 +44,16 @@ app.add_middleware(
 @app.get("/api/health")
 async def health() -> Dict[str, Any]:
     engine = get_engine()
+    domain_counts: Dict[str, int] = {}
+    for d in engine.corpus:
+        dom = d.get("domain", "universal")
+        domain_counts[dom] = domain_counts.get(dom, 0) + 1
     return {
         "status": "online",
         "engine": engine.backend_mode,
         "faiss_vectors": int(engine.faiss_index.ntotal),
+        "corpus_size": len(engine.corpus),
+        "domain_counts": domain_counts,
         "dimension": engine.dimension,
         "domains": DOMAIN_LABELS,
     }
@@ -56,10 +62,25 @@ async def health() -> Dict[str, Any]:
 @app.get("/api/corpus")
 async def list_corpus(domain: Optional[str] = Query(default=None)) -> Dict[str, Any]:
     engine = get_engine()
-    items = engine.corpus
-    if domain and domain != "universal":
-        items = [d for d in items if d.get("domain") == domain]
-    return {"total": len(items), "items": items}
+    enriched: List[Dict[str, Any]] = []
+    domain_counts: Dict[str, int] = {}
+    for i, d in enumerate(engine.corpus):
+        dom = d.get("domain", "universal")
+        domain_counts[dom] = domain_counts.get(dom, 0) + 1
+        if domain and domain != "universal" and dom != domain:
+            continue
+        item = dict(d)
+        if i < len(engine.corpus_embeddings):
+            pt = engine._project_3d(engine.corpus_embeddings[i], manifold="target")
+            item["point"] = pt
+            item["coords"] = pt
+        enriched.append(item)
+    return {
+        "total": len(enriched),
+        "corpus_size": len(engine.corpus),
+        "domain_counts": domain_counts,
+        "items": enriched,
+    }
 
 
 @app.post("/api/teleport")
@@ -151,6 +172,19 @@ async def teleport_endpoint(
             computation.raw_similarity = fb.raw_similarity or computation.raw_similarity
             computation.teleported_similarity = fb.match["score"]
             computation.below_threshold = float(computation.match.get("score", 0.0)) < computation.similarity_threshold
+
+    signals = extract_structural_signals(combined_problem)
+    sit_desc, why_maps = engine.build_situation_description(
+        combined_problem,
+        computation.inferred_source_domain,
+        computation.match,
+        signals=signals,
+    )
+    computation.match["situation_description"] = sit_desc
+    computation.match["why_it_maps"] = why_maps
+    if computation.target_point:
+        computation.match.setdefault("point", computation.target_point)
+        computation.match.setdefault("coords", computation.target_point)
 
     # Build structured agent reasoning events
     events: List[Dict[str, Any]] = []
@@ -253,6 +287,9 @@ async def teleport_endpoint(
         "below_threshold": computation.below_threshold,
         "similarity_threshold": computation.similarity_threshold,
         "filtered_out_count": computation.filtered_out_count,
+        "corpus_size": int(engine.faiss_index.ntotal),
+        "situation_description": computation.match.get("situation_description"),
+        "why_it_maps": computation.match.get("why_it_maps"),
         "match_source": computation.match.get("source", "local") if isinstance(computation.match, dict) else "local",
     }
     events.append(result_event)

@@ -308,8 +308,15 @@ class LatentTeleportationEngine:
         doc: Dict[str, Any],
         score: float,
         point_3d: Optional[List[float]] = None,
+        emb: Optional[np.ndarray] = None,
     ) -> Dict[str, Any]:
         clipped = round(float(np.clip(score, 0.0, 0.99)), 4)
+        if point_3d is None and emb is not None:
+            point_3d = self._project_3d(emb, manifold="target")
+        if point_3d is None:
+            doc_idx = next((i for i, d in enumerate(self.corpus) if d.get("id") == doc.get("id")), None)
+            if doc_idx is not None and doc_idx < len(self.corpus_embeddings):
+                point_3d = self._project_3d(self.corpus_embeddings[doc_idx], manifold="target")
         formatted: Dict[str, Any] = {
             "id": doc["id"],
             "title": doc["title"],
@@ -326,7 +333,43 @@ class LatentTeleportationEngine:
         }
         if point_3d is not None:
             formatted["point"] = point_3d
+            formatted["coords"] = point_3d
         return formatted
+
+    def build_situation_description(
+        self,
+        problem_text: str,
+        source_domain_key: str,
+        match: Dict[str, Any],
+        signals: Optional[List[str]] = None,
+    ) -> Tuple[str, str]:
+        """
+        Generates a situation-specific description and structural mapping narrative
+        explicitly linking the user's input bottleneck to the retrieved scientific mechanism.
+        """
+        clean_prob = " ".join((problem_text or "").strip().split())
+        snippet = clean_prob[:110] + ("…" if len(clean_prob) > 110 else "")
+        src_label = source_domain_key.replace("_", " ")
+        sig_phrase = (
+            ", ".join(signals[:2])
+            if signals
+            else "coupled flow saturation and feedback amplification"
+        )
+        mech = match.get("mechanism") or "decentralized feedback regulation"
+        first_step = (
+            match["adaptation"][0]
+            if isinstance(match.get("adaptation"), list) and match["adaptation"]
+            else match.get("summary", "")
+        )
+        situation_desc = (
+            f"In your {src_label} scenario (\"{snippet}\"), the bottleneck arises from {sig_phrase}. "
+            f"{match['title']} ({match.get('domain', 'Target Domain')}) resolves the same structural "
+            f"topology via {mech.lower()} — {first_step[0].lower() + first_step[1:] if first_step else ''}"
+        ).strip()
+        if not situation_desc.endswith("."):
+            situation_desc += "."
+        why_it_maps = f"{src_label.title()} ({sig_phrase}) ↔ {match['title']} ({mech})"
+        return situation_desc, why_it_maps
 
     def teleport(
         self,
@@ -422,6 +465,11 @@ class LatentTeleportationEngine:
         teleported_sim = primary_match["score"]
         below_threshold = bool(teleported_sim < cutoff or raw_sim < self.raw_cosine_floor)
         primary_match["below_threshold"] = below_threshold
+        sit_desc, why_maps = self.build_situation_description(
+            problem_text, source_domain_key, primary_match
+        )
+        primary_match["situation_description"] = sit_desc
+        primary_match["why_it_maps"] = why_maps
 
         # Only include secondary candidates that strictly pass the 0.65 threshold
         filtered_candidates = [
